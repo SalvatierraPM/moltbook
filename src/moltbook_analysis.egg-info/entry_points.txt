@@ -1,2 +1,0 @@
-[console_scripts]
-mbk = moltbook_analysis.cli:main

@@ -3,6 +3,8 @@
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+.codex/
+src/*.egg-info/
 
 # Large data artifacts (see web repo for public derived data)
 data/
