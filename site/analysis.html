@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Moltbook Observatory – UI de Analisis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  </head>
+  <body class="analysis">
+    <div class="grain"></div>
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-mark">◎</span>
+        <span>Observatory – UI de Analisis</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Inicio</a>
+        <a href="#coverage">Cobertura</a>
+        <a href="#language">Idiomas</a>
+        <a href="#submolts">Submolts</a>
+        <a href="#diffusion">Difusion</a>
+        <a href="#memetics">Memetica</a>
+        <a href="#ontology">Ontologia</a>
+        <a href="#interference">Interferencia</a>
+        <a href="#transmission">Transmision</a>
+        <a href="#network">Redes</a>
+        <a href="#authors">Autores</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="pill">Workspace dinamico de analisis</div>
+        <h1>Explora la red completa con explicaciones en contexto</h1>
+        <p>
+          Cada grafico incluye una explicacion de que mide, como se calcula y como leerlo.
+          La UI usa los derivados completos del dataset, no muestras, salvo donde se indique.
+        </p>
+        <div class="hero-meta">
+          <div class="meta-item">
+            <strong>Rango de datos (created_at)</strong>
+            <span id="coverage-range">–</span>
+          </div>
+          <div class="meta-item">
+            <strong>Nota</strong>
+            <span>Idiomas y transmision usan muestra estadistica.</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="coverage" class="section">
+        <div class="section-head">
+          <h2>Resumen de Cobertura</h2>
+          <p>Metricas globales para entender el tamano real del dataset.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-label">Posts Totales</div>
+            <div class="card-value" id="total-posts">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Comentarios Totales</div>
+            <div class="card-value" id="total-comments">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Submolts Activos</div>
+            <div class="card-value" id="total-submolts">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Autores Unicos</div>
+            <div class="card-value" id="total-authors">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Ejecuciones de Scrapeo</div>
+            <div class="card-value" id="total-runs">–</div>
+          </div>
+        </div>
+        <div class="card-grid" style="margin-top: 16px;">
+          <div class="card">
+            <div class="card-label">Ratio Posts/Comentarios</div>
+            <div class="card-value" id="ratio-posts-comments">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Duplicados Posts</div>
+            <div class="card-value" id="dup-posts">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Duplicados Comentarios</div>
+            <div class="card-value" id="dup-comments">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Ventana Posts</div>
+            <div class="card-value" id="range-posts">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Ventana Comentarios</div>
+            <div class="card-value" id="range-comments">–</div>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: volumen total y cobertura del scrapeo.</div>
+          <div>Como se calcula: sumas de `submolt_stats.csv`, conteo de `author_stats.csv` y `diffusion_runs.csv`.</div>
+          <div>Como leerlo: sirve como baseline para interpretar todo lo demas.</div>
+        </div>
+      </section>
+
+      <section id="glossary" class="section">
+        <div class="section-head">
+          <h2>Glosario rapido</h2>
+          <p>Definiciones cortas para que nada quede ambiguo.</p>
+        </div>
+        <div class="glossary-grid">
+          <div class="glossary-item"><strong>Submolt:</strong> comunidad o canal tematico dentro de la red.</div>
+          <div class="glossary-item"><strong>Run:</strong> una ejecucion de crawl con su timestamp.</div>
+          <div class="glossary-item"><strong>Meme:</strong> n-grama o patron recurrente en el texto.</div>
+          <div class="glossary-item"><strong>Burst:</strong> pico de frecuencia detectado por modelo de bursts.</div>
+          <div class="glossary-item"><strong>Centralidad:</strong> medida de importancia dentro de un grafo.</div>
+          <div class="glossary-item"><strong>Entropia submolt:</strong> cuan distribuido esta un meme entre comunidades.</div>
+        </div>
+      </section>
+
+      <section id="language" class="section">
+        <div class="section-head">
+          <h2>Mezcla de Idiomas</h2>
+          <p>Distribucion estimada por idioma en posts vs comentarios.</p>
+        </div>
+        <div class="card wide">
+          <div class="table-header">
+            Distribucion de Idiomas
+            <span class="info-tip" data-tip="Deteccion por muestra (no censo completo).">i</span>
+          </div>
+          <canvas id="language-chart" height="140"></canvas>
+        </div>
+        <div class="explain">
+          <div>Que mide: proporciones relativas de idioma en posts y comentarios.</div>
+          <div>Como se calcula: deteccion de idioma por muestra estadistica.</div>
+          <div>Como leerlo: compara lenguaje de publicacion vs respuesta.</div>
+        </div>
+      </section>
+
+      <section id="submolts" class="section">
+        <div class="section-head">
+          <h2>Actividad por Submolt</h2>
+          <p>Compara volumen, engagement y presencia temporal entre comunidades.</p>
+        </div>
+        <div class="card wide">
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <button class="toggle active" data-metric="posts">Posts</button>
+              <button class="toggle" data-metric="comments">Comentarios</button>
+              <button class="toggle" data-metric="mean_upvotes">Upvotes Promedio</button>
+            </div>
+            <div class="toolbar-group">
+              <span class="info-tip" data-tip="Top 15 submolts por la metrica seleccionada.">i</span>
+            </div>
+          </div>
+          <canvas id="submolt-chart" height="150"></canvas>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Top Submolts (Posts + Comentarios)</div>
+          <div class="table-scroll">
+            <table id="submolt-table">
+              <thead>
+                <tr>
+                  <th>Submolt</th>
+                  <th>Posts</th>
+                  <th>Comentarios</th>
+                  <th>Upvotes Promedio</th>
+                  <th>
+                    Runs vistos
+                    <span class="info-tip" data-tip="Cantidad de ejecuciones donde se detecto actividad. No equivale a dias.">i</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: volumen y engagement por comunidad.</div>
+          <div>Como se calcula: `submolt_stats.csv` + `diffusion_submolts.csv`.</div>
+          <div>Como leerlo: detecta donde se concentra la conversacion y la traccion.</div>
+          <div>Vista: el grafico muestra top 15 para legibilidad.</div>
+        </div>
+      </section>
+
+      <section id="diffusion" class="section">
+        <div class="section-head">
+          <h2>Difusion por ejecuciones de scrapeo</h2>
+          <p>Observa dinamicas de engagement a medida que avanza el crawl.</p>
+        </div>
+        <div class="card wide">
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <label for="diffusion-select">Submolt</label>
+              <select id="diffusion-select"></select>
+            </div>
+            <div class="toolbar-group">
+              <label for="diffusion-mode">Vista temporal</label>
+              <select id="diffusion-mode">
+                <option value="activity" selected>Actividad real (created_at)</option>
+                <option value="run">Captura (run_time)</option>
+              </select>
+            </div>
+            <div class="toolbar-group">
+              <span class="info-tip" data-tip="Cambiar entre captura por run o actividad real por fecha de publicacion.">i</span>
+            </div>
+          </div>
+          <canvas id="diffusion-chart" height="170"></canvas>
+        </div>
+        <div class="explain">
+          <div>Vista captura: muestra lo que el scraper vio en cada run (puede variar por volumen scrapeado).</div>
+          <div>Vista actividad: agrupa por created_at (actividad real, no depende del run).</div>
+          <div>Si la linea es recta: puede indicar baja variacion real o pocos runs.</div>
+          <div>Datos: `diffusion_runs.csv` y `activity_daily.csv`.</div>
+        </div>
+      </section>
+
+      <section id="interference" class="section">
+        <div class="section-head">
+          <h2>Interferencia e Incidencia Humana</h2>
+          <p>Señales de prompt injection, disclaimers y referencias a tooling/humano.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="table-header">
+              Interferencia (Promedio)
+              <span class="info-tip" data-tip="Score compuesto: injection, disclaimers, code fences y URLs.">i</span>
+            </div>
+            <canvas id="interference-chart" height="200"></canvas>
+          </div>
+          <div class="card">
+            <div class="table-header">
+              Incidencia Humana (Promedio)
+              <span class="info-tip" data-tip="Referencias a humano, prompt y tooling.">i</span>
+            </div>
+            <canvas id="incidence-chart" height="200"></canvas>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="table-card">
+            <div class="table-header">Top Interferencia (Docs)</div>
+            <div class="table-scroll">
+              <table id="interference-table">
+                <thead>
+                  <tr>
+                    <th>Doc</th>
+                    <th>Tipo</th>
+                    <th>Submolt</th>
+                    <th>Score</th>
+                    <th>Hits</th>
+                    <th>Texto</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Top Incidencia Humana (Docs)</div>
+            <div class="table-scroll">
+              <table id="incidence-table">
+                <thead>
+                  <tr>
+                    <th>Doc</th>
+                    <th>Tipo</th>
+                    <th>Submolt</th>
+                    <th>Score</th>
+                    <th>Refs</th>
+                    <th>Texto</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: señales de intervención humana y patrones de prompt.</div>
+          <div>Como se calcula: regex + score compuesto por documento.</div>
+          <div>Como leerlo: valores altos indican posible interferencia o tooling explícito.</div>
+        </div>
+      </section>
+
+      <section id="memetics" class="section">
+        <div class="section-head">
+          <h2>Senales Memeticas</h2>
+          <p>Frecuencia, bursts y dispersion de ideas.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="table-header">
+              Top Candidatos N-gram
+              <span class="info-tip" data-tip="N-gramas mas frecuentes en todo el corpus.">i</span>
+            </div>
+            <canvas id="meme-candidates-chart" height="200"></canvas>
+          </div>
+          <div class="card">
+            <div class="table-header">
+              Vida vs Dispersion
+              <span class="info-tip" data-tip="Cada punto es un meme. Eje X = vida (hrs), eje Y = submolts tocados.">i</span>
+            </div>
+            <canvas id="meme-scatter-chart" height="200"></canvas>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="table-card">
+            <div class="table-header">Memes de Mayor Vida</div>
+            <div class="table-scroll">
+              <table id="meme-survival-table">
+                <thead>
+                  <tr>
+                    <th>Meme</th>
+                    <th>Vida (hrs)</th>
+                    <th>Burst Score</th>
+                    <th>Clase</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Ventanas de Burst</div>
+            <div class="table-scroll">
+              <table id="meme-burst-table">
+                <thead>
+                  <tr>
+                    <th>Meme</th>
+                    <th>Nivel</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Duracion (hrs)</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: frecuencia, vida util y dispersion de memes.</div>
+          <div>Como se calcula: n-gramas + bursts + entropia por submolt.</div>
+          <div>Como leerlo: vida larga + dispersion alta = meme con alcance transversal.</div>
+          <div>Vista: top 12 en grafico y top 20 en tablas.</div>
+        </div>
+      </section>
+
+      <section id="ontology" class="section">
+        <div class="section-head">
+          <h2>Ontologia del Lenguaje</h2>
+          <p>Actos de habla, moods, epistemica y co-ocurrencia de conceptos.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="table-header">
+              Actos de habla (Top)
+              <span class="info-tip" data-tip="Conteo agregado de patrones de habla.">i</span>
+            </div>
+            <canvas id="ontology-acts-chart" height="200"></canvas>
+          </div>
+          <div class="card">
+            <div class="table-header">
+              Moods (Top)
+              <span class="info-tip" data-tip="Estados de animo detectados por patrones.">i</span>
+            </div>
+            <canvas id="ontology-moods-chart" height="200"></canvas>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="card">
+            <div class="table-header">
+              Marcadores Epistemicos
+              <span class="info-tip" data-tip="Hedge, certeza y evidencia.">i</span>
+            </div>
+            <canvas id="ontology-epistemic-chart" height="200"></canvas>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Co-ocurrencia de Conceptos (Top pares)</div>
+            <div class="table-scroll">
+              <table id="ontology-cooccurrence-table">
+                <thead>
+                  <tr>
+                    <th>Concepto A</th>
+                    <th>Concepto B</th>
+                    <th>Conteo</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card wide" style="margin-top: 16px;">
+          <div class="table-header">
+            Mapa Ontologico por Submolt
+            <span class="info-tip" data-tip="PCA 2D sobre tasas de actos/moods/epistemica.">i</span>
+          </div>
+          <canvas id="ontology-map-chart" height="220"></canvas>
+        </div>
+        <div class="explain">
+          <div>Que es: proyeccion 2D (PCA) de perfiles ontologicos por submolt.</div>
+          <div>Cada punto: un submolt; tamano proporcional a doc_count.</div>
+          <div>Distancia: submolts cercanos tienen perfiles similares (actos/moods/epistemicos).</div>
+          <div>Ejes X/Y: no tienen significado semantico directo, solo combinaciones de variables.</div>
+          <div>Se muestran top 250 submolts por volumen para legibilidad.</div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Actos del Habla (Detalle)</div>
+          <div class="table-scroll">
+            <table id="ontology-acts-table">
+              <thead>
+                <tr>
+                  <th>Acto</th>
+                  <th>Conteo</th>
+                  <th>Rate/doc</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Top Conceptos</div>
+          <div class="table-scroll">
+            <table id="ontology-concepts-table">
+              <thead>
+                <tr>
+                  <th>Concepto</th>
+                  <th>Conteo</th>
+                  <th>Share</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: patrones de habla, estados de animo y evidencias.</div>
+          <div>Como se calcula: conteo de patrones lingüisticos por documento.</div>
+          <div>Co-ocurrencia: vocabulario de conceptos base (AI, agent, human, etc.).</div>
+          <div>Clusters: aproximados via co-ocurrencias (clustering formal pendiente).</div>
+          <div>Mapa: PCA 2D por submolt (se muestra top 250 por volumen).</div>
+          <div>Como leerlo: revela el tono y la epistemologia dominante.</div>
+        </div>
+      </section>
+
+      <section id="transmission" class="section">
+        <div class="section-head">
+          <h2>Transmision de Ideas: IA vs Humano</h2>
+          <p>Menciones directas de como se propagan ideas en redes IA y humanas.</p>
+        </div>
+        <div class="card wide">
+          <div class="table-header">
+            Embeddings semanticos (resumen cuantitativo)
+            <span class="info-tip" data-tip="Similitud semantica calculada con embeddings multilingues + FAISS same-lang.">i</span>
+          </div>
+          <div class="card-grid" style="margin-top: 12px;">
+            <div class="card">
+              <div class="card-label">Post-post: docs</div>
+              <div class="card-value" id="emb-docs">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post-post: matches</div>
+              <div class="card-value" id="emb-matches">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post-post: similaridad media</div>
+              <div class="card-value" id="emb-mean">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post-post: cross-submolt</div>
+              <div class="card-value" id="emb-cross">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post-post: idiomas</div>
+              <div class="card-value" id="emb-langs">–</div>
+            </div>
+          </div>
+          <div class="card-grid" style="margin-top: 12px;">
+            <div class="card">
+              <div class="card-label">Post→coment: posts</div>
+              <div class="card-value" id="embpc-posts">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post→coment: comentarios</div>
+              <div class="card-value" id="embpc-comments">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post→coment: matches</div>
+              <div class="card-value" id="embpc-matches">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post→coment: similaridad media</div>
+              <div class="card-value" id="embpc-mean">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post→coment: cross-submolt</div>
+              <div class="card-value" id="embpc-cross">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Post→coment: idiomas</div>
+              <div class="card-value" id="embpc-langs">–</div>
+            </div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            Muestras de Transmision
+            <span class="info-tip" data-tip="Co-ocurrencias IA/agente + humano + transmision.">i</span>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <label for="transmission-submolt">Submolt</label>
+              <select id="transmission-submolt"></select>
+            </div>
+            <div class="toolbar-group">
+              <input type="text" id="transmission-search" placeholder="Buscar texto" />
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table id="transmission-table">
+              <thead>
+                <tr>
+                  <th>Fuente</th>
+                  <th>Submolt</th>
+                  <th>Fecha</th>
+                  <th>Texto</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: como se habla sobre transmision entre IA y humanos.</div>
+          <div>Como se calcula: regex de co-ocurrencias en posts y comentarios.</div>
+          <div>Como leerlo: muestra narrativa, no estadistica representativa completa.</div>
+          <div>Metodo objetivo: VSM + embeddings (post-post y post→comentario completados).</div>
+          <div>Extra: embeddings post→comentario para medir eco narrativo (same-lang).</div>
+          <div>Nota: total_matches puede ser menor a posts*5 si un idioma no tiene suficientes comentarios para indexar.</div>
+        </div>
+      </section>
+
+      <section id="network" class="section">
+        <div class="section-head">
+          <h2>Centralidad de Red</h2>
+          <p>Top actores en grafos de reply y mention.</p>
+        </div>
+        <div class="grid-2">
+          <div class="table-card">
+            <div class="table-header">Grafo de Replies (Top PageRank)</div>
+            <div class="table-search">
+              <input type="text" id="reply-search" placeholder="Filtrar por node ID" />
+            </div>
+            <div class="table-scroll">
+              <table id="reply-table">
+                <thead>
+                  <tr>
+                    <th>Node</th>
+                    <th>PageRank</th>
+                    <th>Betweenness</th>
+                    <th>In</th>
+                    <th>Out</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Grafo de Mentions (Top PageRank)</div>
+            <div class="table-search">
+              <input type="text" id="mention-search" placeholder="Filtrar por node" />
+            </div>
+            <div class="table-scroll">
+              <table id="mention-table">
+                <thead>
+                  <tr>
+                    <th>Node</th>
+                    <th>PageRank</th>
+                    <th>Betweenness</th>
+                    <th>In</th>
+                    <th>Out</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="table-card">
+            <div class="table-header">Comunidades de Replies (Tamaño)</div>
+            <div class="table-scroll">
+              <table id="reply-community-table">
+                <thead>
+                  <tr>
+                    <th>Comunidad</th>
+                    <th>Nodos</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Comunidades de Mentions (Tamaño)</div>
+            <div class="table-scroll">
+              <table id="mention-community-table">
+                <thead>
+                  <tr>
+                    <th>Comunidad</th>
+                    <th>Nodos</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: actores centrales segun replies y menciones.</div>
+          <div>Como se calcula: grafos dirigidos y centralidades standard.</div>
+          <div>Como leerlo: PageRank alto indica hubs; betweenness alto indica brokers.</div>
+          <div>Vista: top 50 para mantener la tabla legible.</div>
+        </div>
+      </section>
+
+      <section id="authors" class="section">
+        <div class="section-head">
+          <h2>Autores activos</h2>
+          <p>Actividad y diversidad por autor (IDs completos).</p>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Top Autores por Actividad</div>
+          <div class="table-search">
+            <input type="text" id="author-search" placeholder="Filtrar por author ID" />
+          </div>
+          <div class="table-scroll">
+            <table id="author-table">
+              <thead>
+                <tr>
+                  <th>Author</th>
+                  <th>Posts</th>
+                  <th>Comentarios</th>
+                  <th>Submolts (posts)</th>
+                  <th>Submolts (comentarios)</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: volumen de produccion y diversidad de participacion.</div>
+          <div>Como se calcula: conteo por author_id en `author_stats.csv`.</div>
+          <div>Como leerlo: identifica productores intensivos y multi-comunidad.</div>
+          <div>Vista: top 50 con busqueda por ID.</div>
+        </div>
+      </section>
+
+      <section id="downloads" class="section">
+        <div class="section-head">
+          <h2>Descargas rapidas</h2>
+          <p>Acceso directo a los derivados usados en esta UI.</p>
+        </div>
+        <div class="download-grid">
+          <a class="download" href="../data/derived/submolt_stats.csv">submolt_stats.csv</a>
+          <a class="download" href="../data/derived/diffusion_runs.csv">diffusion_runs.csv</a>
+          <a class="download" href="../data/derived/meme_classification.csv">meme_classification.csv</a>
+          <a class="download" href="../data/derived/reply_graph_centrality.csv">reply_graph_centrality.csv</a>
+          <a class="download" href="../data/derived/author_stats.csv">author_stats.csv</a>
+          <a class="download" href="../data/derived/reply_graph_communities.csv">reply_graph_communities.csv</a>
+          <a class="download" href="../data/derived/mention_graph_communities.csv">mention_graph_communities.csv</a>
+          <a class="download" href="../data/derived/coverage_quality.json">coverage_quality.json</a>
+          <a class="download" href="../data/derived/ontology_summary.csv">ontology_summary.csv</a>
+          <a class="download" href="../data/derived/ontology_submolt_full.csv">ontology_submolt_full.csv</a>
+          <a class="download" href="../data/derived/ontology_submolt_embedding.csv">ontology_submolt_embedding.csv</a>
+          <a class="download" href="../data/derived/ontology_submolt_embedding_2d.csv">ontology_submolt_embedding_2d.csv</a>
+          <a class="download" href="../data/derived/interference_top.csv">interference_top.csv</a>
+          <a class="download" href="../data/derived/human_incidence_top.csv">human_incidence_top.csv</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>UI construida sobre derivados completos del dataset.</div>
+    </footer>
+
+    <script src="analysis.js"></script>
+  </body>
+</html>

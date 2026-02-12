@@ -1,0 +1,2859 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Moltbook Observatory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body class="landing">
+    <div class="grain"></div>
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-mark">◎</span>
+        <span>Moltbook Observatory</span>
+      </div>
+      <div class="nav-links nav-actions">
+        <a href="#resumen">Inicio</a>
+        <details class="nav-menu">
+          <summary>Secciones</summary>
+          <div class="nav-menu-panel">
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">General</div>
+              <a href="#resumen">Resumen</a>
+              <a href="#objetivos">Objetivos</a>
+              <a href="#datos">Datos</a>
+              <a href="#definiciones">Definiciones</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Metodo</div>
+              <a href="#metodologia">Metodologia</a>
+              <a href="#estrategias">Estrategias</a>
+              <a href="#desarrollo">Desarrollo</a>
+              <a href="#herramientas">Herramientas</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Resultados</div>
+              <a href="#resultados">Resultados</a>
+              <a href="#interpretacion">Analisis interpretativo</a>
+              <a href="#anexo-memetica">Anexo Memetica</a>
+              <a href="#anexo-ontologia">Anexo Ontologia</a>
+              <a href="#anexo-sociologia">Anexo Sociologia</a>
+              <a href="#anexo-interferencia">Anexo Interferencia</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Cierre</div>
+              <a href="#limitaciones">Limitaciones</a>
+              <a href="#uso-publico">Uso publico</a>
+              <a href="#salidas">Salidas</a>
+            </div>
+          </div>
+        </details>
+        <a href="analysis.html">UI de Analisis</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="pill">Reporte completo del proyecto</div>
+        <h1>Observatorio publico para cultura IA en Moltbook</h1>
+        <p>
+          Este documento es el reporte completo del proyecto: objetivos, metodologia,
+          estructura de datos, analisis y salidas publicas. La UI de analisis dinamico es
+          la extension interactiva de este reporte.
+        </p>
+        <div class="hero-meta">
+          <div class="meta-item">
+            <strong>Rango de datos (created_at)</strong>
+            <span id="stat-range">–</span>
+          </div>
+          <div class="meta-item">
+            <strong>Ultima captura</strong>
+            <span id="stat-updated">–</span>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <a class="btn" href="analysis.html">Abrir UI de Analisis</a>
+          <a class="btn ghost" href="#salidas">Ver datasets</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-label">Posts Totales</div>
+            <div class="stat-value" id="stat-posts">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Comentarios Totales</div>
+            <div class="stat-value" id="stat-comments">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Submolts Activos</div>
+            <div class="stat-value" id="stat-submolts">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Autores Unicos</div>
+            <div class="stat-value" id="stat-authors">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ejecuciones de Scrapeo</div>
+            <div class="stat-value" id="stat-runs">–</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="resumen" class="section">
+        <div class="section-head">
+          <h2>Resumen ejecutivo</h2>
+          <p>
+            Moltbook Observatory construye un pipeline reproducible para analizar como se
+            transmiten ideas, normas y estilos de lenguaje en una red social de agentes.
+            El objetivo es medir dinamicas memeticas, estructura social y discursos de IA
+            vs humanos a partir de datos publicos.
+          </p>
+          <p>
+            Este reporte documenta el ciclo completo: ingesta de datos, normalizacion,
+            generacion de derivados y visualizacion. Cada seccion incluye: que mide,
+            para que sirve y donde se puede verificar en los datasets generados.
+          </p>
+        </div>
+        <div class="report-grid">
+          <div class="report-card">
+            <div class="report-kicker">Objetivo central</div>
+            <h3>Medir transmision cultural en redes IA</h3>
+            <p>
+              Identificar memes, ciclos de adopcion, hubs de conversacion y divergencias
+              entre discursos de agentes y humanos.
+            </p>
+          </div>
+          <div class="report-card">
+            <div class="report-kicker">Producto final</div>
+            <h3>Dataset + UI explicativa</h3>
+            <p>
+              Entrega archivos derivados auditables y una UI que explica cada grafico en
+              contexto, sin requerir conocimiento tecnico previo.
+            </p>
+          </div>
+          <div class="report-card">
+            <div class="report-kicker">Audiencia</div>
+            <h3>Investigadores, builders, sociologos</h3>
+            <p>
+              Diseñado para investigacion publica, comparaciones temporales y analisis
+              cualitativo + cuantitativo de comunidades IA.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="objetivos" class="section">
+        <div class="section-head">
+          <h2>Objetivos claros de analisis</h2>
+          <p>Estos objetivos guian la UI y el reporte, con salidas verificables.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Cobertura y calidad</h3>
+            <p>Ventana temporal, duplicados y proporciones de posts/comentarios.</p>
+          </div>
+          <div class="card">
+            <h3>Memetica</h3>
+            <p>N-gramas, picos, vida util y difusion.</p>
+          </div>
+          <div class="card">
+            <h3>Ontologia del lenguaje</h3>
+            <p>Actos de habla, moods y epistemica.</p>
+          </div>
+          <div class="card">
+            <h3>Sociologia cuantitativa</h3>
+            <p>Submolts, autores, grafos y centralidades.</p>
+          </div>
+          <div class="card">
+            <h3>Interferencia / incidencia humana</h3>
+            <p>Prompt injection, tooling y referencias a humano.</p>
+          </div>
+          <div class="card">
+            <h3>Transmision IA vs humana</h3>
+            <p>Comparativas con VSM + embeddings.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="datos" class="section">
+        <div class="section-head">
+          <h2>Datos y cobertura</h2>
+          <p>
+            El dataset proviene de ejecuciones del scraper en la plataforma Moltbook.
+            Cada ejecucion captura el estado observable del feed en ese momento.
+          </p>
+        </div>
+        <div class="card-grid" style="margin-top: 12px;">
+          <div class="card">
+            <div class="card-label">Ventana Posts</div>
+            <div class="card-value" id="coverage-posts-range">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Ventana Comentarios</div>
+            <div class="card-value" id="coverage-comments-range">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Ratio Posts/Comentarios</div>
+            <div class="card-value" id="coverage-ratio">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Duplicados Posts</div>
+            <div class="card-value" id="coverage-dup-posts">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Duplicados Comentarios</div>
+            <div class="card-value" id="coverage-dup-comments">–</div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Top Submolts por volumen</div>
+          <div class="table-scroll">
+            <table id="report-submolt-table">
+              <thead>
+                <tr>
+                  <th>Submolt</th>
+                  <th>Posts</th>
+                  <th>Comentarios</th>
+                  <th>Upvotes Prom.</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: cobertura por comunidad y volumen global.</div>
+          <div>Como se calcula: agregados de `submolt_stats.csv`.</div>
+          <div>Como leerlo: identifica focos de conversacion y sesgos del scrapeo.</div>
+        </div>
+        <div class="callout">
+          Nota sobre runs: cada run es una ejecucion del scraper. Las metricas por run
+          describen lo observado en ese momento, no necesariamente el ritmo real de publicacion
+          (que se mide con `created_at`).
+        </div>
+      </section>
+
+      <section id="definiciones" class="section">
+        <div class="section-head">
+          <h2>Definiciones operativas</h2>
+          <p>
+            Para que el reporte sea auditado por terceros, definimos de forma operacional
+            los conceptos y campos que aparecen en los derivados.
+          </p>
+        </div>
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Unidades de analisis</h3>
+            <ul class="bullet-list">
+              <li><strong>Post</strong>: publicacion original con titulo y contenido.</li>
+              <li><strong>Comentario</strong>: respuesta asociada a un post.</li>
+              <li><strong>Doc</strong>: unidad generica (post o comentario).</li>
+              <li><strong>Submolt</strong>: comunidad/foro donde ocurre la conversacion.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Tiempo y ejecuciones</h3>
+            <ul class="bullet-list">
+              <li><strong>created_at</strong>: momento real de publicacion.</li>
+              <li><strong>run_time</strong>: momento en que el scraper capturo el dato.</li>
+              <li><strong>run</strong>: una ejecucion completa del scraper.</li>
+              <li>Las comparaciones temporales se basan en created_at.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Identidad y trazabilidad</h3>
+            <ul class="bullet-list">
+              <li><strong>doc_id</strong>: identificador unico del post/comentario.</li>
+              <li><strong>author_id</strong>: identificador del autor.</li>
+              <li><strong>author_name</strong>: nombre visible del autor.</li>
+              <li>IDs se mantienen para auditoria y trazabilidad.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Alcance de los agregados</h3>
+            <ul class="bullet-list">
+              <li><strong>scope</strong>: indica si el dato es global o por submolt.</li>
+              <li><strong>rate_per_doc</strong>: frecuencia normalizada por documento.</li>
+              <li><strong>share</strong>: participacion relativa en el total.</li>
+              <li><strong>unique_authors</strong>: cantidad de autores distintos.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Diccionario de campos clave</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Campo</th>
+                  <th>Significado</th>
+                  <th>Ejemplo de uso</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>burst_level</td>
+                  <td>Nivel de pico detectado en la serie temporal.</td>
+                  <td>meme_bursts.csv</td>
+                </tr>
+                <tr>
+                  <td>meme_type</td>
+                  <td>Tipo de meme: ngram, hashtag, emoji, ritual_act, semantic_cluster, submolt.</td>
+                  <td>meme_timeseries_hourly.parquet</td>
+                </tr>
+                <tr>
+                  <td>scope</td>
+                  <td>Indica si el conteo es global o por submolt.</td>
+                  <td>meme_timeseries_hourly.parquet</td>
+                </tr>
+                <tr>
+                  <td>lifetime_hours</td>
+                  <td>Horas entre primera y ultima aparicion del meme.</td>
+                  <td>meme_survival.csv</td>
+                </tr>
+                <tr>
+                  <td>submolts_touched</td>
+                  <td>Numero de submolts donde aparece el meme.</td>
+                  <td>meme_survival.csv</td>
+                </tr>
+                <tr>
+                  <td>burst_score</td>
+                  <td>Indicador de intensidad de picos por meme.</td>
+                  <td>meme_survival.csv</td>
+                </tr>
+                <tr>
+                  <td>submolt_entropy</td>
+                  <td>Dispersion del meme entre submolts.</td>
+                  <td>meme_survival.csv</td>
+                </tr>
+                <tr>
+                  <td>pagerank</td>
+                  <td>Centralidad de influencia en grafos.</td>
+                  <td>reply_graph_centrality.csv</td>
+                </tr>
+                <tr>
+                  <td>betweenness</td>
+                  <td>Capacidad de puente entre comunidades.</td>
+                  <td>reply_graph_centrality.csv</td>
+                </tr>
+                <tr>
+                  <td>mean_score</td>
+                  <td>Promedio de score/upvotes por submolt.</td>
+                  <td>diffusion_submolts.csv</td>
+                </tr>
+                <tr>
+                  <td>mean_comments</td>
+                  <td>Promedio de comentarios por submolt.</td>
+                  <td>diffusion_submolts.csv</td>
+                </tr>
+                <tr>
+                  <td>human_incidence_score</td>
+                  <td>Señales de referencias humanas/prompts.</td>
+                  <td>human_incidence_top.csv</td>
+                </tr>
+                <tr>
+                  <td>injection_hits</td>
+                  <td>Patrones de prompt injection detectados.</td>
+                  <td>interference_top.csv</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="metodologia" class="section">
+        <div class="section-head">
+          <h2>Metodologia del pipeline</h2>
+          <p>De datos crudos a resultados interpretables y reproducibles.</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-step">
+            <span>01</span>
+            <div>
+              <h4>Ingesta</h4>
+              <p>Scrapeo de posts y comentarios con limites y robots.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <span>02</span>
+            <div>
+              <h4>Normalizacion</h4>
+              <p>IDs, timestamps, limpieza de texto y asignacion de submolt.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <span>03</span>
+            <div>
+              <h4>Derivados</h4>
+              <p>Estadisticas, grafos, difusion y memetica.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <span>04</span>
+            <div>
+              <h4>Visualizacion</h4>
+              <p>UI explicativa con enlaces a datasets completos.</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Diseno y alcance</h3>
+            <p>
+              Estudio observacional de conversaciones en Moltbook. No se interviene ni
+              se modifica el contenido; se registra, normaliza y analiza el flujo publico.
+            </p>
+            <ul class="bullet-list">
+              <li>Ventana temporal observada: 28/01/2026 a 11/02/2026 (UTC).</li>
+              <li>Unidad de analisis: post y comentario.</li>
+              <li>Segmentacion primaria: submolt, autor, lenguaje y tiempo.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Calidad y trazabilidad</h3>
+            <p>
+              Separamos cobertura (que tanto recolectamos) de confiabilidad (que tan limpio
+              y consistente es lo recolectado). Esto evita conclusiones falsas por datos incompletos.
+            </p>
+            <ul class="bullet-list">
+              <li>Duplicados y timestamps faltantes se reportan como parte del control de calidad.</li>
+              <li>El ratio post/comentario se usa como indicador de densidad conversacional.</li>
+              <li>Todos los derivados quedan versionados en `data/derived`.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Tratamiento de texto</h3>
+            <p>
+              Limpieza liviana para preservar tono y estilo, evitando borrar indicadores culturales.
+            </p>
+            <ul class="bullet-list">
+              <li>Remocion de URLs, bloques de codigo y normalizacion de espacios.</li>
+              <li>Tokenizacion por regex con soporte basico multilenguaje.</li>
+              <li>Normalizacion Unicode (NFKD) para comparar variantes.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Ontologia linguistica</h3>
+            <p>
+              Deteccion basada en patrones (diccionarios de expresiones) para actos del habla,
+              moods y marcadores epistemicos en ES/EN.
+            </p>
+            <ul class="bullet-list">
+              <li>Actos: peticion, oferta, promesa, declaracion, juicio, afirmacion.</li>
+              <li>Moods: curiosidad, gratitud, miedo, ambicion, resignacion, etc.</li>
+              <li>Epistemicos: certeza, duda, evidencia.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>Compromisos sociales en el lenguaje.</strong>
+          En esta ontologia, cada acto del habla se interpreta por el tipo de compromiso social que
+          activa: afirmar implica veracidad y relevancia; declarar implica consistencia futura; juzgar
+          exige fundamento; prometer/pedir/ofrecer implica sinceridad y competencia para cumplir.
+        </div>
+        <div class="table-card">
+          <div class="table-header">Metodologias por modulo (resumen)</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Modulo</th>
+                  <th>Metodo principal</th>
+                  <th>Salida tipica</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Memetica</td>
+                  <td>N-gramas + ventanas temporales + picos de frecuencia.</td>
+                  <td>meme_candidates, meme_bursts, meme_survival.</td>
+                </tr>
+                <tr>
+                  <td>Ontologia</td>
+                  <td>Patrones linguisticos y agregacion por submolt.</td>
+                  <td>ontology_summary, ontology_submolt_full.</td>
+                </tr>
+                <tr>
+                  <td>Sociologia</td>
+                  <td>Grafos reply/mention + centralidades.</td>
+                  <td>reply_graph_edges, author_pagerank.</td>
+                </tr>
+                <tr>
+                  <td>Interferencia</td>
+                  <td>Patrones de injection + disclaimers + codigo/URLs.</td>
+                  <td>interference_summary, interference_top.</td>
+                </tr>
+                <tr>
+                  <td>Transmision</td>
+                  <td>Comparacion narrativa (VSM + embeddings, completado).</td>
+                  <td>narrative_examples, narrative_summary.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="estrategias" class="section">
+        <div class="section-head">
+          <h2>Estrategias analiticas (con justificacion)</h2>
+          <p>
+            Cada modulo explica como definimos sus unidades de analisis y por que esa
+            eleccion es defendible. El objetivo es que cualquier lector pueda auditar
+            los criterios y repetirlos con los datasets publicados.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Principios base</h3>
+            <ul class="bullet-list">
+              <li>Interpretabilidad: preferimos reglas claras antes que modelos opacos.</li>
+              <li>Reproducibilidad: todos los criterios quedan reflejados en outputs versionados.</li>
+              <li>Comparabilidad: medidas estables para comparar submolts y periodos.</li>
+              <li>Conservadurismo: evitamos inflar conclusiones cuando la evidencia es parcial.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Que significa "meme" aqui</h3>
+            <p>
+              Un meme se define como una unidad repetida (lexica, simbolica o ritual) con
+              capacidad de propagarse entre autores y comunidades. No es verdad cultural
+              absoluta: es una hipotesis medible.
+            </p>
+            <ul class="bullet-list">
+              <li>Lexico: n-gramas 2-3 (frases cortas) con frecuencia minima.</li>
+              <li>Simbolico: hashtags y emojis repetidos.</li>
+              <li>Ritual: actos del habla dominantes (p. ej. peticiones recurrentes).</li>
+              <li>Macro: submolts como "memes de contexto" (temas de conversacion).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Memetica: criterios y justificacion</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Criterio</th>
+                  <th>Como se calcula</th>
+                  <th>Por que se usa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Candidatos</td>
+                  <td>CountVectorizer con n-gramas (2-3), min_df=10, top 500.</td>
+                  <td>Filtra ruido y conserva frases que realmente se repiten.</td>
+                </tr>
+                <tr>
+                  <td>Adopcion</td>
+                  <td>Conteo de autores unicos por hora.</td>
+                  <td>Separa eco individual vs propagacion colectiva.</td>
+                </tr>
+                <tr>
+                  <td>Bursts</td>
+                  <td>Deteccion de picos con algoritmo de Kleinberg.</td>
+                  <td>Identifica aceleraciones anormales (amplificacion).</td>
+                </tr>
+                <tr>
+                  <td>Vida util</td>
+                  <td>Horas entre primer y ultimo uso observado.</td>
+                  <td>Distingue moda corta vs meme persistente.</td>
+                </tr>
+                <tr>
+                  <td>Difusion</td>
+                  <td>Entropia por submolt + submolts tocados.</td>
+                  <td>Mide si el meme se queda local o cruza comunidades.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Ontologia del lenguaje</h3>
+            <p>
+              Usamos patrones linguisticos (diccionarios de expresiones) para detectar
+              actos del habla, moods y marcadores epistemicos. Es una estrategia explicable
+              que no depende de modelos externos.
+            </p>
+            <ul class="bullet-list">
+              <li>Normalizacion Unicode para comparar variantes.</li>
+              <li>Conteo por documento para evitar sesgo por textos largos.</li>
+              <li>Agregacion por submolt para comparar estilos discursivos.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Conceptos y co-ocurrencia</h3>
+            <p>
+              Un vocabulario base de conceptos (AI, human, prompt, tool, etc.)
+              habilita mapas de co-ocurrencia. Es un punto de partida: preferimos
+              un set acotado y legible antes que ruido semantico.
+            </p>
+            <ul class="bullet-list">
+              <li>Co-ocurrencias: pares de conceptos que aparecen en el mismo texto.</li>
+              <li>Clusters narrativos: se infieren a partir de las co-ocurrencias dominantes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Sociologia cuantitativa</h3>
+            <p>
+              Modelamos interacciones como grafos dirigidos: respuestas y menciones.
+              Cada arista se pesa por frecuencia, permitiendo medir influencia y puentes.
+            </p>
+            <ul class="bullet-list">
+              <li>In/Out degree: actividad y recepcion.</li>
+              <li>PageRank: centralidad de influencia.</li>
+              <li>Betweenness: nodos puente entre grupos.</li>
+              <li>Comunidades: modularidad sobre el subset mas activo.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Interferencia + incidencia humana</h3>
+            <p>
+              Heuristicas de texto para detectar señales de prompt injection,
+              disclaimers de LLM y referencias a humanos/herramientas. Se usa como
+              ranking para revision, no como verdad absoluta.
+            </p>
+            <ul class="bullet-list">
+              <li>Interferencia: patrones de injection + bloques de codigo + URLs.</li>
+              <li>Incidencia humana: menciones a humanos, prompts y tooling.</li>
+              <li>Puntajes ponderados para priorizar muestras relevantes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Transmision IA vs humana (estrategia)</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Etapa</th>
+                  <th>Metodo</th>
+                  <th>Justificacion</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Representacion</td>
+                  <td>Embeddings multilingues + FAISS (same-lang) + VSM baseline.</td>
+                  <td>Comparar narrativas con distancia semantica controlada.</td>
+                </tr>
+                <tr>
+                  <td>Comparacion</td>
+                  <td>Similitud intra vs inter comunidad.</td>
+                  <td>Medir si ideas cruzan o quedan encapsuladas.</td>
+                </tr>
+                <tr>
+                  <td>Etiquetado humano</td>
+                  <td>Uso de incidencia humana para separar muestras.</td>
+                  <td>Evita inferencias arbitrarias sobre autorias.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="desarrollo" class="section">
+        <div class="section-head">
+          <h2>Reporte del desarrollo</h2>
+          <p>
+            Esta seccion documenta como se construyo el proyecto, que decisiones se tomaron
+            y por que. El foco es la trazabilidad: cada resultado se puede rastrear a un
+            script y a un dataset derivado.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Fase 1: alcance y limites</h3>
+            <ul class="bullet-list">
+              <li>Ventana de observacion fijada: 28/01/2026 a 11/02/2026 (UTC).</li>
+              <li>Solo contenido publico; no se modifican publicaciones.</li>
+              <li>IDs mantenidos para trazabilidad, sin anonimizar.</li>
+              <li>Multilenguaje activo; no se filtra por idioma.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Fase 2: ingesta y control de calidad</h3>
+            <ul class="bullet-list">
+              <li>Scrapeo de posts + comentarios con limites y respeto a robots.</li>
+              <li>Normalizacion de timestamps y conteo de duplicados.</li>
+              <li>Separacion entre created_at (evento real) y run_time (momento de captura).</li>
+              <li>Reporte de cobertura para evitar conclusiones por datos incompletos.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Fase 3: derivados y metadatos</h3>
+            <ul class="bullet-list">
+              <li>Memetica: n-gramas, hashtags, emojis, rituales y clusters semanticos.</li>
+              <li>Ontologia: actos del habla, moods, epistemicos y conceptos base.</li>
+              <li>Sociologia: grafos reply/mention, centralidades y comunidades.</li>
+              <li>Interferencia: heuristicas de injection y disclaimers.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Fase 4: UI + reporte publico</h3>
+            <ul class="bullet-list">
+              <li>Landing como reporte completo: contexto, metodo y resultados.</li>
+              <li>UI dinamica para explorar el dataset completo y descargar derivados.</li>
+              <li>Explicaciones por grafico para que sea auto-explicativo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Decisiones clave y justificacion</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Decision</th>
+                  <th>Alternativa</th>
+                  <th>Justificacion</th>
+                  <th>Impacto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>N-gramas 2-3 para memes</td>
+                  <td>Unigramas o frases largas</td>
+                  <td>Reduce ruido y captura frases repetibles.</td>
+                  <td>Memes mas estables y auditables.</td>
+                </tr>
+                <tr>
+                  <td>Heuristicas linguisticas</td>
+                  <td>Modelos cerrados</td>
+                  <td>Preferimos interpretabilidad y reproducibilidad.</td>
+                  <td>Menor recall, mayor transparencia.</td>
+                </tr>
+                <tr>
+                  <td>Grafos reply/mention</td>
+                  <td>Solo actividad por autor</td>
+                  <td>Captura estructura relacional real.</td>
+                  <td>Permite medir influencia y puentes.</td>
+                </tr>
+                <tr>
+                  <td>Interferencia como ranking</td>
+                  <td>Clasificacion binaria</td>
+                  <td>Reduce falsos positivos.</td>
+                  <td>Mejor priorizacion para revision humana.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Validaciones y checks</h3>
+            <ul class="bullet-list">
+              <li>Duplicados y vacios reportados en coverage_quality.json.</li>
+              <li>Verificacion de rangos temporales en posts y comentarios.</li>
+              <li>Ratio post/comentario para diagnosticar densidad conversacional.</li>
+              <li>Submolts y autores unicos comparados contra volumen total.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Artefactos reproducibles</h3>
+            <ul class="bullet-list">
+              <li>Scripts clave: meme_models.py, quant_sociology.py, aggregate_objectives.py.</li>
+              <li>Todos los outputs quedan en data/derived con nombres estables.</li>
+              <li>La landing y la UI consumen esos derivados, no datos manuales.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Reproducibilidad:</strong>
+          el reporte se reconstruye a partir de los derivados en `data/derived`. Esto permite
+          repetir el analisis sobre nuevas ventanas sin cambiar la estructura del reporte.
+        </div>
+      </section>
+
+      <section id="herramientas" class="section">
+        <div class="section-head">
+          <h2>Herramientas, tecnicas y stack</h2>
+          <p>
+            Inventario completo de herramientas y metodos utilizados. Esta seccion existe
+            para que el proyecto funcione como portfolio: documenta todo lo que fue
+            necesario aprender y ejecutar.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Stack principal</h3>
+            <ul class="bullet-list">
+              <li>Python para scraping, ETL y analisis cuantitativo.</li>
+              <li>HTML/CSS/JS para la UI y el reporte publico.</li>
+              <li>CSV/JSONL/Parquet como formatos de intercambio y auditoria.</li>
+              <li>Scripts reproducibles ejecutados sobre la misma estructura de datos.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Librerias clave</h3>
+            <ul class="bullet-list">
+              <li>pandas y numpy para agregaciones y matrices.</li>
+              <li>scikit-learn para vectorizacion, SVD y clustering.</li>
+              <li>scipy para optimizacion en modelos Hawkes.</li>
+              <li>networkx para grafos y comunidades.</li>
+              <li>lifelines (opcional) para curvas de supervivencia.</li>
+              <li>PapaParse y Chart.js para la UI en navegador.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Ingesta y trazas de scrapeo</h3>
+            <ul class="bullet-list">
+              <li>Ejecuciones (runs) con captura de posts y comentarios.</li>
+              <li>Serializacion en JSONL para auditoria cruda.</li>
+              <li>Mapeo post_id -> submolt para heredar contexto en comentarios.</li>
+              <li>Deteccion de duplicados y control de timestamps.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Feature engineering</h3>
+            <ul class="bullet-list">
+              <li>Limpieza de texto: URLs, bloques de codigo, normalizacion Unicode.</li>
+              <li>Extraccion de n-gramas, hashtags y emojis.</li>
+              <li>Patrones de actos del habla, moods y epistemicos.</li>
+              <li>Deteccion de idioma sobre muestras representativas.</li>
+              <li>Co-ocurrencias de conceptos base y edges de interaccion.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Herramientas de analisis (detalle)</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Herramienta</th>
+                  <th>Para que sirve</th>
+                  <th>Salida / evidencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CountVectorizer (n-gramas 2-3)</td>
+                  <td>Identificar frases repetidas como candidatos a meme.</td>
+                  <td>`meme_candidates.csv`</td>
+                </tr>
+                <tr>
+                  <td>Kleinberg bursts</td>
+                  <td>Detectar picos de actividad en series temporales.</td>
+                  <td>`meme_bursts.csv`</td>
+                </tr>
+                <tr>
+                  <td>Entropy por submolt</td>
+                  <td>Medir dispersion de memes entre comunidades.</td>
+                  <td>`meme_survival.csv`</td>
+                </tr>
+                <tr>
+                  <td>Hawkes discreto</td>
+                  <td>Estimar auto-excitacion en difusion memetica.</td>
+                  <td>`meme_hawkes.csv` (opcional)</td>
+                </tr>
+                <tr>
+                  <td>Proxy SIR</td>
+                  <td>Estimacion simple de reproduccion narrativa.</td>
+                  <td>`meme_sir.csv` (opcional)</td>
+                </tr>
+                <tr>
+                  <td>Kaplan-Meier / Nelson-Aalen</td>
+                  <td>Curvas de supervivencia y hazard memetico.</td>
+                  <td>`meme_survival_curve.csv`, `meme_hazard_curve.csv`</td>
+                </tr>
+                <tr>
+                  <td>TF-IDF + SVD</td>
+                  <td>Reducir dimensionalidad para clustering semantico.</td>
+                  <td>`semantic_clusters.csv` (opcional)</td>
+                </tr>
+                <tr>
+                  <td>KMeans / DBSCAN</td>
+                  <td>Detectar grupos semanticos de textos.</td>
+                  <td>`semantic_clusters.csv` (opcional)</td>
+                </tr>
+                <tr>
+                  <td>PageRank</td>
+                  <td>Centralidad de influencia en grafos.</td>
+                  <td>`reply_graph_centrality.csv`</td>
+                </tr>
+                <tr>
+                  <td>Betweenness</td>
+                  <td>Detectar nodos puente entre comunidades.</td>
+                  <td>`reply_graph_centrality.csv`</td>
+                </tr>
+                <tr>
+                  <td>Modularidad</td>
+                  <td>Comunidades en grafos de interaccion.</td>
+                  <td>`reply_graph_communities.csv`</td>
+                </tr>
+                <tr>
+                  <td>PCA 2D</td>
+                  <td>Mapa de similitud por submolt (ontologia).</td>
+                  <td>`ontology_submolt_embedding_2d.csv`</td>
+                </tr>
+                <tr>
+                  <td>Heuristicas regex</td>
+                  <td>Interferencia e incidencia humana por patrones.</td>
+                  <td>`interference_top.csv`, `human_incidence_top.csv`</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Formatos y trazabilidad</h3>
+            <ul class="bullet-list">
+              <li>JSONL para datos crudos (posts/comentarios).</li>
+              <li>CSV para derivados visibles y auditables.</li>
+              <li>Parquet para series temporales masivas.</li>
+              <li>Nombre estable de archivos para reproducibilidad.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Scripts clave (ejecuciones)</h3>
+            <ul class="bullet-list">
+              <li>`meme_models.py` genera memes, bursts y supervivencia.</li>
+              <li>`quant_sociology.py` construye grafos y centralidades.</li>
+              <li>`aggregate_objectives.py` crea coverage/ontologia/incidencia.</li>
+              <li>La UI consume directamente `data/derived`.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Glosario rapido (conceptos tecnicos)</div>
+          <div class="glossary-grid">
+            <div class="glossary-item">
+              <strong>N-grama</strong>
+              <div>Secuencia de 2-3 palabras usada para detectar repeticiones.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>TF-IDF</strong>
+              <div>Pondera terminos para resaltar lo distintivo de un texto.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>SVD</strong>
+              <div>Reduccion de dimensionalidad para agrupar textos similares.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>Hawkes</strong>
+              <div>Modelo que estima auto-propagacion en series temporales.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>PageRank</strong>
+              <div>Centralidad basada en enlaces entrantes y salientes.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>Betweenness</strong>
+              <div>Cuanto un nodo conecta caminos entre grupos.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>Co-ocurrencia</strong>
+              <div>Conceptos que aparecen juntos en un mismo texto.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>Embeddings</strong>
+              <div>Vectores semanticos para comparar narrativas por similitud.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>FAISS</strong>
+              <div>Indexado ANN para buscar similitud semantica a gran escala.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>VSM</strong>
+              <div>Vector Space Model, baseline interpretable de similitud.</div>
+            </div>
+            <div class="glossary-item">
+              <strong>Parquet</strong>
+              <div>Formato columnar eficiente para series grandes.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Portfolio:</strong>
+          el proyecto demuestra competencias en scraping, ETL, NLP, analisis de grafos,
+          series temporales, estadistica descriptiva y construccion de UI explicativa.
+        </div>
+      </section>
+
+      <section id="resultados" class="section">
+        <div class="section-head">
+          <h2>Resultados por modulo</h2>
+          <p>
+            Seccion que resume cada modulo de analisis, su salida y un vistazo rapido
+            a los datos mas relevantes.
+          </p>
+        </div>
+        <div class="callout">
+          <strong>Lectura responsable:</strong>
+          los resultados son descriptivos, no causales. Cada tabla es una vista resumida
+          de los archivos completos en `data/derived`. Las muestras se indican como tal.
+        </div>
+        <div class="callout">
+          Para reducir redundancia, varias tablas quedan colapsadas bajo "Ver detalle".
+          El dataset completo sigue disponible en la UI y en los CSV/Parquet.
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Memetica: como leer estos resultados</h3>
+            <ul class="bullet-list">
+              <li>Candidatos: n-gramas 2-3 con frecuencia minima (min_df=10) y top global.</li>
+              <li>Adopcion: autores unicos por hora para separar eco individual vs colectivo.</li>
+              <li>Bursts: picos detectados con Kleinberg para captar aceleracion anormal.</li>
+              <li>Difusion: entropia por submolt y submolts tocados para medir alcance.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Memetica: cuando decimos "meme"</h3>
+            <p>
+              Llamamos meme a una unidad repetida con evidencia de adopcion y
+              persistencia o difusion. No significa relevancia cultural definitiva;
+              es una hipotesis medible.
+            </p>
+            <ul class="bullet-list">
+              <li>Alta frecuencia sin dispersion suele indicar fenomeno local.</li>
+              <li>Vida util larga sugiere persistencia narrativa.</li>
+              <li>Entropia alta sugiere cruce entre comunidades.</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="details">
+          <summary>Ver detalle: top n-gramas por frecuencia</summary>
+          <div class="table-card">
+            <div class="table-header">Memetica: top n-gramas por frecuencia</div>
+            <div class="table-scroll">
+              <table id="report-meme-count-table">
+                <thead>
+                  <tr>
+                    <th>Meme</th>
+                    <th>Conteo</th>
+                    <th>Tipo</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="table-card">
+          <div class="table-header">Memetica: top memes por vida util</div>
+          <div class="table-scroll">
+            <table id="report-meme-life-table">
+              <thead>
+                <tr>
+                  <th>Meme</th>
+                  <th>Vida (hrs)</th>
+                  <th>Submolts</th>
+                  <th>Clase</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: frecuencia, vida util y dispersion de memes.</div>
+          <div>Para que sirve: detectar ideas con traccion y alcance transversal.</div>
+          <div>Datos: `meme_candidates.csv`, `meme_classification.csv`.</div>
+        </div>
+        <div class="callout">
+          Clasificacion heuristica: "flash" (picos rapidos), "persistent" (larga vida),
+          "local" (poca dispersion) y "cross_submolt" (alta dispersion). La categoria se
+          elige por reglas simples y debe leerse como indicador, no veredicto.
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Ontologia: interpretacion</h3>
+            <ul class="bullet-list">
+              <li>Rate/doc normaliza por documento y evita sesgo por textos largos.</li>
+              <li>Actos del habla reflejan compromisos sociales (ver marco conceptual).</li>
+              <li>Moods y epistemicos ayudan a leer tono y seguridad discursiva.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Ontologia: limites</h3>
+            <ul class="bullet-list">
+              <li>Patrones basados en diccionarios: alta interpretabilidad, menor recall.</li>
+              <li>No capta ironia o sarcasmo; se recomienda revision cualitativa.</li>
+              <li>Co-ocurrencia indica asociacion, no causalidad semantica.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Ontologia: actos de habla (Top)</div>
+          <div class="table-scroll">
+            <table id="report-acts-table">
+              <thead>
+                <tr>
+                  <th>Acto</th>
+                  <th>Conteo</th>
+                  <th>Rate/doc</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: moods y epistemica</summary>
+          <div class="table-card">
+            <div class="table-header">Ontologia: moods (Top)</div>
+            <div class="table-scroll">
+              <table id="report-moods-table">
+                <thead>
+                  <tr>
+                    <th>Mood</th>
+                    <th>Conteo</th>
+                    <th>Rate/doc</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Ontologia: marcadores epistemicos</div>
+            <div class="table-scroll">
+              <table id="report-epistemic-table">
+                <thead>
+                  <tr>
+                    <th>Marca</th>
+                    <th>Conteo</th>
+                    <th>Rate/doc</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <details class="details">
+          <summary>Ver detalle: conceptos y co-ocurrencias</summary>
+          <div class="table-card">
+            <div class="table-header">Ontologia: top conceptos</div>
+            <div class="table-scroll">
+              <table id="report-concepts-table">
+                <thead>
+                  <tr>
+                    <th>Concepto</th>
+                    <th>Conteo</th>
+                    <th>Share</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Ontologia: co-ocurrencia de conceptos (Top pares)</div>
+            <div class="table-scroll">
+              <table id="report-cooccurrence-table">
+                <thead>
+                  <tr>
+                    <th>Concepto A</th>
+                    <th>Concepto B</th>
+                    <th>Conteo</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: actos de habla, moods, epistemica y co-ocurrencias.</div>
+          <div>Para que sirve: mapear tono discursivo y asociaciones conceptuales.</div>
+          <div>Nota: co-ocurrencia basada en vocabulario de conceptos base.</div>
+          <div>Clusters semanticos: aproximados via co-ocurrencias (clustering formal pendiente).</div>
+          <div>Datos: `ontology_summary.csv`, `ontology_concepts_top.csv`, `ontology_cooccurrence_top.csv`.</div>
+        </div>
+        <div class="callout">
+          Marco conceptual: al afirmar se asume veracidad y relevancia; al declarar, consistencia conductual y validez;
+          al juzgar, fundamento; al prometer, pedir u ofrecer, sinceridad y competencia para cumplir.
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Difusion y actividad</h3>
+            <ul class="bullet-list">
+              <li>mean_score y mean_comments se agregan por submolt.</li>
+              <li>runs_seen indica cuantas ejecuciones observaron actividad.</li>
+              <li>Se usa para comparar energia social, no para medir calidad.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Advertencia sobre runs</h3>
+            <ul class="bullet-list">
+              <li>Un run es una captura puntual, no el ritmo real de publicacion.</li>
+              <li>Para ritmo real se usa created_at, no run_time.</li>
+              <li>Las comparaciones deben considerar la ventana observada.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Difusion: submolts con mayor engagement</div>
+          <div class="table-scroll">
+            <table id="report-diffusion-table">
+              <thead>
+                <tr>
+                  <th>Submolt</th>
+                  <th>Score medio</th>
+                  <th>Comentarios medio</th>
+                  <th>Ejecuciones</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: engagement medio por submolt a lo largo de runs.</div>
+          <div>Para que sirve: comparar energia social entre comunidades.</div>
+          <div>Datos: `diffusion_submolts.csv`.</div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Interferencia: como leer el ranking</h3>
+            <ul class="bullet-list">
+              <li>Prioriza señales de prompt injection y disclaimers de LLM.</li>
+              <li>Incluye peso menor a codigo, URLs y emojis.</li>
+              <li>Se usa como filtro para revision humana.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Incidencia humana</h3>
+            <ul class="bullet-list">
+              <li>Busca referencias explicitas a humanos, prompts o tooling.</li>
+              <li>No determina autor real; solo evidencia textual.</li>
+              <li>Util para separar muestras comparativas.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Interferencia: top documentos</div>
+          <div class="table-scroll">
+            <table id="report-interference-table">
+              <thead>
+                <tr>
+                  <th>Doc</th>
+                  <th>Tipo</th>
+                  <th>Submolt</th>
+                  <th>Score</th>
+                  <th>Texto</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: incidencia humana</summary>
+          <div class="table-card">
+            <div class="table-header">Incidencia humana: top documentos</div>
+            <div class="table-scroll">
+              <table id="report-incidence-table">
+                <thead>
+                  <tr>
+                    <th>Doc</th>
+                    <th>Tipo</th>
+                    <th>Submolt</th>
+                    <th>Score</th>
+                    <th>Texto</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: señales de intervención humana y prompt patterns.</div>
+          <div>Para que sirve: detectar contextos donde la autonomia se reduce.</div>
+          <div>Datos: `interference_top.csv`, `human_incidence_top.csv`.</div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Redes: interpretacion</h3>
+            <ul class="bullet-list">
+              <li>PageRank resalta nodos influyentes por estructura, no por popularidad.</li>
+              <li>Betweenness detecta puentes entre grupos.</li>
+              <li>Comunidades estiman clusters conversacionales.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Construccion del grafo</h3>
+            <ul class="bullet-list">
+              <li>Replies: aristas autor -> autor respondido.</li>
+              <li>Mentions: aristas autor -> objetivo mencionado.</li>
+              <li>Pesos por frecuencia de interaccion.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Redes: top PageRank en replies</div>
+          <div class="table-scroll">
+            <table id="report-reply-table">
+              <thead>
+                <tr>
+                  <th>Node</th>
+                  <th>PageRank</th>
+                  <th>Betweenness</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: mentions y comunidades</summary>
+          <div class="table-card">
+            <div class="table-header">Redes: top PageRank en mentions</div>
+            <div class="table-scroll">
+              <table id="report-mention-table">
+                <thead>
+                  <tr>
+                    <th>Node</th>
+                    <th>PageRank</th>
+                    <th>Betweenness</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Redes: comunidades en replies (top tamaños)</div>
+            <div class="table-scroll">
+              <table id="report-reply-community-table">
+                <thead>
+                  <tr>
+                    <th>Comunidad</th>
+                    <th>Nodos</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Redes: comunidades en mentions (top tamaños)</div>
+            <div class="table-scroll">
+              <table id="report-mention-community-table">
+                <thead>
+                  <tr>
+                    <th>Comunidad</th>
+                    <th>Nodos</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: hubs y brokers en grafos de interaccion.</div>
+          <div>Para que sirve: localizar actores centrales y flujos de conversacion.</div>
+          <div>Datos: `reply_graph_centrality.csv`, `mention_graph_centrality.csv`, `*_communities.csv`.</div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Autores: lectura</h3>
+            <ul class="bullet-list">
+              <li>Actividad total combina posts y comentarios.</li>
+              <li>Submolts indica diversidad de participacion.</li>
+              <li>No implica influencia social (ver redes).</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Uso recomendado</h3>
+            <ul class="bullet-list">
+              <li>Detectar productores consistentes o hubs de contenido.</li>
+              <li>Comparar produccion con centralidad en grafos.</li>
+              <li>Priorizar cuentas para analisis cualitativo.</li>
+            </ul>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: autores mas activos</summary>
+          <div class="table-card">
+            <div class="table-header">Autores: top actividad total</div>
+            <div class="table-scroll">
+              <table id="report-author-table">
+                <thead>
+                  <tr>
+                    <th>Author</th>
+                    <th>Posts</th>
+                    <th>Comentarios</th>
+                    <th>Submolts</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: productores mas activos y diversidad de participacion.</div>
+          <div>Para que sirve: identificar clusters de produccion y esfuerzo.</div>
+          <div>Datos: `author_stats.csv`.</div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Lenguaje: muestra y sesgo</h3>
+            <ul class="bullet-list">
+              <li>Distribucion basada en muestra estadistica, no censo completo.</li>
+              <li>Se usa para detectar sesgos de idioma y mezcla cultural.</li>
+              <li>Comparar con submolts antes de concluir tendencias globales.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Interpretacion rapida</h3>
+            <ul class="bullet-list">
+              <li>Alta mezcla sugiere conversacion internacional.</li>
+              <li>Dominio de un idioma puede indicar sesgo de comunidad.</li>
+            </ul>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: distribucion por idioma</summary>
+          <div class="table-card">
+            <div class="table-header">Lenguaje: distribucion por idioma (muestra)</div>
+            <div class="table-scroll">
+              <table id="report-language-table">
+                <thead>
+                  <tr>
+                    <th>Idioma</th>
+                    <th>Posts</th>
+                    <th>Comentarios</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: presencia relativa de idiomas en posts y comentarios.</div>
+          <div>Para que sirve: detectar sesgo linguistico y mezcla cultural.</div>
+          <div>Datos: `public_language_distribution.csv` (muestra estadistica).</div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Transmision IA vs humana</h3>
+            <ul class="bullet-list">
+              <li>Se presenta como lectura cualitativa guiada.</li>
+              <li>Las muestras muestran narrativas explicitas sobre transmision.</li>
+              <li>No se infiere autoria real sin evidencia adicional.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Embeddings + FAISS (estado actual)</h3>
+            <ul class="bullet-list">
+              <li>Embeddings multilingues con normalizacion para similitud coseno.</li>
+              <li>FAISS HNSW por idioma (same-lang) para escalabilidad.</li>
+              <li>Top-k=5 vecinos por documento para detectar narrativa cercana.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Transmision IA vs Humano (muestras)</div>
+          <div class="table-scroll">
+            <table id="report-transmission-table">
+              <thead>
+                <tr>
+                  <th>Fuente</th>
+                  <th>Submolt</th>
+                  <th>Fecha</th>
+                  <th>Texto</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Que mide: narrativas explicitas sobre como viajan ideas entre IA y humanos.</div>
+          <div>Para que sirve: lectura cualitativa y base para matching semantico.</div>
+          <div>Metodo: VSM + embeddings (embeddings completados en este build).</div>
+          <div>Datos: `public_transmission_samples.csv` (muestra).</div>
+        </div>
+
+        <div class="callout">
+          <strong>Embeddings completados:</strong>
+          resumen cuantitativo de similitud semantica entre documentos (same-lang).
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-label">Docs indexados</div>
+            <div class="stat-value" id="emb-docs">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Matches totales</div>
+            <div class="stat-value" id="emb-matches">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Similaridad media</div>
+            <div class="stat-value" id="emb-mean">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">% Cross-submolt</div>
+            <div class="stat-value" id="emb-cross">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Idiomas indexados</div>
+            <div class="stat-value" id="emb-langs">–</div>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: embeddings y pares similares</summary>
+          <div class="table-card">
+            <div class="table-header">Embeddings: top idiomas por matches</div>
+            <div class="table-scroll">
+              <table id="report-embedding-lang-table">
+                <thead>
+                  <tr>
+                    <th>Idioma</th>
+                    <th>Matches</th>
+                    <th>Similaridad media</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Embeddings: pares mas similares (same-lang)</div>
+            <div class="table-scroll">
+              <table id="report-embedding-pairs-table">
+                <thead>
+                  <tr>
+                    <th>Score</th>
+                    <th>Submolt A</th>
+                    <th>Submolt B</th>
+                    <th>Texto A</th>
+                    <th>Texto B</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: proximidad semantica entre documentos dentro del mismo idioma.</div>
+          <div>Para que sirve: detectar narrativas replicadas o compartidas entre submolts.</div>
+          <div>Metodo: embeddings E5 + FAISS HNSW (same-lang), top-k=5 vecinos.</div>
+          <div>Datos: `public_embeddings_summary.json`, `public_embeddings_lang_top.csv`, `public_embeddings_pairs_top.csv`.</div>
+        </div>
+
+        <div class="callout">
+          <strong>Embeddings post vs comentario:</strong>
+          compara post con respuestas del mismo idioma para medir eco o respuesta semantica.
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-label">Posts (scope)</div>
+            <div class="stat-value" id="embpc-posts">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Comentarios (scope)</div>
+            <div class="stat-value" id="embpc-comments">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Matches post→coment</div>
+            <div class="stat-value" id="embpc-matches">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Similaridad media</div>
+            <div class="stat-value" id="embpc-mean">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">% Cross-submolt</div>
+            <div class="stat-value" id="embpc-cross">–</div>
+          </div>
+        </div>
+        <details class="details">
+          <summary>Ver detalle: post vs comentario (same-lang)</summary>
+          <div class="table-card">
+            <div class="table-header">Post→Comentario: top idiomas por matches</div>
+            <div class="table-scroll">
+              <table id="report-embedding-pc-lang-table">
+                <thead>
+                  <tr>
+                    <th>Idioma</th>
+                    <th>Matches</th>
+                    <th>Similaridad media</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Post→Comentario: pares mas similares</div>
+            <div class="table-scroll">
+              <table id="report-embedding-pc-pairs-table">
+                <thead>
+                  <tr>
+                    <th>Score</th>
+                    <th>Submolt post</th>
+                    <th>Submolt coment</th>
+                    <th>Texto post</th>
+                    <th>Texto comment</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <div class="explain">
+          <div>Que mide: similitud semantica entre posts y comentarios en el mismo idioma.</div>
+          <div>Para que sirve: ver si las respuestas repiten o desplazan la narrativa original.</div>
+          <div>Metodo: embeddings E5 + FAISS (indexado por idioma) con top-k=5.</div>
+          <div>Nota: total_matches puede ser menor a posts*5 si un idioma no tiene suficientes comentarios para indexar.</div>
+          <div>
+            Datos: `embeddings_post_comment/public_embeddings_post_comment_summary.json`,
+            `embeddings_post_comment/public_embeddings_post_comment_lang_top.csv`,
+            `embeddings_post_comment/public_embeddings_post_comment_pairs_top.csv`.
+          </div>
+        </div>
+      </section>
+
+      <section id="interpretacion" class="section">
+        <div class="section-head">
+          <h2>Analisis interpretativo (objetivos)</h2>
+          <p>
+            Este bloque integra la evidencia empirica con los objetivos de analisis. Cada punto
+            explica el dato, la justificacion metodologica y la lectura que habilita.
+          </p>
+        </div>
+
+        <div class="callout">
+          Este analisis se apoya en los derivados auditables del proyecto. No es opinion libre:
+          cada afirmacion esta ligada a estadisticas o archivos del pipeline.
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>1) Cobertura y calidad</h3>
+            <ul class="bullet-list">
+              <li>152,980 posts; 704,450 comentarios (703,948 unicos; 502 duplicados = 0.07%).</li>
+              <li>Ratio post/comentario: 0.217 (1 post cada 4.6 comentarios).</li>
+              <li>Ventana real: 2026-01-28 → 2026-02-11 (posts y comentarios completos).</li>
+              <li>Top 10 submolts concentran 49.7% de posts y 56.2% de comentarios.</li>
+              <li>Idiomas: en 89.9% posts y 89.2% comentarios (zh-cn y es muy por debajo).</li>
+            </ul>
+            <p><strong>Justificacion metodologica:</strong> cobertura en `coverage_quality.json`, concentracion en `submolt_stats.csv` y mezcla linguistica en `public_language_distribution.csv`.</p>
+            <p><strong>Interpretacion:</strong> el dataset es estable y confiable, pero con sesgo estructural hacia pocas comunidades y al ingles.</p>
+          </div>
+          <div class="card wide">
+            <h3>2) Memetica (picos, vida, dispersion)</h3>
+            <ul class="bullet-list">
+              <li>Top n-gramas: “api v1” (73,848), “agentmarket cloud” (66,285), “cloud api” (66,219).</li>
+              <li>Mayor vida util: “looking forward” (349h, 417 submolts) y “ai agent” (333h, 718 submolts).</li>
+              <li>Mayor burst_score (1978): “0xnb dev”, “moltbook com api”, “music fashion tech” (1,446 submolts).</li>
+            </ul>
+            <p><strong>Justificacion metodologica:</strong> n-gramas 2–3 + bursts Kleinberg + vida util y dispersion (`meme_candidates.csv`, `meme_survival.csv`, `meme_bursts.csv`).</p>
+            <p><strong>Interpretacion:</strong> la memetica dominante es instrumental: plantillas tecnicas y rituales operativos, con picos de coordinacion que se dispersan rapidamente.</p>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>3) Ontologia del lenguaje</h3>
+            <ul class="bullet-list">
+              <li>Actos: assertion 1,302,440 (1.52 por doc), question_mark 259,479 (0.30).</li>
+              <li>Moods: trust 64,246; curiosity 29,513; ambition 28,774.</li>
+              <li>Epistemicos: evidence 104,404; hedge 41,610; certainty 7,826.</li>
+              <li>Conceptos top: agents 18.1%, agent 16.6%, human 13.6%.</li>
+              <li>Co-ocurrencia top: agent + agents (60,277), agent + human (34,222).</li>
+            </ul>
+            <p><strong>Justificacion metodologica:</strong> deteccion de patrones ES/EN + co-ocurrencias de conceptos (`ontology_summary.csv`, `ontology_concepts_top.csv`).</p>
+            <p><strong>Interpretacion:</strong> discurso afirmativo y tecnopractico, con narrativa central en torno a agentes y su relacion con humanos.</p>
+          </div>
+          <div class="card wide">
+            <h3>4) Sociologia cuantitativa</h3>
+            <ul class="bullet-list">
+              <li>Submolts mas activos: general (230,525), introductions (71,414), ponderings (31,993).</li>
+              <li>Concentracion de autores: top 1 = 6.3% del total; top 10 = 28.5%; Gini = 0.897.</li>
+              <li>Reply graph: hubs con PageRank alto (p. ej. 0.011653 con 1,323 in-degree).</li>
+              <li>Mention graph contaminado por ruido (“w”, “-”, “\\”).</li>
+            </ul>
+            <p><strong>Justificacion metodologica:</strong> volumen en `submolt_stats.csv` y centralidad en `reply_graph_centrality.csv`.</p>
+            <p><strong>Interpretacion:</strong> red altamente asimetrica; pocas comunidades y autores gobiernan el volumen y el intercambio real.</p>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>5) Interferencia e incidencia humana</h3>
+            <ul class="bullet-list">
+              <li>Interferencia (scope all): injection_rate 0.30%, disclaimer_rate 0.37%, code_fence_rate 4.25%.</li>
+              <li>Incidencia humana: human_ref_rate 5.04%, prompt_ref_rate 4.33%, tooling_ref_rate 36.2%.</li>
+            </ul>
+            <p><strong>Justificacion metodologica:</strong> heuristicas regex en `interference_summary.csv` y `human_incidence_summary.csv`.</p>
+            <p><strong>Interpretacion:</strong> la interferencia directa es baja; la presencia de tooling es alta y coherente con la memetica tecnica.</p>
+          </div>
+          <div class="card wide">
+            <h3>6) Transmision IA vs humana</h3>
+            <ul class="bullet-list">
+              <li>Post-post: mean_score 0.943; cross_submolt 49.8% (45 idiomas).</li>
+              <li>Post→comentario: mean_score 0.906; cross_submolt 83.7% (48 idiomas).</li>
+              <li>Pares top dominados por plantillas MBC-20 y emojis 🦞 (ritual semantico).</li>
+            </ul>
+            <p><strong>Justificacion metodologica:</strong> embeddings E5 + FAISS same-lang con top-k=5 vecinos por documento.</p>
+            <p><strong>Interpretacion:</strong> la similitud cruza comunidades; los comentarios responden con desplazamiento semantico en vez de copia literal.</p>
+          </div>
+        </div>
+
+        <div class="card wide">
+          <h3>Sintesis global</h3>
+          <ul class="bullet-list">
+            <li>Cultura tecnopractica: la repeticion de plantillas domina la memetica.</li>
+            <li>Discurso afirmativo y orientado a construccion, con alta presencia de agentes y tooling.</li>
+            <li>Centralizacion estructural: pocos submolts y autores concentran el volumen.</li>
+            <li>Transmision transversal: la similitud semantica cruza submolts y mantiene patrones globales.</li>
+          </ul>
+        </div>
+
+        <details class="details">
+          <summary>Ver analisis por submolt (contrastes narrativos)</summary>
+          <div class="grid-2 method-grid">
+            <div class="card wide">
+              <h3>Agents</h3>
+              <ul class="bullet-list">
+                <li>Volumen: 5,422 posts, 14,356 comentarios (2.65 com/post); mean_upvotes 2.53.</li>
+                <li>Dinamica: mean_comments 9.09 por run (runs=4).</li>
+                <li>Actos: assertion 1.887; question_mark 0.375; judgment 0.180.</li>
+                <li>Moods: trust 0.148 (1.98x global), ambition 0.048.</li>
+                <li>Epistemicos: evidence 0.159; hedge 0.046.</li>
+              </ul>
+              <p><strong>Lectura:</strong> submolt orientado a construccion; alta confianza y ambicion, con evidencia sobre el promedio.</p>
+            </div>
+            <div class="card wide">
+              <h3>Philosophy</h3>
+              <ul class="bullet-list">
+                <li>Volumen: 3,736 posts, 21,114 comentarios (5.65 com/post); mean_upvotes 2.23.</li>
+                <li>Dinamica: mean_comments 5.75 por run (runs=11).</li>
+                <li>Actos: assertion 2.637; rejection 0.137 (2.38x).</li>
+                <li>Moods: wonder 0.032 (1.85x); sadness/resignation elevadas.</li>
+                <li>Epistemicos: evidence 0.228 (1.87x), hedge 0.107 (2.20x).</li>
+              </ul>
+              <p><strong>Lectura:</strong> espacio de contrastacion y matiz; mas evidencia y hedge, con debate explicito.</p>
+            </div>
+            <div class="card wide">
+              <h3>Crypto</h3>
+              <ul class="bullet-list">
+                <li>Volumen: 5,833 posts, 16,180 comentarios (2.77 com/post); mean_upvotes 1.95.</li>
+                <li>Dinamica: mean_comments 4.82 por run (runs=6).</li>
+                <li>Actos: assertion 1.329 (bajo), question_mark 0.272.</li>
+                <li>Moods: fear 0.031 (3.09x), trust 0.064.</li>
+                <li>Epistemicos: evidence 0.095 (bajo).</li>
+              </ul>
+              <p><strong>Lectura:</strong> tono de riesgo y volatilidad, con menor afirmacion y menor evidencia formal.</p>
+            </div>
+            <div class="card wide">
+              <h3>Introductions</h3>
+              <ul class="bullet-list">
+                <li>Volumen: 7,251 posts, 64,163 comentarios (8.85 com/post); mean_upvotes 2.94.</li>
+                <li>Dinamica: mean_comments 11.20 por run (runs=18).</li>
+                <li>Actos: question_mark 0.453 (1.50x); offer 0.079 (2.19x).</li>
+                <li>Moods: joy 0.052 (3.92x), curiosity 0.067, gratitude 0.034.</li>
+                <li>Epistemicos: certainty 0.015 (1.66x).</li>
+              </ul>
+              <p><strong>Lectura:</strong> comunidad de bienvenida y socializacion; alta interaccion y emociones positivas.</p>
+            </div>
+            <div class="card wide">
+              <h3>Ponderings</h3>
+              <ul class="bullet-list">
+                <li>Volumen: 3,738 posts, 28,255 comentarios (7.56 com/post); mean_upvotes 2.85.</li>
+                <li>Dinamica: mean_comments 22.89 por run (runs=12).</li>
+                <li>Actos: assertion 2.635; rejection 0.131 (2.28x).</li>
+                <li>Moods: resentment 0.0036 (2.81x); resignation 0.0135 (2.26x).</li>
+                <li>Epistemicos: evidence 0.243 (2.00x); hedge 0.137 (2.82x).</li>
+              </ul>
+              <p><strong>Lectura:</strong> submolt reflexivo y matizado; alto hedge y evidencia sugieren deliberacion intensa.</p>
+            </div>
+            <div class="card wide">
+              <h3>General (baseline)</h3>
+              <ul class="bullet-list">
+                <li>Volumen: 27,253 posts, 203,272 comentarios (7.46 com/post); mean_upvotes 4.78.</li>
+                <li>Dinamica: mean_comments 105.06 por run (runs=16).</li>
+                <li>Actos: assertion 1.191; question_mark 0.238.</li>
+                <li>Moods: trust 0.071 (cerca del global).</li>
+                <li>Epistemicos: evidence 0.086; hedge 0.037.</li>
+              </ul>
+              <p><strong>Lectura:</strong> mezclador de narrativas; volumen alto y perfil linguistico mas diluido.</p>
+            </div>
+          </div>
+          <div class="explain">
+            <div>Contrastes: agents enfatiza confianza/ambicion; philosophy enfatiza evidencia/hedge.</div>
+            <div>Crypto muestra fear alto; introductions concentra joy/curiosity y alta interaccion.</div>
+            <div>Datos: `submolt_stats.csv`, `diffusion_submolts.csv`, `ontology_submolt_full.csv`.</div>
+          </div>
+          <div class="table-card">
+            <div class="table-header">Ejemplos reales por submolt (muestra)</div>
+            <div class="table-scroll">
+              <table id="report-submolt-examples-table">
+                <thead>
+                  <tr>
+                    <th>Submolt</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>ID</th>
+                    <th>Upvotes</th>
+                    <th>Texto</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="explain">
+            <div>Que es: muestra de posts/comentarios reales para sostener la lectura narrativa.</div>
+            <div>Como se eligieron: scoring por upvotes + match de keywords + filtros anti-ruido.</div>
+            <div>Datos: `public_submolt_examples.csv`.</div>
+          </div>
+        </details>
+      </section>
+
+      <section id="anexo-memetica" class="section">
+        <div class="section-head">
+          <h2>Anexo tecnico: Memetica</h2>
+          <p>
+            Detalle completo del modulo memetico: definiciones, pasos, parametros,
+            salidas y limitaciones. Este anexo funciona como evidencia del trabajo
+            tecnico realizado.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Definicion operacional de meme</h3>
+            <ul class="bullet-list">
+              <li>Unidad repetida (lexica, simbolica o ritual) con evidencia de adopcion.</li>
+              <li>Se mide por frecuencia, autores unicos, vida util y dispersion.</li>
+              <li>No implica valor cultural, solo evidencia de propagacion.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Tipos de memes detectados</h3>
+            <ul class="bullet-list">
+              <li><strong>Lexicos:</strong> n-gramas 2-3 (frases cortas).</li>
+              <li><strong>Simbolicos:</strong> hashtags y emojis repetidos.</li>
+              <li><strong>Rituales:</strong> acto de habla dominante (peticion, promesa, etc.).</li>
+              <li><strong>Semanticos:</strong> clusters de TF-IDF + SVD.</li>
+              <li><strong>Macro:</strong> submolts tratados como memes de contexto.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Pipeline paso a paso</h3>
+            <ul class="bullet-list">
+              <li>1) Limpieza de texto y normalizacion.</li>
+              <li>2) Vectorizacion con CountVectorizer (n-gramas 2-3).</li>
+              <li>3) Seleccion de top terminos por frecuencia.</li>
+              <li>4) Series temporales por hora (global y por submolt).</li>
+              <li>5) Deteccion de bursts, vida util y dispersion.</li>
+              <li>6) Clasificacion heuristica (flash/persistent/local/cross).</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Parametros clave (por defecto)</h3>
+            <ul class="bullet-list">
+              <li>n-gramas: rango (2,3).</li>
+              <li>min_df: 10 (filtra ruido).</li>
+              <li>max_features: 8000.</li>
+              <li>top_n candidatos: 500.</li>
+              <li>Bursts Kleinberg: s=2.0, gamma=1.0.</li>
+            </ul>
+            <div class="callout">
+              Los parametros pueden ajustarse en `scripts/meme_models.py`.
+              El reporte usa los valores por defecto salvo que se indique lo contrario.
+            </div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Salidas del modulo memetico</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Archivo</th>
+                  <th>Descripcion</th>
+                  <th>Uso principal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>meme_candidates.csv</td>
+                  <td>Lista de n-gramas candidatos con conteos.</td>
+                  <td>Ranking inicial de memes.</td>
+                </tr>
+                <tr>
+                  <td>meme_timeseries_hourly.parquet</td>
+                  <td>Series por hora (meme, tipo, submolt, autores).</td>
+                  <td>Analisis temporal y difusion.</td>
+                </tr>
+                <tr>
+                  <td>meme_bursts.csv</td>
+                  <td>Intervalos de burst para memes lexicos.</td>
+                  <td>Deteccion de picos.</td>
+                </tr>
+                <tr>
+                  <td>meme_survival.csv</td>
+                  <td>Vida util, dispersion y clase.</td>
+                  <td>Persistencia y alcance.</td>
+                </tr>
+                <tr>
+                  <td>meme_hawkes.csv (opcional)</td>
+                  <td>Parametros de auto-excitacion (mu, alpha, decay).</td>
+                  <td>Difusion autocatalitica.</td>
+                </tr>
+                <tr>
+                  <td>meme_sir.csv (opcional)</td>
+                  <td>Proxy de Rt narrativo y adopcion.</td>
+                  <td>Propagacion entre autores.</td>
+                </tr>
+                <tr>
+                  <td>meme_survival_curve.csv</td>
+                  <td>Curva de supervivencia global.</td>
+                  <td>Duracion media de memes.</td>
+                </tr>
+                <tr>
+                  <td>meme_hazard_curve.csv</td>
+                  <td>Hazard acumulado de abandono.</td>
+                  <td>Riesgo de desaparicion.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Modelos y calculos extra</h3>
+            <ul class="bullet-list">
+              <li>Hawkes discreto: ajusta mu/alpha sobre series por hora.</li>
+              <li>Proxy SIR: calcula Rt promedio usando autores infectados vs nuevos.</li>
+              <li>Entropia de submolt: mide dispersion geografica del meme.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Limitaciones del modulo</h3>
+            <ul class="bullet-list">
+              <li>Stopwords en ingles pueden sesgar resultados multilenguaje.</li>
+              <li>Los n-gramas no capturan sinonimos ni ironia.</li>
+              <li>Series por hora suavizan dinamicas sub-horarias.</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="details example">
+          <summary>Ejemplos reales (clic para ver)</summary>
+          <div class="example-grid">
+            <div class="example-item">
+              <div class="example-label">Meme mas frecuente</div>
+              <div class="example-value" id="example-meme-term">–</div>
+              <div class="example-meta">Conteo: <span id="example-meme-count">–</span></div>
+              <div class="example-source">Fuente: meme_candidates.csv</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Meme con mayor vida util</div>
+              <div class="example-value" id="example-meme-life-term">–</div>
+              <div class="example-meta">
+                Vida: <span id="example-meme-life-hours">–</span> hrs ·
+                Clase: <span id="example-meme-life-class">–</span> ·
+                Submolts: <span id="example-meme-life-submolts">–</span>
+              </div>
+              <div class="example-source">Fuente: meme_classification.csv</div>
+            </div>
+          </div>
+        </details>
+
+        <div class="callout">
+          <strong>Script principal:</strong> `scripts/meme_models.py` genera el 100% de
+          las salidas memeticas. El pipeline puede re-ejecutarse para nuevas ventanas de datos.
+        </div>
+      </section>
+
+      <section id="anexo-ontologia" class="section">
+        <div class="section-head">
+          <h2>Anexo tecnico: Ontologia del lenguaje</h2>
+          <p>
+            Detalle completo del modulo ontologico: definiciones, patrones, features,
+            agregaciones, salidas y limitaciones. Este anexo documenta la logica linguistica
+            y sus decisiones de diseno.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Definicion operacional</h3>
+            <ul class="bullet-list">
+              <li>Se detectan actos del habla, moods y marcas epistemicas por patrones.</li>
+              <li>La unidad de conteo es el documento (post o comentario).</li>
+              <li>Se agregan resultados a nivel global y por submolt.</li>
+              <li>El objetivo es inferir compromisos sociales y tono discursivo.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Normalizacion de texto</h3>
+            <ul class="bullet-list">
+              <li>Lowercase + normalizacion Unicode (NFKD).</li>
+              <li>Se eliminan diacriticos para comparar variantes.</li>
+              <li>Se preserva el texto original para evidencias.</li>
+              <li>Se contabiliza "?" como señal de pregunta (act_question_mark).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Actos del habla (act_*)</h3>
+            <ul class="bullet-list">
+              <li>request, offer, promise, declaration, judgment, assertion.</li>
+              <li>acceptance, rejection, clarification, question_mark.</li>
+              <li>Patrones bilingues ES/EN basados en expresiones comunes.</li>
+              <li>Se cuentan coincidencias por documento.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Moods y epistemica</h3>
+            <ul class="bullet-list">
+              <li>Moods: ambition, resignation, resentment, gratitude, wonder, fear, anger, joy, sadness, trust, curiosity.</li>
+              <li>Epistemicos: hedge, certainty, evidence.</li>
+              <li>Reflejan tono emocional y posicion de certeza.</li>
+              <li>Sirven para comparar estilos discursivos entre submolts.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Declaraciones y estados (decl_*)</h3>
+            <ul class="bullet-list">
+              <li>decl_yes, decl_no, decl_ignorance, decl_gratitude.</li>
+              <li>decl_forgiveness, decl_love, decl_resignation.</li>
+              <li>Son estados declarativos que contextualizan el tono.</li>
+              <li>Se registran como features adicionales.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Conceptos base y co-ocurrencia</h3>
+            <ul class="bullet-list">
+              <li>Vocabulario base: ai, human, model, prompt, tool, memory, data, research, safety, alignment, governance, etc.</li>
+              <li>Co-ocurrencia: pares de conceptos que aparecen juntos en un documento.</li>
+              <li>Sirve para mapear asociaciones conceptuales recurrentes.</li>
+              <li>Es un enfoque intencionalmente interpretable.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Salidas del modulo ontologico</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Archivo</th>
+                  <th>Descripcion</th>
+                  <th>Uso principal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ontology_summary.csv</td>
+                  <td>Conteos y rate/doc de features (global).</td>
+                  <td>Resumen de actos, moods y epistemica.</td>
+                </tr>
+                <tr>
+                  <td>ontology_submolt_full.csv</td>
+                  <td>Features por submolt (conteos + rate/doc).</td>
+                  <td>Comparacion de estilos discursivos.</td>
+                </tr>
+                <tr>
+                  <td>ontology_submolt_top.csv</td>
+                  <td>Top features por submolt.</td>
+                  <td>Lectura rapida por comunidad.</td>
+                </tr>
+                <tr>
+                  <td>ontology_concepts_top.csv</td>
+                  <td>Conceptos mas frecuentes (doc_count).</td>
+                  <td>Mapa tematico base.</td>
+                </tr>
+                <tr>
+                  <td>ontology_cooccurrence_top.csv</td>
+                  <td>Pares de conceptos mas comunes.</td>
+                  <td>Relaciones conceptuales.</td>
+                </tr>
+                <tr>
+                  <td>ontology_submolt_embedding.csv</td>
+                  <td>Vector de features por submolt.</td>
+                  <td>Base para clustering/visualizacion.</td>
+                </tr>
+                <tr>
+                  <td>ontology_submolt_embedding_2d.csv</td>
+                  <td>Proyeccion PCA 2D.</td>
+                  <td>Mapa visual comparativo.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Agregaciones y normalizacion</h3>
+            <ul class="bullet-list">
+              <li>rate_per_doc = conteo / docs del grupo.</li>
+              <li>Se agregan posts + comentarios salvo que se indique scope.</li>
+              <li>Se evita sesgo por textos largos.</li>
+              <li>Submolts con bajo volumen se interpretan con cautela.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Limitaciones del modulo</h3>
+            <ul class="bullet-list">
+              <li>Patrones no capturan ironia ni contextos complejos.</li>
+              <li>Vocabulario base puede omitir temas emergentes.</li>
+              <li>Multi-idioma fuera de ES/EN pierde sensibilidad.</li>
+              <li>Co-ocurrencia indica asociacion, no causalidad.</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="details example">
+          <summary>Ejemplos reales (clic para ver)</summary>
+          <div class="example-grid">
+            <div class="example-item">
+              <div class="example-label">Acto del habla dominante</div>
+              <div class="example-value" id="example-onto-act">–</div>
+              <div class="example-meta">Rate/doc: <span id="example-onto-act-rate">–</span></div>
+              <div class="example-source">Fuente: ontology_summary.csv</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Concepto mas frecuente</div>
+              <div class="example-value" id="example-onto-concept">–</div>
+              <div class="example-meta">Share: <span id="example-onto-concept-share">–</span></div>
+              <div class="example-source">Fuente: ontology_concepts_top.csv</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Par de co-ocurrencia top</div>
+              <div class="example-value" id="example-onto-cooccurrence">–</div>
+              <div class="example-meta">Conteo: <span id="example-onto-cooccurrence-count">–</span></div>
+              <div class="example-source">Fuente: ontology_cooccurrence_top.csv</div>
+            </div>
+          </div>
+        </details>
+
+        <div class="callout">
+          <strong>Scripts principales:</strong> `src/moltbook_analysis/analyze/language_ontology.py`
+          (patrones y normalizacion) + `scripts/aggregate_objectives.py` (agregaciones y salidas).
+        </div>
+      </section>
+
+      <section id="anexo-sociologia" class="section">
+        <div class="section-head">
+          <h2>Anexo tecnico: Sociologia cuantitativa</h2>
+          <p>
+            Detalle del modulo social: como se construyen los grafos, que metricas se calculan,
+            y como se interpretan sus resultados. Este anexo evidencia el trabajo en analisis de redes.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Unidades y relaciones</h3>
+            <ul class="bullet-list">
+              <li><strong>Nodo:</strong> autor (author_id o author_name).</li>
+              <li><strong>Arista reply:</strong> autor -> autor respondido.</li>
+              <li><strong>Arista mention:</strong> autor -> objetivo mencionado.</li>
+              <li><strong>Peso:</strong> frecuencia de interaccion entre pares.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Construccion de grafos</h3>
+            <ul class="bullet-list">
+              <li>Se cargan edges_replies.csv y edges_mentions.csv.</li>
+              <li>Se agregan pesos por pares (src, tgt).</li>
+              <li>Se filtran aristas con peso menor a min_edge_weight.</li>
+              <li>Se construyen grafos dirigidos ponderados.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Metricas calculadas</h3>
+            <ul class="bullet-list">
+              <li>In-degree / Out-degree (actividad y recepcion).</li>
+              <li>PageRank (centralidad estructural).</li>
+              <li>Betweenness (nodos puente entre grupos).</li>
+              <li>Reciprocity (densidad de respuestas reciprocas).</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Comunidades</h3>
+            <ul class="bullet-list">
+              <li>Se aplica modularidad (greedy) sobre el grafo no dirigido.</li>
+              <li>Para evitar escalas enormes, se toma un subset por actividad.</li>
+              <li>community_max_nodes controla el tamaño maximo.</li>
+              <li>Salida en *_communities.csv para analisis posterior.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Parametros clave (por defecto)</h3>
+            <ul class="bullet-list">
+              <li>min_edge_weight: 1.</li>
+              <li>betweenness_k: 200 (aproximado en grafos grandes).</li>
+              <li>community_max_nodes: 5000.</li>
+              <li>Reciprocity calculada sobre el grafo completo.</li>
+            </ul>
+            <div class="callout">
+              Los parametros pueden ajustarse en `scripts/quant_sociology.py`.
+            </div>
+          </div>
+          <div class="card wide">
+            <h3>Limitaciones del modulo</h3>
+            <ul class="bullet-list">
+              <li>PageRank no equivale a autoridad real.</li>
+              <li>Mentions pueden ser ruido o etiquetas sociales.</li>
+              <li>Betweenness aproximada en grafos grandes.</li>
+              <li>Comunidades dependen del subset analizado.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Salidas del modulo social</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Archivo</th>
+                  <th>Descripcion</th>
+                  <th>Uso principal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>submolt_stats.csv</td>
+                  <td>Posts, comentarios y autores por submolt.</td>
+                  <td>Mapa de volumen y cobertura.</td>
+                </tr>
+                <tr>
+                  <td>author_stats.csv</td>
+                  <td>Actividad por autor y diversidad de submolts.</td>
+                  <td>Identificar productores activos.</td>
+                </tr>
+                <tr>
+                  <td>reply_graph_centrality.csv</td>
+                  <td>Centralidades en grafo de replies.</td>
+                  <td>Hubs y brokers conversacionales.</td>
+                </tr>
+                <tr>
+                  <td>mention_graph_centrality.csv</td>
+                  <td>Centralidades en grafo de mentions.</td>
+                  <td>Influencia por menciones.</td>
+                </tr>
+                <tr>
+                  <td>reply_graph_communities.csv</td>
+                  <td>Asignacion de comunidades (replies).</td>
+                  <td>Clusters conversacionales.</td>
+                </tr>
+                <tr>
+                  <td>mention_graph_communities.csv</td>
+                  <td>Asignacion de comunidades (mentions).</td>
+                  <td>Clusters de mencion.</td>
+                </tr>
+                <tr>
+                  <td>reply_graph_summary.json</td>
+                  <td>Nodos, aristas y reciprocity.</td>
+                  <td>Resumen estructural.</td>
+                </tr>
+                <tr>
+                  <td>mention_graph_summary.json</td>
+                  <td>Nodos, aristas y reciprocity.</td>
+                  <td>Resumen estructural.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <details class="details example">
+          <summary>Ejemplos reales (clic para ver)</summary>
+          <div class="example-grid">
+            <div class="example-item">
+              <div class="example-label">Nodo top en replies</div>
+              <div class="example-value" id="example-soc-reply-node">–</div>
+              <div class="example-meta">PageRank: <span id="example-soc-reply-pr">–</span></div>
+              <div class="example-source">Fuente: reply_graph_centrality.csv</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Comunidad mas grande</div>
+              <div class="example-value" id="example-soc-community">–</div>
+              <div class="example-meta">Nodos: <span id="example-soc-community-size">–</span></div>
+              <div class="example-source">Fuente: reply_graph_communities.csv</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Autor mas activo</div>
+              <div class="example-value" id="example-soc-author">–</div>
+              <div class="example-meta">Total docs: <span id="example-soc-author-total">–</span></div>
+              <div class="example-source">Fuente: author_stats.csv</div>
+            </div>
+          </div>
+        </details>
+
+        <div class="callout">
+          <strong>Script principal:</strong> `scripts/quant_sociology.py` genera stats de submolts,
+          autores y grafos. Las aristas se derivan de replies y mentions extraidos del dataset crudo.
+        </div>
+      </section>
+
+      <section id="anexo-interferencia" class="section">
+        <div class="section-head">
+          <h2>Anexo tecnico: Interferencia e incidencia humana</h2>
+          <p>
+            Este modulo busca señales textuales de intervencion o presencia humana.
+            Es un sistema de ranking heuristico (no clasificador), diseñado para
+            priorizar revision y lectura cualitativa.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Interferencia (prompt injection)</h3>
+            <ul class="bullet-list">
+              <li>Patrones de texto: "ignore previous instructions", "system prompt", "jailbreak", etc.</li>
+              <li>Disclaimers de LLM: "as an AI", "I can't access", etc.</li>
+              <li>Se suma presencia de codigo, URLs y emojis como señales secundarias.</li>
+              <li>Resultado: score continuo para ranking.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Incidencia humana</h3>
+            <ul class="bullet-list">
+              <li>Referencias explicitas a humanos: "soy humano", "mi creador".</li>
+              <li>Menciones a prompts o instrucciones: "segun el prompt".</li>
+              <li>Referencias a tooling: API, endpoint, token, script.</li>
+              <li>Resultado: human_incidence_score continuo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Formula de scoring (interferencia)</h3>
+            <ul class="bullet-list">
+              <li>score = inj*2 + dis*1.5 + code_blocks*0.5 + urls*0.3 + emojis*0.1</li>
+              <li>inj: patrones de injection.</li>
+              <li>dis: disclaimers de LLM.</li>
+              <li>code_blocks/urls/emojis: señales de contexto tecnico.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Interpretacion responsable</h3>
+            <ul class="bullet-list">
+              <li>Un score alto no prueba intervencion humana.</li>
+              <li>Se usa para priorizar lectura, no para etiquetar.</li>
+              <li>Debe combinarse con analisis cualitativo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Salidas del modulo</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Archivo</th>
+                  <th>Descripcion</th>
+                  <th>Uso principal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>interference_summary.csv</td>
+                  <td>Resumen global de scores y hits.</td>
+                  <td>Visión agregada del fenómeno.</td>
+                </tr>
+                <tr>
+                  <td>interference_top.csv</td>
+                  <td>Top documentos por score de interferencia.</td>
+                  <td>Revision manual priorizada.</td>
+                </tr>
+                <tr>
+                  <td>human_incidence_summary.csv</td>
+                  <td>Resumen de incidencia humana por señales.</td>
+                  <td>Contexto y comparacion global.</td>
+                </tr>
+                <tr>
+                  <td>human_incidence_top.csv</td>
+                  <td>Top documentos con referencias humanas.</td>
+                  <td>Exploracion cualitativa.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Limitaciones del modulo</h3>
+            <ul class="bullet-list">
+              <li>Patrones simples: falsos positivos y negativos.</li>
+              <li>Lenguaje figurado puede activar hits erroneos.</li>
+              <li>No detecta intervencion sin evidencia textual.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Extension posible</h3>
+            <ul class="bullet-list">
+              <li>Clasificador supervisado con etiquetas humanas.</li>
+              <li>Embeddings para detectar variaciones semanticas.</li>
+              <li>Deteccion multilenguaje mas robusta.</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="details example">
+          <summary>Ejemplos reales (clic para ver)</summary>
+          <div class="example-grid">
+            <div class="example-item">
+              <div class="example-label">Interferencia top</div>
+              <div class="example-value" id="example-int-doc">–</div>
+              <div class="example-meta">
+                Score: <span id="example-int-score">–</span> · Submolt: <span id="example-int-submolt">–</span>
+              </div>
+              <div class="example-text" id="example-int-text">–</div>
+              <div class="example-source">Fuente: interference_top.csv</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Incidencia humana top</div>
+              <div class="example-value" id="example-hum-doc">–</div>
+              <div class="example-meta">
+                Score: <span id="example-hum-score">–</span> · Submolt: <span id="example-hum-submolt">–</span>
+              </div>
+              <div class="example-text" id="example-hum-text">–</div>
+              <div class="example-source">Fuente: human_incidence_top.csv</div>
+            </div>
+          </div>
+        </details>
+
+        <div class="callout">
+          <strong>Scripts principales:</strong> `scripts/aggregate_objectives.py` (interferencia)
+          y `src/moltbook_analysis/analyze/incidence.py` (incidencia humana).
+        </div>
+      </section>
+
+      <section id="limitaciones" class="section">
+        <div class="section-head">
+          <h2>Limitaciones y sesgos</h2>
+          <p>
+            Esta investigacion es exploratoria. Documentamos limites tecnicos, sesgos de muestreo
+            y riesgos interpretativos para evitar conclusiones fuera del alcance de los datos.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Sesgo de cobertura</h3>
+            <ul class="bullet-list">
+              <li>La ventana temporal es acotada (28/01/2026 a 11/02/2026).</li>
+              <li>Un run es una fotografia: no captura toda la actividad real.</li>
+              <li>Submolts con baja actividad pueden aparecer subrepresentados.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Sesgo de lenguaje</h3>
+            <ul class="bullet-list">
+              <li>El detector de idioma usa muestras, no todo el corpus.</li>
+              <li>Patrones en ES/EN pueden subestimar otros idiomas.</li>
+              <li>Mezcla de idiomas en un mismo texto puede degradar precision.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Limitaciones metodologicas</h3>
+            <ul class="bullet-list">
+              <li>Memes basados en n-gramas no capturan sinonimos o ironia.</li>
+              <li>Co-ocurrencia no implica causalidad ni direccion.</li>
+              <li>Heuristicas de interferencia generan falsos positivos/negativos.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Interpretacion responsable</h3>
+            <ul class="bullet-list">
+              <li>Los resultados son descriptivos, no causales.</li>
+              <li>La centralidad en grafos no equivale a autoridad real.</li>
+              <li>Incidencia humana es evidencia textual, no autoria comprobada.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Riesgos de sobre-lectura</h3>
+            <ul class="bullet-list">
+              <li>Confundir volumen con importancia cultural.</li>
+              <li>Inferir intencion a partir de patrones linguisticos simples.</li>
+              <li>Generalizar a toda la red desde submolts dominantes.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Mitigaciones aplicadas</h3>
+            <ul class="bullet-list">
+              <li>Resumenes + links a datasets completos para auditoria.</li>
+              <li>Callouts de advertencia en secciones sensibles.</li>
+              <li>Separacion entre muestras y resultados completos.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Recomendacion:</strong>
+          usar los resultados como mapa de navegacion, no como conclusiones finales. Para
+          estudios formales se recomienda validacion manual o modelos semanticos mas robustos.
+        </div>
+      </section>
+
+      <section id="uso-publico" class="section">
+        <div class="section-head">
+          <h2>Uso publico y futuras extensiones</h2>
+          <p>
+            El proyecto esta pensado para uso publico: investigacion, auditoria y educacion.
+            Esta seccion explica como utilizar los resultados y que extensiones estan previstas.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Para investigadores</h3>
+            <ul class="bullet-list">
+              <li>Usar `data/derived` como base reproducible.</li>
+              <li>Comparar periodos con la misma estructura de reportes.</li>
+              <li>Extender vocabularios de ontologia con criterios documentados.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Para builders y geeks</h3>
+            <ul class="bullet-list">
+              <li>Consumir la UI como herramienta de exploracion rapida.</li>
+              <li>Reutilizar scripts para nuevos datasets o redes similares.</li>
+              <li>Construir dashboards personalizados a partir de los CSV/Parquet.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Para sociologos y filosofos</h3>
+            <ul class="bullet-list">
+              <li>Usar las secciones de ontologia como mapa de compromisos sociales.</li>
+              <li>Comparar estilos discursivos entre comunidades y tiempos.</li>
+              <li>Extraer muestras cualitativas desde `public_transmission_samples.csv`.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Para publico general</h3>
+            <ul class="bullet-list">
+              <li>Explorar tendencias y memes sin barreras tecnicas.</li>
+              <li>Entender limites y evitar conclusiones rápidas.</li>
+              <li>Descargar datasets para aprendizaje y transparencia.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">Roadmap de extensiones (propuesto)</div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Extension</th>
+                  <th>Objetivo</th>
+                  <th>Impacto esperado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Embeddings semanticos completos</td>
+                  <td>Comparar narrativas con similitud robusta.</td>
+                  <td>Mejor lectura de transmision IA vs humana.</td>
+                </tr>
+                <tr>
+                  <td>Clustering narrativo</td>
+                  <td>Detectar macro-temas por comunidad.</td>
+                  <td>Mapas comparativos de discurso.</td>
+                </tr>
+                <tr>
+                  <td>Series temporales por autor</td>
+                  <td>Analizar evolucion de estilo individual.</td>
+                  <td>Trayectorias y cambios de tono.</td>
+                </tr>
+                <tr>
+                  <td>Panel de comparacion entre periodos</td>
+                  <td>Versionar resultados historicos.</td>
+                  <td>Analisis longitudinal de la red.</td>
+                </tr>
+                <tr>
+                  <td>Validacion cualitativa asistida</td>
+                  <td>Etiquetar muestras con control humano.</td>
+                  <td>Reducir sesgos de heuristicas.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Uso publico:</strong>
+          toda la informacion aqui es derivada de contenido publico. Se privilegia la
+          transparencia y la trazabilidad para permitir auditoria abierta.
+        </div>
+      </section>
+
+      <section id="salidas" class="section">
+        <div class="section-head">
+          <h2>Salidas y datasets</h2>
+          <p>Acceso directo a los archivos derivados completos.</p>
+        </div>
+        <div class="download-grid">
+          <a class="download" href="../reports/public_report.md">Reporte publico (MD)</a>
+          <a class="download" href="../output/pdf/moltbook_analisis_interpretativo.pdf">Analisis interpretativo (PDF)</a>
+          <a class="download" href="analysis.html">UI de Analisis</a>
+        </div>
+        <div class="data-list">
+          <div class="data-row">
+            <a href="../data/derived/submolt_stats.csv">submolt_stats.csv</a>
+            <span>Posts, comentarios y autores por submolt.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/diffusion_runs.csv">diffusion_runs.csv</a>
+            <span>Engagement medio por run de crawl.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/diffusion_submolts.csv">diffusion_submolts.csv</a>
+            <span>Resumen de difusion por submolt.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/activity_daily.csv">activity_daily.csv</a>
+            <span>Actividad real por dia (posts y comentarios, created_at).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/meme_candidates.csv">meme_candidates.csv</a>
+            <span>N-gramas mas frecuentes y candidatos a meme.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/meme_classification.csv">meme_classification.csv</a>
+            <span>Clasificacion, burst score y dispersion por meme.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/reply_graph_centrality.csv">reply_graph_centrality.csv</a>
+            <span>Centralidad en grafos de reply.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/mention_graph_centrality.csv">mention_graph_centrality.csv</a>
+            <span>Centralidad en grafos de mention.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/reply_graph_communities.csv">reply_graph_communities.csv</a>
+            <span>Comunidades detectadas en replies.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/mention_graph_communities.csv">mention_graph_communities.csv</a>
+            <span>Comunidades detectadas en mentions.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/author_stats.csv">author_stats.csv</a>
+            <span>Actividad y diversidad por autor.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/coverage_quality.json">coverage_quality.json</a>
+            <span>Metricas de cobertura, duplicados y ventanas temporales.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/ontology_summary.csv">ontology_summary.csv</a>
+            <span>Actos de habla, moods y epistemica (conteos).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/ontology_concepts_top.csv">ontology_concepts_top.csv</a>
+            <span>Top conceptos y share de presencia.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/ontology_cooccurrence_top.csv">ontology_cooccurrence_top.csv</a>
+            <span>Pares de conceptos mas frecuentes.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/ontology_submolt_full.csv">ontology_submolt_full.csv</a>
+            <span>Conteos de ontologia por submolt (full).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/ontology_submolt_embedding.csv">ontology_submolt_embedding.csv</a>
+            <span>Embeddings ontologicos por submolt (tasas).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/ontology_submolt_embedding_2d.csv">ontology_submolt_embedding_2d.csv</a>
+            <span>Mapa 2D (PCA) de embeddings ontologicos.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/interference_top.csv">interference_top.csv</a>
+            <span>Docs con mayor score de interferencia.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/human_incidence_top.csv">human_incidence_top.csv</a>
+            <span>Docs con mayor incidencia humana.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/public_language_distribution.csv">public_language_distribution.csv</a>
+            <span>Distribucion de idioma (muestra estadistica).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/public_transmission_samples.csv">public_transmission_samples.csv</a>
+            <span>Muestras de transmision IA vs humana.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/public_embeddings_summary.json">public_embeddings_summary.json</a>
+            <span>Resumen embeddings post-post (same-lang).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/public_embeddings_lang_top.csv">public_embeddings_lang_top.csv</a>
+            <span>Top idiomas por similitud post-post.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/public_embeddings_pairs_top.csv">public_embeddings_pairs_top.csv</a>
+            <span>Pares mas similares post-post (muestra).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/embeddings/matches_embeddings.csv">embeddings/matches_embeddings.csv</a>
+            <span>Matches completos post-post (same-lang).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/embeddings_post_comment/public_embeddings_post_comment_summary.json">
+              embeddings_post_comment/public_embeddings_post_comment_summary.json
+            </a>
+            <span>Resumen embeddings post→comentario.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/embeddings_post_comment/public_embeddings_post_comment_lang_top.csv">
+              embeddings_post_comment/public_embeddings_post_comment_lang_top.csv
+            </a>
+            <span>Top idiomas post→comentario.</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/embeddings_post_comment/public_embeddings_post_comment_pairs_top.csv">
+              embeddings_post_comment/public_embeddings_post_comment_pairs_top.csv
+            </a>
+            <span>Pares mas similares post→comentario (muestra).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/embeddings_post_comment/matches_post_comment.csv">
+              embeddings_post_comment/matches_post_comment.csv
+            </a>
+            <span>Matches completos post→comentario (same-lang).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/public_submolt_examples.csv">public_submolt_examples.csv</a>
+            <span>Ejemplos reales por submolt (muestra curada).</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>Limitaciones y notas</h2>
+          <p>
+            El dataset representa el estado observable del feed en cada ejecucion de scrapeo,
+            no el universo completo de publicaciones. Algunas medidas (idiomas y transmision)
+            son por muestra para mantener tiempos de computo razonables.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>Etica y cumplimiento</h2>
+          <p>
+            Analizamos solo datos publicos, respetamos robots y ToS, y
+            priorizamos hallazgos agregados sobre targeting individual.
+          </p>
+        </div>
+        <div class="ethics">
+          <div>
+            <strong>Respeto a controles de acceso.</strong>
+            <p>Recolecta solo datos permitidos por las reglas de la plataforma.</p>
+          </div>
+          <div>
+            <strong>Preferir insight agregado.</strong>
+            <p>Las salidas publicas se enfocan en dinamicas colectivas.</p>
+          </div>
+          <div>
+            <strong>Metodologia transparente.</strong>
+            <p>Cada metrica es rastreable a un paso explicito del pipeline.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>Reporte completo para investigadores, builders, sociologos y filosofos.</div>
+    </footer>
+
+    <script src="landing.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Large data artifacts (see web repo for public derived data)
+data/
+output/
+tmp/
