@@ -1,12 +1,12 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T19:09:24.653068+00:00
+- Generado: 2026-02-13T19:13:34.684605+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 8
-- Severidad: P0=0, P1=4, P2=4, P3=0
+- Hallazgos abiertos: 7
+- Severidad: P0=0, P1=3, P2=4, P3=0
 - Gate G1_data_integrity: pass
 - Gate G2_method_validity: fail
 - Gate G3_reproducibility: fail
@@ -94,12 +94,12 @@
   - Estado: open
 
 ### Reproducibilidad
-- [P1] AUD-010: Dependencias en pyproject usan rangos '>=' y no existe lockfile.
+- [P1] AUD-010: Dependencias en pyproject usan rangos '>='; lockfile=yes.
   - Claim: Pipeline es totalmente reproducible.
   - Impacto: Resultados pueden variar entre entornos y fechas.
-  - Evidencia: EVID-PYPROJECT-001
+  - Evidencia: EVID-PYPROJECT-001|EVID-LOCK-001
   - Recomendacion: Fijar lockfile (uv/pip-tools/poetry) y versionar entorno de ejecucion.
-  - Estado: open
+  - Estado: mitigated
 
 ### Ingenieria y mantenibilidad
 - [P1] AUD-011: No hay suite de tests ni workflows CI en el repositorio.
