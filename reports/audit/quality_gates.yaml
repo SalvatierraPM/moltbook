@@ -1,0 +1,13 @@
+gates:
+  G1_data_integrity:
+    status: fail
+    criterion: "Aprobado si no hay P0/P1 abiertos en calidad/linaje/cobertura."
+  G2_method_validity:
+    status: fail
+    criterion: "Aprobado si no hay claims fuertes sin evidencia trazable."
+  G3_reproducibility:
+    status: fail
+    criterion: "Aprobado si runbook y entorno reproducen outputs nucleares."
+  G4_public_safety:
+    status: fail
+    criterion: "Aprobado si no hay riesgo de seguridad/compliance sin mitigacion."

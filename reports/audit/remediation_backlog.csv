@@ -1,0 +1,14 @@
+task_id,severity,component,fix_type,effort_estimate,dependency,acceptance_criterion
+TASK-AUD-001,P1,Claims e inferencia,metodologico,M,EVID-REPORT-001,Publicar una tabla de claims con evidencia primaria y limites explicitos por claim.
+TASK-AUD-002,P1,Linaje de datos,tecnico,M,EVID-SCHEMA-001,"Crear data lineage table (metrica, fuente, transformacion, script, salida)."
+TASK-AUD-003,P2,Cobertura temporal,tecnico,S,EVID-COVERAGE-001,Mantener toggle por defecto en actividad real y reforzar notas en tablas run-based.
+TASK-AUD-004,P1,Memetica,metodologico,M,EVID-MEME-001,Agregar filtro de boilerplate y doble ranking: tecnico vs cultural.
+TASK-AUD-005,P1,Ontologia del lenguaje,metodologico,M,EVID-SCHEMA-001,Evaluar precision/recall con muestra etiquetada estratificada por idioma.
+TASK-AUD-006,P1,Sociologia y redes,tecnico,M,EVID-MENTION-001,Normalizar/filtrar handles invalidos antes del calculo de grafos.
+TASK-AUD-007,P1,Interferencia,tecnico,M,EVID-INTERF-001,Separar score tecnico (ruido/formato) de score semantico (injection/disclaimer).
+TASK-AUD-008,P2,Incidencia humana,tecnico,S,EVID-INCID-001,Introducir subscore narrativo y etiqueta de tipo de evidencia.
+TASK-AUD-009,P2,Transmision IA vs humana,metodologico,S,EVID-REPORT-001,Publicar sensibilidad por threshold y baseline VSM/embeddings comparado.
+TASK-AUD-010,P1,Reproducibilidad,tecnico,M,EVID-PYPROJECT-001,Fijar lockfile (uv/pip-tools/poetry) y versionar entorno de ejecucion.
+TASK-AUD-011,P1,Ingenieria y mantenibilidad,tecnico,M,EVID-TESTS-001,Agregar smoke tests de datos + test unitarios clave + CI minima por PR.
+TASK-AUD-012,P1,Seguridad y compliance,tecnico,M,EVID-SECRETS-001,Mover secretos a keychain/env temporal y rotar token activo.
+TASK-AUD-013,P2,Operacion deploy,tecnico,S,EVID-NETLIFY-001,Documentar estado de integracion y enlace de repo en runbook operativo.
