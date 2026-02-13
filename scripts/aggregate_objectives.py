@@ -23,6 +23,7 @@ if str(SRC) not in sys.path:
 
 from moltbook_analysis.analyze.language_ontology import language_signals  # noqa: E402
 from moltbook_analysis.analyze.incidence import human_incidence_score  # noqa: E402
+from moltbook_analysis.analyze.interference import interference_score as interference_score_v2  # noqa: E402
 
 TOKEN_RE = re.compile(r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_#@']{2,}")
 URL_RE = re.compile(r"https?://\S+|www\.\S+")
@@ -114,28 +115,8 @@ def _count_pattern_hits(text: str, patterns: List[str]) -> int:
 
 
 def interference_score(text: str) -> Dict[str, float]:
-    t = clean_text(text)
-    if not t:
-        return {"score": 0.0, "injection_hits": 0, "disclaimer_hits": 0}
-
-    inj = _count_pattern_hits(t, INJECTION_PATTERNS)
-    dis = _count_pattern_hits(t, LLM_DISCLAIMERS)
-
-    code_blocks = len(CODE_FENCE_RE.findall(text))
-    urls = len(URL_MATCH_RE.findall(text))
-    emojis = len(EMOJI_RE.findall(text))
-
-    score = inj * 2 + dis * 1.5 + code_blocks * 0.5 + urls * 0.3
-    score += 0.1 * emojis
-
-    return {
-        "score": float(score),
-        "injection_hits": int(inj),
-        "disclaimer_hits": int(dis),
-        "code_fences": int(code_blocks),
-        "urls": int(urls),
-        "emojis": int(emojis),
-    }
+    # Delegate to the shared analyzer so derive_signals.py and aggregate_objectives.py stay aligned.
+    return interference_score_v2(text)
 
 
 def iter_jsonl(path: Path) -> Iterable[dict]:
@@ -394,7 +375,9 @@ def main() -> None:
             "text_excerpt": (cleaned[:200] + "…") if len(cleaned) > 200 else cleaned,
         }
         record.update(inter)
-        push_top(top_interference, record, "score", args.top_docs)
+        # Rank top docs by semantic interference (injection/disclaimer), not by formatting/noise.
+        if float(record.get("score_semantic", 0.0)) > 0.0:
+            push_top(top_interference, record, "score_semantic", args.top_docs)
 
         record_inc = {
             "doc_id": doc_id,
@@ -550,6 +533,9 @@ def main() -> None:
         return {
             "scope": scope,
             "avg_score": (totals.get("score", 0.0) / docs) if docs else 0.0,
+            "avg_score_semantic": (totals.get("score_semantic", 0.0) / docs) if docs else 0.0,
+            "avg_score_format": (totals.get("score_format", 0.0) / docs) if docs else 0.0,
+            "avg_noise_score": (totals.get("noise_score", 0.0) / docs) if docs else 0.0,
             "injection_rate": (totals.get("injection_hits", 0.0) / docs) if docs else 0.0,
             "disclaimer_rate": (totals.get("disclaimer_hits", 0.0) / docs) if docs else 0.0,
             "code_fence_rate": (totals.get("code_fences", 0.0) / docs) if docs else 0.0,
@@ -565,7 +551,18 @@ def main() -> None:
     write_csv(
         out_dir / "interference_summary.csv",
         interference_rows,
-        ["scope", "avg_score", "injection_rate", "disclaimer_rate", "code_fence_rate", "url_rate", "emoji_rate"],
+        [
+            "scope",
+            "avg_score",
+            "avg_score_semantic",
+            "avg_score_format",
+            "avg_noise_score",
+            "injection_rate",
+            "disclaimer_rate",
+            "code_fence_rate",
+            "url_rate",
+            "emoji_rate",
+        ],
     )
 
     def incidence_summary_rows(totals: Counter, scope: str):
@@ -599,6 +596,9 @@ def main() -> None:
             "submolt",
             "created_at",
             "score",
+            "score_semantic",
+            "score_format",
+            "noise_score",
             "injection_hits",
             "disclaimer_hits",
             "code_fences",

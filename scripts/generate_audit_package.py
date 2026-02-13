@@ -107,6 +107,7 @@ class Metrics:
     ontology_benchmark_accuracy_en: float
     ontology_benchmark_accuracy_es: float
     interference_noisy_top50: int
+    interference_has_split_scores: bool
     incidence_tooling_top50: int
     lang_posts_sample: int
     lang_comments_sample: int
@@ -162,6 +163,7 @@ def compute_metrics() -> Metrics:
 
     inter_top50 = sorted(interference, key=lambda r: to_float(r.get("score")), reverse=True)[:50]
     interference_noisy_top50 = sum(1 for r in inter_top50 if is_noisy_text(r.get("text_excerpt", "")))
+    interference_has_split_scores = bool(interference) and ("score_semantic" in interference[0] and "noise_score" in interference[0])
 
     inc_top50 = sorted(incidence, key=lambda r: to_float(r.get("human_incidence_score")), reverse=True)[:50]
     incidence_tooling_top50 = sum(1 for r in inc_top50 if to_float(r.get("tooling_refs")) >= 10)
@@ -200,6 +202,7 @@ def compute_metrics() -> Metrics:
         ontology_benchmark_accuracy_en=acc_en,
         ontology_benchmark_accuracy_es=acc_es,
         interference_noisy_top50=interference_noisy_top50,
+        interference_has_split_scores=interference_has_split_scores,
         incidence_tooling_top50=incidence_tooling_top50,
         lang_posts_sample=lang_posts_sample,
         lang_comments_sample=lang_comments_sample,
@@ -507,12 +510,15 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "severity": "P1",
             "domain": "Interferencia",
             "claim": "Score alto identifica interferencia significativa.",
-            "issue": f"{m.interference_noisy_top50}/50 top rows son texto ruidoso/base64/repetitivo.",
+            "issue": (
+                f"{m.interference_noisy_top50}/50 top rows son texto ruidoso/base64/repetitivo; "
+                f"split_scores={'yes' if m.interference_has_split_scores else 'no'}."
+            ),
             "evidence_ref": "EVID-INTERF-001",
             "impact": "Muchos falsos positivos en top ranking; costo de revision manual elevado.",
             "recommendation": "Separar score tecnico (ruido/formato) de score semantico (injection/disclaimer).",
             "owner": "NLP",
-            "status": "open",
+            "status": "mitigated" if (m.interference_has_split_scores and m.interference_noisy_top50 <= 10) else "open",
         },
         {
             "finding_id": "AUD-008",

@@ -1,8 +1,8 @@
 # Resumen publico de auditoria
 
-- Fecha: 2026-02-13T18:49:30.268119+00:00
-- Hallazgos abiertos: 9
-- P0: 0 | P1: 5 | P2: 4 | P3: 0
+- Fecha: 2026-02-13T19:09:24.653068+00:00
+- Hallazgos abiertos: 8
+- P0: 0 | P1: 4 | P2: 4 | P3: 0
 
 ## Estado de gates
 - G1_data_integrity: pass
@@ -13,7 +13,6 @@
 ## Riesgos prioritarios (P1)
 
 - AUD-005 (Ontologia del lenguaje): Benchmark ontologico sin validacion suficiente: metrics=yes; labeled_total=0 (en=0, es=0).
-- AUD-007 (Interferencia): 42/50 top rows son texto ruidoso/base64/repetitivo.
 - AUD-010 (Reproducibilidad): Dependencias en pyproject usan rangos '>=' y no existe lockfile.
 - AUD-011 (Ingenieria y mantenibilidad): No hay suite de tests ni workflows CI en el repositorio.
 - AUD-012 (Seguridad y compliance): Existe archivo local de token en texto plano bajo .secrets.

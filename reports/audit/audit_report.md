@@ -1,12 +1,12 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T18:49:30.268119+00:00
+- Generado: 2026-02-13T19:09:24.653068+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 9
-- Severidad: P0=0, P1=5, P2=4, P3=0
+- Hallazgos abiertos: 8
+- Severidad: P0=0, P1=4, P2=4, P3=0
 - Gate G1_data_integrity: pass
 - Gate G2_method_validity: fail
 - Gate G3_reproducibility: fail
@@ -70,12 +70,12 @@
   - Estado: mitigated
 
 ### Interferencia
-- [P1] AUD-007: 42/50 top rows son texto ruidoso/base64/repetitivo.
+- [P1] AUD-007: 0/50 top rows son texto ruidoso/base64/repetitivo; split_scores=yes.
   - Claim: Score alto identifica interferencia significativa.
   - Impacto: Muchos falsos positivos en top ranking; costo de revision manual elevado.
   - Evidencia: EVID-INTERF-001
   - Recomendacion: Separar score tecnico (ruido/formato) de score semantico (injection/disclaimer).
-  - Estado: open
+  - Estado: mitigated
 
 ### Incidencia humana
 - [P2] AUD-008: 34/50 top rows tienen tooling_refs>=10 (sesgo tecnico).

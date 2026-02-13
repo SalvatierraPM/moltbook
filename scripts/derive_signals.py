@@ -95,6 +95,9 @@ def compute_text_features(text: str) -> Dict[str, float | int | str | None]:
 
     inf = interference_score(text)
     features["interference_score"] = float(inf.get("score", 0.0))
+    features["interference_score_semantic"] = float(inf.get("score_semantic", 0.0))
+    features["interference_score_format"] = float(inf.get("score_format", 0.0))
+    features["interference_noise_score"] = float(inf.get("noise_score", 0.0))
     features["interference_injection_hits"] = float(inf.get("injection_hits", 0))
     features["interference_disclaimer_hits"] = float(inf.get("disclaimer_hits", 0))
     features["interference_code_fences"] = float(inf.get("code_fences", 0))
