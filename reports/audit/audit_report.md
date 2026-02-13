@@ -1,6 +1,6 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T18:13:51.391801+00:00
+- Generado: 2026-02-13T18:34:29.715632+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
@@ -54,10 +54,10 @@
   - Estado: mitigated
 
 ### Ontologia del lenguaje
-- [P1] AUD-005: No hay benchmark etiquetado ni error por idioma para validar reglas ontologicas.
+- [P1] AUD-005: Benchmark ontologico sin validacion suficiente: metrics=yes; labeled_total=0 (en=0, es=0).
   - Claim: Actos/moods son comparables entre idiomas.
   - Impacto: Riesgo alto de sesgo semantico en comparacion multilingue.
-  - Evidencia: EVID-SCHEMA-001|EVID-LANG-001
+  - Evidencia: EVID-SCHEMA-001|EVID-LANG-001|EVID-ONTO-BENCH-001|EVID-ONTO-BENCH-002
   - Recomendacion: Evaluar precision/recall con muestra etiquetada estratificada por idioma.
   - Estado: open
 

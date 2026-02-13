@@ -1,6 +1,6 @@
 # Resumen publico de auditoria
 
-- Fecha: 2026-02-13T18:13:51.391801+00:00
+- Fecha: 2026-02-13T18:34:29.715632+00:00
 - Hallazgos abiertos: 10
 - P0: 0 | P1: 6 | P2: 4 | P3: 0
 
@@ -12,7 +12,7 @@
 
 ## Riesgos prioritarios (P1)
 
-- AUD-005 (Ontologia del lenguaje): No hay benchmark etiquetado ni error por idioma para validar reglas ontologicas.
+- AUD-005 (Ontologia del lenguaje): Benchmark ontologico sin validacion suficiente: metrics=yes; labeled_total=0 (en=0, es=0).
 - AUD-006 (Sociologia y redes): Top mention node='w' pagerank=0.434; nodos ruido en top10=5.
 - AUD-007 (Interferencia): 42/50 top rows son texto ruidoso/base64/repetitivo.
 - AUD-010 (Reproducibilidad): Dependencias en pyproject usan rangos '>=' y no existe lockfile.

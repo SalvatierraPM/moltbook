@@ -100,6 +100,12 @@ class Metrics:
     meme_candidates_cultural_rows: int
     meme_candidates_technical_rows: int
     has_meme_double_ranking: bool
+    ontology_benchmark_has_metrics: bool
+    ontology_benchmark_labeled_total: int
+    ontology_benchmark_labeled_en: int
+    ontology_benchmark_labeled_es: int
+    ontology_benchmark_accuracy_en: float
+    ontology_benchmark_accuracy_es: float
     interference_noisy_top50: int
     incidence_tooling_top50: int
     lang_posts_sample: int
@@ -122,6 +128,15 @@ def compute_metrics() -> Metrics:
     interference = read_csv(DERIVED / "interference_top.csv")
     incidence = read_csv(DERIVED / "human_incidence_top.csv")
     language = read_csv(DERIVED / "public_language_distribution.csv")
+    bench_metrics_path = DERIVED / "ontology_benchmark_metrics.json"
+    bench_metrics = json.loads(bench_metrics_path.read_text(encoding="utf-8")) if bench_metrics_path.exists() else {}
+    labeled_total = to_int(bench_metrics.get("labeled_total"))
+    labeled_by_lang = bench_metrics.get("labeled_by_lang") or {}
+    acc_by_lang = bench_metrics.get("accuracy_by_lang") or {}
+    labeled_en = to_int(labeled_by_lang.get("en"))
+    labeled_es = to_int(labeled_by_lang.get("es"))
+    acc_en = to_float(acc_by_lang.get("en"))
+    acc_es = to_float(acc_by_lang.get("es"))
 
     created_min = min(parse_dt(coverage["posts_created_min"]), parse_dt(coverage["comments_created_min"]))
     created_max = max(parse_dt(coverage["posts_created_max"]), parse_dt(coverage["comments_created_max"]))
@@ -178,6 +193,12 @@ def compute_metrics() -> Metrics:
         meme_candidates_cultural_rows=len(memes_cultural),
         meme_candidates_technical_rows=len(memes_technical),
         has_meme_double_ranking=bool(memes_cultural) and bool(memes_technical),
+        ontology_benchmark_has_metrics=bench_metrics_path.exists(),
+        ontology_benchmark_labeled_total=labeled_total,
+        ontology_benchmark_labeled_en=labeled_en,
+        ontology_benchmark_labeled_es=labeled_es,
+        ontology_benchmark_accuracy_en=acc_en,
+        ontology_benchmark_accuracy_es=acc_es,
         interference_noisy_top50=interference_noisy_top50,
         incidence_tooling_top50=incidence_tooling_top50,
         lang_posts_sample=lang_posts_sample,
@@ -206,6 +227,8 @@ def build_evidence_index(now: str) -> list[dict[str, str]]:
         ("EVID-INTERF-001", DERIVED / "interference_top.csv", "inspect top interference rows", "Top score de interferencia"),
         ("EVID-INCID-001", DERIVED / "human_incidence_top.csv", "inspect top incidence rows", "Top score de incidencia humana"),
         ("EVID-LANG-001", DERIVED / "public_language_distribution.csv", "inspect language sample", "Distribucion por muestra"),
+        ("EVID-ONTO-BENCH-001", DERIVED / "ontology_benchmark_sample.csv", "inspect ontology benchmark scaffold", "Muestra para etiquetado humano de actos de habla"),
+        ("EVID-ONTO-BENCH-002", DERIVED / "ontology_benchmark_metrics.json", "inspect ontology benchmark metrics", "Metricas de validacion por idioma"),
         ("EVID-PYPROJECT-001", ROOT / "pyproject.toml", "inspect dependency constraints", "Riesgo de no fijar versiones"),
         ("EVID-TESTS-001", ROOT / "src", "find tests directories", "Cobertura de pruebas automatizadas"),
         ("EVID-CI-001", ROOT / ".github", "list CI workflows", "Automatizacion de validacion"),
@@ -435,12 +458,27 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "severity": "P1",
             "domain": "Ontologia del lenguaje",
             "claim": "Actos/moods son comparables entre idiomas.",
-            "issue": "No hay benchmark etiquetado ni error por idioma para validar reglas ontologicas.",
-            "evidence_ref": "EVID-SCHEMA-001|EVID-LANG-001",
+            "issue": (
+                "Benchmark ontologico sin validacion suficiente: "
+                f"metrics={'yes' if m.ontology_benchmark_has_metrics else 'no'}; "
+                f"labeled_total={m.ontology_benchmark_labeled_total} (en={m.ontology_benchmark_labeled_en}, es={m.ontology_benchmark_labeled_es})."
+            ),
+            "evidence_ref": "EVID-SCHEMA-001|EVID-LANG-001|EVID-ONTO-BENCH-001|EVID-ONTO-BENCH-002",
             "impact": "Riesgo alto de sesgo semantico en comparacion multilingue.",
             "recommendation": "Evaluar precision/recall con muestra etiquetada estratificada por idioma.",
             "owner": "Research",
-            "status": "open",
+            "status": (
+                "mitigated"
+                if (
+                    m.ontology_benchmark_has_metrics
+                    and m.ontology_benchmark_labeled_total >= 200
+                    and m.ontology_benchmark_labeled_en >= 50
+                    and m.ontology_benchmark_labeled_es >= 50
+                    and m.ontology_benchmark_accuracy_en >= 0.55
+                    and m.ontology_benchmark_accuracy_es >= 0.55
+                )
+                else "open"
+            ),
         },
         {
             "finding_id": "AUD-006",
