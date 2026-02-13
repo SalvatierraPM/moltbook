@@ -1,6 +1,5 @@
 task_id,severity,component,fix_type,effort_estimate,dependency,acceptance_criterion
 TASK-AUD-003,P2,Cobertura temporal,tecnico,S,EVID-COVERAGE-001,Mantener toggle por defecto en actividad real y reforzar notas en tablas run-based.
-TASK-AUD-004,P1,Memetica,metodologico,M,EVID-MEME-001,Agregar filtro de boilerplate y doble ranking: tecnico vs cultural.
 TASK-AUD-005,P1,Ontologia del lenguaje,metodologico,M,EVID-SCHEMA-001,Evaluar precision/recall con muestra etiquetada estratificada por idioma.
 TASK-AUD-006,P1,Sociologia y redes,tecnico,M,EVID-MENTION-001,Normalizar/filtrar handles invalidos antes del calculo de grafos.
 TASK-AUD-007,P1,Interferencia,tecnico,M,EVID-INTERF-001,Separar score tecnico (ruido/formato) de score semantico (injection/disclaimer).

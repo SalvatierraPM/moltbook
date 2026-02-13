@@ -95,7 +95,11 @@ class Metrics:
     mention_top_node: str
     mention_top_pagerank: float
     mention_noise_top10: int
-    memes_api_like_top20: int
+    memes_api_like_top20_raw: int
+    memes_api_like_top20_cultural: int
+    meme_candidates_cultural_rows: int
+    meme_candidates_technical_rows: int
+    has_meme_double_ranking: bool
     interference_noisy_top50: int
     incidence_tooling_top50: int
     lang_posts_sample: int
@@ -112,7 +116,9 @@ def compute_metrics() -> Metrics:
     coverage = json.loads((DERIVED / "coverage_quality.json").read_text(encoding="utf-8"))
     diffusion = read_csv(DERIVED / "diffusion_runs.csv")
     mention = read_csv(DERIVED / "mention_graph_centrality.csv")
-    memes = read_csv(DERIVED / "meme_candidates.csv")
+    memes_raw = read_csv(DERIVED / "meme_candidates.csv")
+    memes_cultural = read_csv(DERIVED / "meme_candidates_cultural.csv") if (DERIVED / "meme_candidates_cultural.csv").exists() else []
+    memes_technical = read_csv(DERIVED / "meme_candidates_technical.csv") if (DERIVED / "meme_candidates_technical.csv").exists() else []
     interference = read_csv(DERIVED / "interference_top.csv")
     incidence = read_csv(DERIVED / "human_incidence_top.csv")
     language = read_csv(DERIVED / "public_language_distribution.csv")
@@ -131,11 +137,13 @@ def compute_metrics() -> Metrics:
         1 for r in mention_sorted[:10] if noise_pat.match((r.get("node") or "").strip())
     )
 
-    memes_sorted = sorted(memes, key=lambda r: to_int(r.get("count")), reverse=True)
+    memes_sorted_raw = sorted(memes_raw, key=lambda r: to_int(r.get("count")), reverse=True)
+    memes_sorted_cultural = sorted(memes_cultural, key=lambda r: to_int(r.get("count")), reverse=True)
     api_like_pat = re.compile(r"(api|curl|agentmarket|jq|discover|v1|mbc20|xyz|0x)", re.IGNORECASE)
-    memes_api_like_top20 = sum(
-        1 for r in memes_sorted[:20] if api_like_pat.search((r.get("meme") or ""))
-    )
+    memes_api_like_top20_raw = sum(1 for r in memes_sorted_raw[:20] if api_like_pat.search((r.get("meme") or "")))
+    memes_api_like_top20_cultural = sum(
+        1 for r in memes_sorted_cultural[:20] if api_like_pat.search((r.get("meme") or ""))
+    ) if memes_sorted_cultural else memes_api_like_top20_raw
 
     inter_top50 = sorted(interference, key=lambda r: to_float(r.get("score")), reverse=True)[:50]
     interference_noisy_top50 = sum(1 for r in inter_top50 if is_noisy_text(r.get("text_excerpt", "")))
@@ -165,7 +173,11 @@ def compute_metrics() -> Metrics:
         mention_top_node=top_mention.get("node", ""),
         mention_top_pagerank=to_float(top_mention.get("pagerank")),
         mention_noise_top10=mention_noise_top10,
-        memes_api_like_top20=memes_api_like_top20,
+        memes_api_like_top20_raw=memes_api_like_top20_raw,
+        memes_api_like_top20_cultural=memes_api_like_top20_cultural,
+        meme_candidates_cultural_rows=len(memes_cultural),
+        meme_candidates_technical_rows=len(memes_technical),
+        has_meme_double_ranking=bool(memes_cultural) and bool(memes_technical),
         interference_noisy_top50=interference_noisy_top50,
         incidence_tooling_top50=incidence_tooling_top50,
         lang_posts_sample=lang_posts_sample,
@@ -188,6 +200,8 @@ def build_evidence_index(now: str) -> list[dict[str, str]]:
         ("EVID-DIFFUSION-001", DERIVED / "diffusion_runs.csv", "inspect run timeline", "Serie temporal por captura"),
         ("EVID-ACTIVITY-001", DERIVED / "activity_daily.csv", "inspect activity timeline", "Serie temporal por created_at"),
         ("EVID-MEME-001", DERIVED / "meme_candidates.csv", "rank meme candidates", "Top memes lexicales"),
+        ("EVID-MEME-002", DERIVED / "meme_candidates_cultural.csv", "rank cultural meme candidates", "Top memes (vista cultural filtrada)"),
+        ("EVID-MEME-003", DERIVED / "meme_candidates_technical.csv", "rank technical meme candidates", "Top memes (vista tecnica/boilerplate)"),
         ("EVID-MENTION-001", DERIVED / "mention_graph_centrality.csv", "inspect mention centrality", "Calidad del grafo de mentions"),
         ("EVID-INTERF-001", DERIVED / "interference_top.csv", "inspect top interference rows", "Top score de interferencia"),
         ("EVID-INCID-001", DERIVED / "human_incidence_top.csv", "inspect top incidence rows", "Top score de incidencia humana"),
@@ -247,10 +261,13 @@ def build_claim_matrix(m: Metrics) -> list[dict[str, Any]]:
         },
         {
             "claim_id": "CLM-004",
-            "claim": "El ranking top de memes lexicales esta dominado por cadenas tecnicas (API/tooling), no necesariamente por memes culturales.",
-            "evidence_datasets": "meme_candidates.csv",
-            "computation_notes": f"En top20, {m.memes_api_like_top20}/20 contienen patrones api/tooling (regex heuristica).",
-            "limitations": "La etiqueta 'tecnico' es heuristica; requiere filtro mas fino y doble ranking.",
+            "claim": "El ranking raw de memes lexicales estaba dominado por cadenas tecnicas (API/tooling); por eso se publica doble ranking (vista cultural filtrada + vista tecnica/boilerplate).",
+            "evidence_datasets": "meme_candidates.csv;meme_candidates_cultural.csv;meme_candidates_technical.csv",
+            "computation_notes": (
+                f"Raw top20: {m.memes_api_like_top20_raw}/20 con patrones api/tooling (regex). "
+                f"Vista cultural top20: {m.memes_api_like_top20_cultural}/20 con patrones api/tooling."
+            ),
+            "limitations": "La separacion cultural/tecnica es heuristica y requiere validacion manual/benchmark; se publica para evitar interpretacion misleading.",
             "confidence": "alta",
         },
         {
@@ -325,8 +342,11 @@ def build_data_lineage() -> list[dict[str, Any]]:
             "time_axis": "created_at",
             "source_files": "posts/comments normalizados",
             "transform_script": "scripts/meme_models.py",
-            "output_files": "meme_candidates.csv;meme_timeseries_hourly.parquet;meme_bursts.csv;meme_survival.csv;meme_classification.csv",
-            "notes": "Sesgo fuerte a boilerplate tecnico si no se filtra; requiere doble ranking.",
+            "output_files": (
+                "meme_candidates.csv;meme_candidates_cultural.csv;meme_candidates_technical.csv;"
+                "meme_timeseries_hourly.parquet;meme_bursts.csv;meme_survival.csv;meme_classification.csv"
+            ),
+            "notes": "Se publica doble ranking (cultural vs tecnico/boilerplate) para evitar confundir repeticion tecnica con meme cultural.",
         },
         {
             "metric_id": "MET-005",
@@ -396,12 +416,19 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "severity": "P1",
             "domain": "Memetica",
             "claim": "Top memes reflejan ideas culturales dominantes.",
-            "issue": f"{m.memes_api_like_top20}/20 memes top contienen patrones de API/tooling (boilerplate tecnico).",
-            "evidence_ref": "EVID-MEME-001",
+            "issue": (
+                f"Raw top20: {m.memes_api_like_top20_raw}/20 con patrones API/tooling; "
+                f"vista cultural top20: {m.memes_api_like_top20_cultural}/20."
+            ),
+            "evidence_ref": "EVID-MEME-001|EVID-MEME-002|EVID-MEME-003",
             "impact": "Alta probabilidad de confundir repeticion tecnica con meme cultural.",
             "recommendation": "Agregar filtro de boilerplate y doble ranking: tecnico vs cultural.",
             "owner": "NLP",
-            "status": "open",
+            "status": (
+                "mitigated"
+                if (m.has_meme_double_ranking and m.memes_api_like_top20_cultural <= 2 and m.meme_candidates_cultural_rows >= 50)
+                else "open"
+            ),
         },
         {
             "finding_id": "AUD-005",
@@ -585,6 +612,8 @@ def counts_by_severity(findings: list[dict[str, str]]) -> dict[str, int]:
 def build_report(now: str, m: Metrics, findings: list[dict[str, str]], gates: dict[str, Any]) -> str:
     severity = counts_by_severity(findings)
     open_findings = [f for f in findings if f["status"] != "mitigated"]
+    aud004 = next((f for f in findings if f.get("finding_id") == "AUD-004"), None)
+    t3 = "mitigado" if aud004 and aud004.get("status") == "mitigated" else "pendiente"
     lines = [
         "# Auditoria Integral v1",
         "",
@@ -646,7 +675,7 @@ def build_report(now: str, m: Metrics, findings: list[dict[str, str]], gates: di
             "## Validaciones obligatorias (T1-T10)",
             "- T1: Temporalidad UI (created_at vs run_time) -> mitigado parcialmente.",
             "- T2: Cobertura de submolts -> requiere score de representatividad.",
-            "- T3: Top memes sin boilerplate -> pendiente.",
+            f"- T3: Top memes sin boilerplate -> {t3}.",
             "- T4: Estabilidad ontologica multilengue -> pendiente benchmark.",
             "- T5: Mention graph sin ruido -> pendiente limpieza.",
             "- T6: Interferencia con separacion ruido/semantica -> pendiente.",

@@ -1,12 +1,12 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T17:38:20.400670+00:00
+- Generado: 2026-02-13T18:13:51.391801+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 11
-- Severidad: P0=0, P1=7, P2=4, P3=0
+- Hallazgos abiertos: 10
+- Severidad: P0=0, P1=6, P2=4, P3=0
 - Gate G1_data_integrity: fail
 - Gate G2_method_validity: fail
 - Gate G3_reproducibility: fail
@@ -46,12 +46,12 @@
   - Estado: open
 
 ### Memetica
-- [P1] AUD-004: 18/20 memes top contienen patrones de API/tooling (boilerplate tecnico).
+- [P1] AUD-004: Raw top20: 18/20 con patrones API/tooling; vista cultural top20: 0/20.
   - Claim: Top memes reflejan ideas culturales dominantes.
   - Impacto: Alta probabilidad de confundir repeticion tecnica con meme cultural.
-  - Evidencia: EVID-MEME-001
+  - Evidencia: EVID-MEME-001|EVID-MEME-002|EVID-MEME-003
   - Recomendacion: Agregar filtro de boilerplate y doble ranking: tecnico vs cultural.
-  - Estado: open
+  - Estado: mitigated
 
 ### Ontologia del lenguaje
 - [P1] AUD-005: No hay benchmark etiquetado ni error por idioma para validar reglas ontologicas.
@@ -136,7 +136,7 @@
 ## Validaciones obligatorias (T1-T10)
 - T1: Temporalidad UI (created_at vs run_time) -> mitigado parcialmente.
 - T2: Cobertura de submolts -> requiere score de representatividad.
-- T3: Top memes sin boilerplate -> pendiente.
+- T3: Top memes sin boilerplate -> mitigado.
 - T4: Estabilidad ontologica multilengue -> pendiente benchmark.
 - T5: Mention graph sin ruido -> pendiente limpieza.
 - T6: Interferencia con separacion ruido/semantica -> pendiente.

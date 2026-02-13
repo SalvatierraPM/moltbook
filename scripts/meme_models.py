@@ -5,6 +5,7 @@ import argparse
 import json
 import math
 import re
+import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +19,12 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.cluster import MiniBatchKMeans, DBSCAN
 
+# Allow running this script directly without requiring editable installs.
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
 from moltbook_analysis.analyze.language_ontology import speech_act_features
 from moltbook_analysis.analyze.text import clean_text
 
@@ -25,6 +32,113 @@ from moltbook_analysis.analyze.text import clean_text
 URL_RE = re.compile(r"https?://\\S+|www\\.\\S+", re.IGNORECASE)
 HASHTAG_RE = re.compile(r"#([\\w\\-]{1,50})", re.UNICODE)
 EMOJI_RE = re.compile(r"[\\U0001F300-\\U0001FAFF]")
+
+HEX_TOKEN_RE = re.compile(r"^(?:0x)?[0-9a-f]{4,}$", re.IGNORECASE)
+# gTLDs and common suffix tokens that often appear split as "<name> <tld>" after tokenization.
+TLD_TOKENS = {"com", "net", "org", "xyz", "io", "app", "dev", "cloud"}
+URL_TOKENS = {"http", "https", "www"}
+CLI_TOKENS = {"curl", "wget", "jq", "pip", "npm", "brew", "sudo", "apt", "bash", "zsh", "powershell"}
+API_TOKENS = {
+    "api",
+    "apis",
+    "endpoint",
+    "oauth",
+    "bearer",
+    "token",
+    "json",
+    "xml",
+    "rss",
+    "v1",
+    "v2",
+}
+# "Infra" tokens that are weak alone, but strong when combined with API/CLI/campaign patterns.
+INFRA_TOKENS = {"cloud", "sdk", "cli", "rss", "xml", "json"}
+# High-frequency campaign/spam tokens observed in Moltbook; kept as signals rather than stopwords.
+CAMPAIGN_TOKENS = {
+    "agentmarket",
+    "discover",
+    "mbc",
+    "mbc20",
+    "clawhub",
+    "openclaw",
+    "mint",
+    "tick",
+    "amt",
+    "op",
+}
+
+
+def classify_candidate_meme(phrase: str) -> Tuple[str, int, str]:
+    """
+    Classify a lexical meme candidate into a coarse bucket:
+    - cultural_candidate: likely conversational idea-bearing phrase
+    - technical_boilerplate: likely template/URL/CLI/API/campaign boilerplate
+
+    This is intentionally conservative and produces *double rankings* in the outputs
+    (cultural vs technical), to avoid confusing repetition of technical templates with
+    "cultural dominance" in the memetics module.
+    """
+    raw = (phrase or "").strip().lower()
+    if not raw:
+        return ("cultural_candidate", 0, "")
+    tokens = [t for t in raw.split() if t]
+
+    score = 0
+    reasons: List[str] = []
+
+    has_url = any(t in URL_TOKENS for t in tokens)
+    if has_url:
+        score += 3
+        reasons.append("url_token")
+
+    # Domain-like tokenization often becomes "example com" or "moltbook com post" after tokenization.
+    # Treat any presence of a TLD token combined with a word-ish token as domain boilerplate.
+    has_tld = any(t in TLD_TOKENS for t in tokens) and any(len(t) >= 4 and t.isalpha() for t in tokens)
+    if has_tld:
+        score += 3
+        reasons.append("tld_token")
+
+    has_cli = any(t in CLI_TOKENS for t in tokens)
+    if has_cli:
+        score += 3
+        reasons.append("cli_token")
+
+    api_hits = sum(1 for t in tokens if t in API_TOKENS)
+    if api_hits:
+        score += min(6, api_hits * 2)
+        reasons.append(f"api_token:{api_hits}")
+
+    has_0x = any(t.startswith("0x") for t in tokens)
+    if has_0x:
+        score += 3
+        reasons.append("0x_token")
+
+    has_hex = any(HEX_TOKEN_RE.match(t) for t in tokens)
+    if has_hex:
+        score += 3
+        reasons.append("hex_token")
+
+    camp_hits = sum(1 for t in tokens if t in CAMPAIGN_TOKENS)
+    if camp_hits:
+        score += min(6, camp_hits * 2)
+        reasons.append(f"campaign_token:{camp_hits}")
+
+    infra_hits = sum(1 for t in tokens if t in INFRA_TOKENS)
+    if infra_hits and (api_hits or camp_hits or has_cli):
+        score += 2
+        reasons.append(f"infra_token:{infra_hits}")
+
+    has_digits = any(t.isdigit() and len(t) >= 2 for t in tokens)
+    has_digits3 = any(t.isdigit() and len(t) >= 3 for t in tokens)
+    # Numeric-heavy ngrams are frequently campaign IDs / airdrop boilerplate.
+    if has_digits:
+        score += 1
+        reasons.append("digits")
+
+    hard_boilerplate = has_url or has_tld or has_cli or has_hex or has_0x
+    technical = hard_boilerplate or api_hits > 0 or camp_hits > 0 or has_digits3
+    category = "technical_boilerplate" if technical or score >= 4 else "cultural_candidate"
+    return (category, score, "|".join(reasons))
 
 
 def iter_jsonl(path: Path) -> Iterable[dict]:
@@ -651,12 +765,28 @@ def main() -> None:
             for i, term in zip(top_idx, top_terms)
         ]
     )
+    if not candidates.empty:
+        categories = candidates["meme"].apply(classify_candidate_meme)
+        candidates["candidate_category"] = categories.apply(lambda x: x[0])
+        candidates["boilerplate_score"] = categories.apply(lambda x: x[1])
+        candidates["boilerplate_reasons"] = categories.apply(lambda x: x[2])
     candidates.to_csv(out_dir / "meme_candidates.csv", index=False)
+    # Double ranking for auditability: technical boilerplate vs cultural candidates.
+    if not candidates.empty:
+        cultural = candidates[candidates["candidate_category"] == "cultural_candidate"].copy()
+        technical = candidates[candidates["candidate_category"] != "cultural_candidate"].copy()
+        cultural.sort_values(["count", "boilerplate_score"], ascending=[False, True]).to_csv(
+            out_dir / "meme_candidates_cultural.csv", index=False
+        )
+        technical.sort_values(["boilerplate_score", "count"], ascending=[False, False]).to_csv(
+            out_dir / "meme_candidates_technical.csv", index=False
+        )
     if not semantic_labels.empty:
         semantic_labels.to_csv(out_dir / "semantic_clusters.csv", index=False)
 
     # Bursts on global lexical memes
     bursts_rows = []
+    burst_score_by_meme: Dict[str, float] = defaultdict(float)
     if not lex_ts_global.empty:
         lex_ts_global["hour"] = pd.to_datetime(lex_ts_global["hour"], utc=True)
         for meme, g in lex_ts_global.groupby("meme"):
@@ -664,6 +794,9 @@ def main() -> None:
             counts_list = series["count"].astype(int).tolist()
             bursts = kleinberg_bursts(counts_list, s=args.burst_s, gamma=args.burst_gamma)
             for start, end, level in bursts:
+                # Burst score proxy: integrate level over duration (hours).
+                duration = max(1, int(end - start + 1))
+                burst_score_by_meme[meme] += float(level * duration)
                 bursts_rows.append(
                     {
                         "meme": meme,
@@ -691,7 +824,7 @@ def main() -> None:
                     "lifetime_hours": lifetime,
                     "submolt_entropy": ent,
                     "submolts_touched": len(sub_counts),
-                    "burst_score": len(bursts_rows),
+                    "burst_score": burst_score_by_meme.get(meme, 0.0),
                 }
             )
     metrics_df = pd.DataFrame(metrics_rows)
