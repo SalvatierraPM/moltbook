@@ -1,16 +1,16 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T19:18:36.997555+00:00
+- Generado: 2026-02-13T19:24:04.282817+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 6
-- Severidad: P0=0, P1=2, P2=4, P3=0
+- Hallazgos abiertos: 5
+- Severidad: P0=0, P1=1, P2=4, P3=0
 - Gate G1_data_integrity: pass
 - Gate G2_method_validity: fail
 - Gate G3_reproducibility: pass
-- Gate G4_public_safety: fail
+- Gate G4_public_safety: pass
 
 ## Scorecard de calidad de datos
 - Posts: 152,980
@@ -110,12 +110,12 @@
   - Estado: mitigated
 
 ### Seguridad y compliance
-- [P1] AUD-012: Existe archivo local de token en texto plano bajo .secrets.
+- [P1] AUD-012: Token en texto plano bajo .secrets: no.
   - Claim: Operacion de publicacion no expone secretos.
   - Impacto: Riesgo alto de fuga accidental por copia, backup o comando incorrecto.
   - Evidencia: EVID-SECRETS-001
   - Recomendacion: Mover secretos a keychain/env temporal y rotar token activo.
-  - Estado: open
+  - Estado: mitigated
 
 ### Operacion deploy
 - [P2] AUD-013: Hay evidencia de sitio Netlify localmente linkeado, pero no evidencia en repo de integracion GitHub.

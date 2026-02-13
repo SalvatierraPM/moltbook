@@ -9,5 +9,5 @@ gates:
     status: pass
     criterion: "Aprobado si runbook y entorno reproducen outputs nucleares."
   G4_public_safety:
-    status: fail
+    status: pass
     criterion: "Aprobado si no hay riesgo de seguridad/compliance sin mitigacion."
