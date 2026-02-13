@@ -1,6 +1,4 @@
 task_id,severity,component,fix_type,effort_estimate,dependency,acceptance_criterion
-TASK-AUD-001,P1,Claims e inferencia,metodologico,M,EVID-REPORT-001,Publicar una tabla de claims con evidencia primaria y limites explicitos por claim.
-TASK-AUD-002,P1,Linaje de datos,tecnico,M,EVID-SCHEMA-001,"Crear data lineage table (metrica, fuente, transformacion, script, salida)."
 TASK-AUD-003,P2,Cobertura temporal,tecnico,S,EVID-COVERAGE-001,Mantener toggle por defecto en actividad real y reforzar notas en tablas run-based.
 TASK-AUD-004,P1,Memetica,metodologico,M,EVID-MEME-001,Agregar filtro de boilerplate y doble ranking: tecnico vs cultural.
 TASK-AUD-005,P1,Ontologia del lenguaje,metodologico,M,EVID-SCHEMA-001,Evaluar precision/recall con muestra etiquetada estratificada por idioma.

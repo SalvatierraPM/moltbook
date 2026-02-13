@@ -1,12 +1,12 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T17:20:25.069770+00:00
+- Generado: 2026-02-13T17:38:20.400670+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 13
-- Severidad: P0=0, P1=9, P2=4, P3=0
+- Hallazgos abiertos: 11
+- Severidad: P0=0, P1=7, P2=4, P3=0
 - Gate G1_data_integrity: fail
 - Gate G2_method_validity: fail
 - Gate G3_reproducibility: fail
@@ -27,7 +27,7 @@
   - Impacto: Riesgo de sobregeneralizacion academica en conclusiones centrales.
   - Evidencia: EVID-REPORT-001|EVID-SCHEMA-001
   - Recomendacion: Publicar una tabla de claims con evidencia primaria y limites explicitos por claim.
-  - Estado: open
+  - Estado: mitigated
 
 ### Linaje de datos
 - [P1] AUD-002: No existe artefacto formal de linaje campo-a-campo para metricas criticas.
@@ -35,7 +35,7 @@
   - Impacto: Dificulta auditoria externa y trazabilidad reproducible.
   - Evidencia: EVID-SCHEMA-001|EVID-DIFFUSION-001|EVID-ACTIVITY-001
   - Recomendacion: Crear data lineage table (metrica, fuente, transformacion, script, salida).
-  - Estado: open
+  - Estado: mitigated
 
 ### Cobertura temporal
 - [P2] AUD-003: Ventana created_at=14.9 dias vs run_time=6.0 dias con 27 runs.

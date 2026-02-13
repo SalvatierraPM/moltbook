@@ -4,7 +4,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/reports/public_report.md",
     "command": "read report claims",
     "hash": "fbdfba6c0c24f8f9954ded84fcea09f8b1b980625ff7cb70b9bd2656a5787ba1",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Reporte publico base"
   },
   {
@@ -12,7 +12,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/reports/analysis_schema.md",
     "command": "read analysis schema",
     "hash": "47fc990573f5d1f41295be1530682693ec9f86e31a38eb3657fceb1bbecf06f2",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Esquema metodologico"
   },
   {
@@ -20,7 +20,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/coverage_quality.json",
     "command": "inspect coverage file",
     "hash": "e468f56f2f74c9d379e4e25989f9f9d5c4518a892a4b7116d9be3ae477c85356",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Duplicados y ventanas temporales"
   },
   {
@@ -28,7 +28,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/diffusion_runs.csv",
     "command": "inspect run timeline",
     "hash": "c89c8aa5136a311117c278fe6c245eb292877d0ad0d49f5fcceae2f0cb1059a7",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Serie temporal por captura"
   },
   {
@@ -36,7 +36,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/activity_daily.csv",
     "command": "inspect activity timeline",
     "hash": "3246624ed8b2b603e334a15b39b25178f9990e20ff8fe2cfc2ea650dd4662f0b",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Serie temporal por created_at"
   },
   {
@@ -44,7 +44,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/meme_candidates.csv",
     "command": "rank meme candidates",
     "hash": "1f9b410a96c643ab1d031d97ac84c8fb60a879fb8b87ec42d3b8da38fefc05b3",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Top memes lexicales"
   },
   {
@@ -52,7 +52,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/mention_graph_centrality.csv",
     "command": "inspect mention centrality",
     "hash": "720df5e9b688495f227c122cf73ed7015f0bd8691ff941ed627b39e90177501e",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Calidad del grafo de mentions"
   },
   {
@@ -60,7 +60,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/interference_top.csv",
     "command": "inspect top interference rows",
     "hash": "75aa0e703495dba2f53a617f16c7137507b88aba140b1c9da738de1dc1bf00e9",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Top score de interferencia"
   },
   {
@@ -68,7 +68,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/human_incidence_top.csv",
     "command": "inspect top incidence rows",
     "hash": "8ef5188bf593302f53d678832fd153ee4c92c4cdb53d16d131f64300b46c0d2c",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Top score de incidencia humana"
   },
   {
@@ -76,7 +76,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/data/derived/public_language_distribution.csv",
     "command": "inspect language sample",
     "hash": "cc1a5f22ad943e4b2ce50ae93683d118c5c6809079066a72f546ce5f0269a835",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Distribucion por muestra"
   },
   {
@@ -84,7 +84,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/pyproject.toml",
     "command": "inspect dependency constraints",
     "hash": "80f516255d55c4882d6267165123f64223e8923deb768ca3f2f62169ab29862e",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Riesgo de no fijar versiones"
   },
   {
@@ -92,7 +92,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/src",
     "command": "find tests directories",
     "hash": "",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Cobertura de pruebas automatizadas"
   },
   {
@@ -100,7 +100,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/.github",
     "command": "list CI workflows",
     "hash": "",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Automatizacion de validacion"
   },
   {
@@ -108,15 +108,15 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/scripts/fetch_moltbook_api.py",
     "command": "grep random.choice",
     "hash": "5663b01c62192f22841df3d8ed3f335ca7c237658724c04a0fa91781e606eacc",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "No determinismo de ingesta"
   },
   {
     "evidence_ref": "EVID-SECRETS-001",
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/.secrets/github_token",
     "command": "check local secret file",
-    "hash": "404aca8180ffbc2ad801fb90f8607ac58c79e387b0baf93d04bb035f967501f4",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "hash": "",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Riesgo operativo de secretos locales"
   },
   {
@@ -124,7 +124,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/reporte-analisis-memetico-ontologico-moltbook-ui/.netlify/state.json",
     "command": "inspect netlify linkage",
     "hash": "47a6cd9400d7667cf4f7be57fc5b2ee80fe762cb83de73214ceafb7df92ba9fe",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Sitio Netlify linkeado localmente"
   },
   {
@@ -132,7 +132,7 @@
     "source_path": "/Users/pabli/Desktop/Coding/Moltbook/site/analysis.html",
     "command": "inspect temporal labels",
     "hash": "79e3dd6fa814205e84fc2f86d207a351d4bf4aabd8e4b8d4d073e982705a8393",
-    "timestamp": "2026-02-13T17:20:25.069770+00:00",
+    "timestamp": "2026-02-13T17:38:20.400670+00:00",
     "notes": "Separacion created_at vs run_time"
   }
 ]
