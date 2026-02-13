@@ -220,6 +220,12 @@ def build_evidence_index(now: str) -> list[dict[str, str]]:
     sources: list[tuple[str, Path, str, str]] = [
         ("EVID-REPORT-001", ROOT / "reports" / "public_report.md", "read report claims", "Reporte publico base"),
         ("EVID-SCHEMA-001", ROOT / "reports" / "analysis_schema.md", "read analysis schema", "Esquema metodologico"),
+        (
+            "EVID-ONTO-LABEL-001",
+            ROOT / "reports" / "audit" / "ontology_labeling_protocol.md",
+            "read labeling protocol",
+            "Protocolo de etiquetado para benchmark ontologico (actos del habla)",
+        ),
         ("EVID-COVERAGE-001", DERIVED / "coverage_quality.json", "inspect coverage file", "Duplicados y ventanas temporales"),
         ("EVID-DIFFUSION-001", DERIVED / "diffusion_runs.csv", "inspect run timeline", "Serie temporal por captura"),
         ("EVID-ACTIVITY-001", DERIVED / "activity_daily.csv", "inspect activity timeline", "Serie temporal por created_at"),
@@ -666,6 +672,28 @@ def build_report(now: str, m: Metrics, findings: list[dict[str, str]], gates: di
     open_findings = [f for f in findings if f["status"] != "mitigated"]
     aud004 = next((f for f in findings if f.get("finding_id") == "AUD-004"), None)
     t3 = "mitigado" if aud004 and aud004.get("status") == "mitigated" else "pendiente"
+    aud005 = next((f for f in findings if f.get("finding_id") == "AUD-005"), None)
+    aud006 = next((f for f in findings if f.get("finding_id") == "AUD-006"), None)
+    aud007 = next((f for f in findings if f.get("finding_id") == "AUD-007"), None)
+    aud010 = next((f for f in findings if f.get("finding_id") == "AUD-010"), None)
+    aud011 = next((f for f in findings if f.get("finding_id") == "AUD-011"), None)
+    aud012 = next((f for f in findings if f.get("finding_id") == "AUD-012"), None)
+    t4 = "mitigado" if aud005 and aud005.get("status") == "mitigated" else "pendiente benchmark"
+    t5 = "mitigado" if aud006 and aud006.get("status") == "mitigated" else "pendiente"
+    t6 = "mitigado" if aud007 and aud007.get("status") == "mitigated" else "pendiente"
+    t8 = (
+        "mitigado"
+        if (
+            aud010
+            and aud010.get("status") == "mitigated"
+            and aud011
+            and aud011.get("status") == "mitigated"
+            and m.has_lockfile
+            and m.has_ci
+        )
+        else "pendiente"
+    )
+    t9 = "mitigado" if aud012 and aud012.get("status") == "mitigated" else "pendiente"
     lines = [
         "# Auditoria Integral v1",
         "",
@@ -728,17 +756,17 @@ def build_report(now: str, m: Metrics, findings: list[dict[str, str]], gates: di
             "- T1: Temporalidad UI (created_at vs run_time) -> mitigado parcialmente.",
             "- T2: Cobertura de submolts -> requiere score de representatividad.",
             f"- T3: Top memes sin boilerplate -> {t3}.",
-            "- T4: Estabilidad ontologica multilengue -> pendiente benchmark.",
-            "- T5: Mention graph sin ruido -> pendiente limpieza.",
-            "- T6: Interferencia con separacion ruido/semantica -> pendiente.",
+            f"- T4: Estabilidad ontologica multilengue -> {t4}.",
+            f"- T5: Mention graph sin ruido -> {t5}.",
+            f"- T6: Interferencia con separacion ruido/semantica -> {t6}.",
             "- T7: Sensibilidad embeddings -> pendiente.",
-            "- T8: Rerun parcial reproducible -> bloqueado por lockfile/CI ausentes.",
-            "- T9: Secretos fuera de repos operativos -> pendiente.",
+            f"- T8: Rerun parcial reproducible -> {t8}.",
+            f"- T9: Secretos fuera de repos operativos -> {t9}.",
             "- T10: Consistencia reporte/UI de definiciones -> parcialmente cumplido.",
             "",
             "## Riesgos residuales",
             "- Interpretacion academica aun sensible a sesgos de heuristicas.",
-            "- Riesgo operativo por gestion manual de deploy y secretos.",
+            "- Riesgo operativo: deploy puede depender de pasos manuales si GitHub->Netlify no esta documentado.",
             "",
         ]
     )
@@ -767,7 +795,7 @@ def build_public_summary(now: str, findings: list[dict[str, str]], gates: dict[s
         [
             "",
             "## Proximo hito",
-            "- Cerrar hallazgos P1 de memetica, redes, interferencia, reproducibilidad y seguridad.",
+            "- Cerrar AUD-005 (benchmark ontologico multilengue) para validar comparabilidad de actos/moods.",
         ]
     )
     return "\n".join(lines)

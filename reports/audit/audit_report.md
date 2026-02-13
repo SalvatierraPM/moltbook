@@ -1,6 +1,6 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T19:24:04.282817+00:00
+- Generado: 2026-02-13T19:47:52.496891+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
@@ -138,13 +138,13 @@
 - T2: Cobertura de submolts -> requiere score de representatividad.
 - T3: Top memes sin boilerplate -> mitigado.
 - T4: Estabilidad ontologica multilengue -> pendiente benchmark.
-- T5: Mention graph sin ruido -> pendiente limpieza.
-- T6: Interferencia con separacion ruido/semantica -> pendiente.
+- T5: Mention graph sin ruido -> mitigado.
+- T6: Interferencia con separacion ruido/semantica -> mitigado.
 - T7: Sensibilidad embeddings -> pendiente.
-- T8: Rerun parcial reproducible -> bloqueado por lockfile/CI ausentes.
-- T9: Secretos fuera de repos operativos -> pendiente.
+- T8: Rerun parcial reproducible -> mitigado.
+- T9: Secretos fuera de repos operativos -> mitigado.
 - T10: Consistencia reporte/UI de definiciones -> parcialmente cumplido.
 
 ## Riesgos residuales
 - Interpretacion academica aun sensible a sesgos de heuristicas.
-- Riesgo operativo por gestion manual de deploy y secretos.
+- Riesgo operativo: deploy puede depender de pasos manuales si GitHub->Netlify no esta documentado.

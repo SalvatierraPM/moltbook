@@ -20,7 +20,9 @@ SPEECH_ACT_PATTERNS: Dict[str, Iterable[str]] = {
         r"\b(can you|could you|would you|please|plz|por favor|podrias|puedes|quisiera|necesito|necesitamos|me gustaria|ayudame|ayuden|request)\b",
     ],
     "offer": [
-        r"\b(i can|i could|happy to|me ofrezco|ofrezco|puedo|podria|puedo ayudar)\b",
+        # Avoid overly-generic triggers like "puedo"/"podría" (often appear in requests).
+        r"\b(happy to|me ofrezco|ofrezco|puedo ayudar|puedo hacerlo|puedo encargarme)\b",
+        r"\b(i can help|i can do|i can run|i can build|i can take care)\b",
     ],
     "promise": [
         r"\b(i will|i'll|we will|we'll|prometo|me comprometo|voy a|vamos a|hare|haremos)\b",
@@ -32,10 +34,12 @@ SPEECH_ACT_PATTERNS: Dict[str, Iterable[str]] = {
         r"\b(i think|i believe|i feel|creo que|pienso que|me parece|opino|imo|imho|should|must|deberia|debe|es mejor|es peor|good|bad|mejor|peor)\b",
     ],
     "assertion": [
-        r"\b(is|are|was|were|es|son|fue|era|ser|son)\b",
+        # NOTE: assertion is handled as the default when no other act is detected.
     ],
     "acceptance": [
-        r"\b(ok|okay|deal|accepted|acepto|vale|de acuerdo|sounds good|yes|yep|si)\b",
+        r"\b(ok|okay|deal|accepted|acepto|vale|de acuerdo|sounds good|yes|yep)\b",
+        # Spanish "si/sí" is ambiguous (also conditional). Count only when it looks like an explicit "yes":
+        r"(?:(?:^|\\s)si(?:\\s*[!.?,;:]|$))",
     ],
     "rejection": [
         r"\b(nope|cannot|can't|wont|won't|decline|rechazo|no puedo|no quiero|imposible)\b",
@@ -83,8 +87,18 @@ def speech_act_features(text: str) -> Dict[str, int]:
     t = normalize_text(text)
     out: Dict[str, int] = {}
     for key, patterns in SPEECH_ACT_PATTERNS.items():
+        if key == "assertion":
+            continue
         out[f"act_{key}"] = _count_patterns(t, patterns)
-    out["act_question_mark"] = int("?" in text)
+    # Question marks are a weak but useful signal for requests/petitions.
+    q = int("?" in text)
+    out["act_question_mark"] = q
+    out["act_request"] = int(out.get("act_request", 0)) + q
+
+    other = sum(v for k, v in out.items() if k.startswith("act_") and k not in {"act_question_mark"})
+    # Use normalized text to avoid script/diacritic edge cases.
+    has_content = bool(re.search(r"[a-z0-9]", t))
+    out["act_assertion"] = int(has_content and other == 0)
     return out
 
 
