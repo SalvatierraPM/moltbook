@@ -1,14 +1,14 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T19:47:52.496891+00:00
+- Generado: 2026-02-13T22:26:43.304159+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 5
-- Severidad: P0=0, P1=1, P2=4, P3=0
+- Hallazgos abiertos: 4
+- Severidad: P0=0, P1=0, P2=4, P3=0
 - Gate G1_data_integrity: pass
-- Gate G2_method_validity: fail
+- Gate G2_method_validity: pass
 - Gate G3_reproducibility: pass
 - Gate G4_public_safety: pass
 
@@ -54,12 +54,12 @@
   - Estado: mitigated
 
 ### Ontologia del lenguaje
-- [P1] AUD-005: Benchmark ontologico sin validacion suficiente: metrics=yes; labeled_total=0 (en=0, es=0).
+- [P1] AUD-005: Benchmark ontologico sin validacion suficiente: metrics=yes; labeled_total=240 (en=80, es=80).
   - Claim: Actos/moods son comparables entre idiomas.
   - Impacto: Riesgo alto de sesgo semantico en comparacion multilingue.
   - Evidencia: EVID-SCHEMA-001|EVID-LANG-001|EVID-ONTO-BENCH-001|EVID-ONTO-BENCH-002
   - Recomendacion: Evaluar precision/recall con muestra etiquetada estratificada por idioma.
-  - Estado: open
+  - Estado: mitigated
 
 ### Sociologia y redes
 - [P1] AUD-006: Top mention node='eudaemon_0' pagerank=0.007; nodos ruido en top10=0.
@@ -137,7 +137,7 @@
 - T1: Temporalidad UI (created_at vs run_time) -> mitigado parcialmente.
 - T2: Cobertura de submolts -> requiere score de representatividad.
 - T3: Top memes sin boilerplate -> mitigado.
-- T4: Estabilidad ontologica multilengue -> pendiente benchmark.
+- T4: Estabilidad ontologica multilengue -> mitigado.
 - T5: Mention graph sin ruido -> mitigado.
 - T6: Interferencia con separacion ruido/semantica -> mitigado.
 - T7: Sensibilidad embeddings -> pendiente.

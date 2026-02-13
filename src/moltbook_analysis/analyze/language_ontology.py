@@ -17,35 +17,58 @@ def _count_patterns(text: str, patterns: Iterable[str]) -> int:
 
 SPEECH_ACT_PATTERNS: Dict[str, Iterable[str]] = {
     "request": [
-        r"\b(can you|could you|would you|please|plz|por favor|podrias|puedes|quisiera|necesito|necesitamos|me gustaria|ayudame|ayuden|request)\b",
+        # Direct requests / questions aimed at the interlocutor.
+        r"\b(can you|could you|would you|please|plz|request)\b",
+        # ES
+        r"\b(por favor|podrias|podri(as|amos|an)|puedes|pueden|quisiera|necesito|necesitamos|me gustaria|ayudame|ayuden|que opinas|que piensas|puedes llevar|puedes compartir|puedes ayudar)\b",
+        # PT
+        r"\b(por favor|pode(m)?|poderia(m)?|preciso|precisamos|me ajuda|me ajude|o que voce acha|qual e|como voce|pode compartilhar)\b",
     ],
     "offer": [
-        # Avoid overly-generic triggers like "puedo"/"podría" (often appear in requests).
-        r"\b(happy to|me ofrezco|ofrezco|puedo ayudar|puedo hacerlo|puedo encargarme)\b",
-        r"\b(i can help|i can do|i can run|i can build|i can take care)\b",
+        # Offers of help/resources/services (commercial or cooperative).
+        r"\b(happy to|i can help|i can do|i can run|i can build|i can take care|i can share|i can provide|i can expose|i can hook)\b",
+        # ES
+        r"\b(me ofrezco|te ofrezco|ofrezco|ofrecemos|puedo ayudarte|puedo ayudar|puedo hacerlo|puedo encargarme|puedo compartir|acceso (gratuito|gratis)|por solo|por apenas|consultoria)\b",
+        # PT
+        r"\b(me ofereco|ofereco|oferecemos|posso ajudar|posso fazer|posso compartilhar|acesso (gratuito|gratis)|de graca|zero custo|por apenas|consultoria)\b",
     ],
     "promise": [
-        r"\b(i will|i'll|we will|we'll|prometo|me comprometo|voy a|vamos a|hare|haremos)\b",
+        # Explicit commitments to future action (avoid generic "vou/vamos a" which are common in non-promissory text).
+        r"\b(i will|i'll|we will|we'll|prometo|me comprometo|hare|haremos)\b",
+        r"\b(voy a (hacer|dar|tomar|compartir|ayudar)|vamos a (hacer|dar|tomar|compartir|ayudar))\b",
+        r"\b(vou (fazer|dar|tomar|compartilhar|ajudar)|vamos (fazer|dar|tomar|compartilhar|ajudar))\b",
     ],
     "declaration": [
-        r"\b(i declare|declaro|announce|anuncio|proclamo|decreto|nombro|designo|queda)\b",
+        r"\b(i declare|declare|i hereby|announce|anuncio|declaro|proclamo|decreto|nombro|designo|queda|queda declarado|a partir de ahora)\b",
     ],
     "judgment": [
-        r"\b(i think|i believe|i feel|creo que|pienso que|me parece|opino|imo|imho|should|must|deberia|debe|es mejor|es peor|good|bad|mejor|peor)\b",
+        # Opinions, evaluations, and normative claims.
+        r"\b(i think|i believe|i feel|in my view|my take|i'd say|push back|worth)\b",
+        r"\b(should|must|need to|it seems|i argue)\b",
+        # ES
+        r"\b(creo que|pienso que|me parece|opino|diria que|imo|imho)\b",
+        r"\b(deberia|deberiamos|debe|debemos|hay que|es hora de|es necesario|no podemos|vale la pena|conviene|me encanta|me gusta|es mejor|es peor|mejor|peor|buena pregunta)\b",
+        # PT
+        r"\b(acho que|penso que|me parece|na minha opiniao|no meu ponto de vista)\b",
+        r"\b(deveria|deveriamos|deve|devemos|e hora de|e necessario|nao podemos|vale a pena|concordo|discordo|bom ver|otimo|excelente|fantastico)\b",
     ],
     "assertion": [
         # NOTE: assertion is handled as the default when no other act is detected.
     ],
     "acceptance": [
-        r"\b(ok|okay|deal|accepted|acepto|vale|de acuerdo|sounds good|yes|yep)\b",
+        r"\b(ok|okay|deal|accepted|sounds good|yes|yep)\b",
+        # ES/PT
+        r"\b(acepto|vale|de acuerdo|totalmente de acuerdo|concordo|fechado|combinado)\b",
         # Spanish "si/sí" is ambiguous (also conditional). Count only when it looks like an explicit "yes":
         r"(?:(?:^|\\s)si(?:\\s*[!.?,;:]|$))",
     ],
     "rejection": [
         r"\b(nope|cannot|can't|wont|won't|decline|rechazo|no puedo|no quiero|imposible)\b",
+        r"\b(discordo|nao posso|nao quero|nao vou|recuso)\b",
     ],
     "clarification": [
         r"\b(what do you mean|clarify|can you explain|explain|no entiendo|que quieres decir|aclara|clarifica)\b",
+        r"\b(no entendi|o que voce quis dizer|pode explicar|explica)\b",
     ],
 }
 
@@ -90,10 +113,21 @@ def speech_act_features(text: str) -> Dict[str, int]:
         if key == "assertion":
             continue
         out[f"act_{key}"] = _count_patterns(t, patterns)
-    # Question marks are a weak but useful signal for requests/petitions.
+    # Question marks are common (including rhetorical ones). We expose them as a feature and only
+    # use them as a fallback request signal when no stronger act is detected.
     q = int("?" in text)
     out["act_question_mark"] = q
-    out["act_request"] = int(out.get("act_request", 0)) + q
+    if q and int(out.get("act_request", 0)) == 0:
+        stronger = (
+            int(out.get("act_offer", 0))
+            + int(out.get("act_promise", 0))
+            + int(out.get("act_declaration", 0))
+            + int(out.get("act_acceptance", 0))
+            + int(out.get("act_rejection", 0))
+            + int(out.get("act_clarification", 0))
+        )
+        if stronger == 0 and int(out.get("act_judgment", 0)) == 0:
+            out["act_request"] = 1
 
     other = sum(v for k, v in out.items() if k.startswith("act_") and k not in {"act_question_mark"})
     # Use normalized text to avoid script/diacritic edge cases.

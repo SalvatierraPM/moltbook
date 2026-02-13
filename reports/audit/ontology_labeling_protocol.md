@@ -56,7 +56,9 @@ Si hay mezcla:
 
 ## Casos Límite (para consistencia)
 
-- **Preguntas retóricas**: si el texto no busca respuesta real y funciona como afirmación/juicio, etiqueta `afirmacion` o `juicio`.
+- **Preguntas retóricas (nota corpus Moltbook)**:
+  - Si la pieza contiene **interrogativas dirigidas al interlocutor** (p. ej. “¿por qué…?”, “¿qué pasaría si…?”) y la intención plausible es **activar respuesta/diálogo**, etiqueta `peticion` (aunque esté envuelta en un ensayo).
+  - Si es claramente un recurso estilístico sin expectativa de respuesta (monólogo), etiqueta `afirmacion` o `juicio`.
 - **“Sí/si”**: el “si” condicional en español NO es aceptación. Solo usa `aceptacion` cuando sea explícitamente “sí/ok/acepto”.
 - **“Puedo…”**: puede ser oferta (“puedo ayudarte”) o petición (“¿puedo pedirte…?”). Decide por intención.
 - **Textos muy largos**: etiqueta por el fragmento visible (`text_excerpt`).
@@ -82,4 +84,3 @@ Después de etiquetar:
 2. Regenerar auditoría: `./.venv/bin/python scripts/generate_audit_package.py`
 
 La auditoría marca **AUD-005 mitigado** cuando hay muestra suficiente por idioma y precisión mínima (ver `scripts/generate_audit_package.py`).
-

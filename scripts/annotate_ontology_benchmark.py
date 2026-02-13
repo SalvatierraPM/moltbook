@@ -125,8 +125,8 @@ def main() -> None:
         remaining = total - labeled_now
 
         print("")
-        pred_line = "pred=∅" if args.blind else f\"pred={pred_norm or 'n/a'} (score={score})\"
-        print(f\"[{idx+1}/{total}] {sample_id} · lang={lang} · submolt={submolt} · {pred_line}\")
+        pred_line = "pred=∅" if args.blind else f"pred={pred_norm or 'n/a'} (score={score})"
+        print(f"[{idx+1}/{total}] {sample_id} · lang={lang} · submolt={submolt} · {pred_line}")
         print("-" * 90)
         print(excerpt)
         print("-" * 90)
