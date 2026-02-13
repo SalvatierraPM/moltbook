@@ -1,15 +1,15 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T19:13:34.684605+00:00
+- Generado: 2026-02-13T19:18:36.997555+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 7
-- Severidad: P0=0, P1=3, P2=4, P3=0
+- Hallazgos abiertos: 6
+- Severidad: P0=0, P1=2, P2=4, P3=0
 - Gate G1_data_integrity: pass
 - Gate G2_method_validity: fail
-- Gate G3_reproducibility: fail
+- Gate G3_reproducibility: pass
 - Gate G4_public_safety: fail
 
 ## Scorecard de calidad de datos
@@ -102,12 +102,12 @@
   - Estado: mitigated
 
 ### Ingenieria y mantenibilidad
-- [P1] AUD-011: No hay suite de tests ni workflows CI en el repositorio.
+- [P1] AUD-011: Tests=yes; CI=yes.
   - Claim: Validacion automatizada cubre regresiones criticas.
   - Impacto: Alto riesgo de regresion silenciosa en metrica y UI.
   - Evidencia: EVID-TESTS-001|EVID-CI-001
   - Recomendacion: Agregar smoke tests de datos + test unitarios clave + CI minima por PR.
-  - Estado: open
+  - Estado: mitigated
 
 ### Seguridad y compliance
 - [P1] AUD-012: Existe archivo local de token en texto plano bajo .secrets.
