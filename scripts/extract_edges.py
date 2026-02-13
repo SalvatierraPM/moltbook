@@ -10,9 +10,11 @@ from typing import Dict, Iterable, Iterator, Optional
 from urllib.parse import urlparse
 
 
-URL_RE = re.compile(r"(https?://\\S+|www\\.\\S+)", re.IGNORECASE)
-MENTION_RE = re.compile(r"@([\\w\\-]{1,50})", re.UNICODE)
-HASHTAG_RE = re.compile(r"#([\\w\\-]{1,50})", re.UNICODE)
+# NOTE: use single backslashes inside the raw regex; double escaping would match literal "\w" etc.
+URL_RE = re.compile(r"(https?://\S+|www\.\S+)", re.IGNORECASE)
+# Require >=2 chars to avoid obvious noise like "@w" / "@-".
+MENTION_RE = re.compile(r"@([\w][\w\-]{1,49})", re.UNICODE)
+HASHTAG_RE = re.compile(r"#([\w\-]{1,50})", re.UNICODE)
 
 
 def iter_jsonl(path: Path) -> Iterator[Dict]:
@@ -91,12 +93,14 @@ def write_csv(path: Path, rows: Iterable[Dict], header: Iterable[str]) -> None:
 
 def extract_edges(posts: Path, comments: Path, out_dir: Path) -> None:
     mention_rows = []
+    mention_rows_raw = []
     hashtag_rows = []
     link_rows = []
     reply_rows = []
     author_rows = []
 
     post_submolt: Dict[str, str] = {}
+    known_handles: set[str] = set()
 
     for p in iter_jsonl(posts):
         pid = p.get("id")
@@ -106,6 +110,9 @@ def extract_edges(posts: Path, comments: Path, out_dir: Path) -> None:
         if isinstance(pid, str) and isinstance(submolt, str):
             post_submolt[pid] = submolt
         author = p.get("author") or {}
+        author_name = author.get("name")
+        if isinstance(author_name, str) and author_name.strip():
+            known_handles.add(author_name.strip().lower())
         author_id = author.get("id")
         if author_id and pid:
             author_rows.append(
@@ -129,6 +136,9 @@ def extract_edges(posts: Path, comments: Path, out_dir: Path) -> None:
         if not isinstance(cid, str):
             continue
         author = c.get("author") or {}
+        author_name = author.get("name")
+        if isinstance(author_name, str) and author_name.strip():
+            known_handles.add(author_name.strip().lower())
         author_id = c.get("author_id") or author.get("id")
         comment_author[cid] = author_id
         post_id = c.get("post_id")
@@ -169,13 +179,21 @@ def extract_edges(posts: Path, comments: Path, out_dir: Path) -> None:
 
         for m in MENTION_RE.finditer(text):
             target = m.group(1)
+            target_norm = target.strip().lower()
+            row = {
+                **base,
+                "edge_type": "mention",
+                "target": target_norm,
+                "target_raw": target,
+                "position": m.start(),
+            }
+            mention_rows_raw.append(row)
+            # Keep only likely-internal handles to avoid noise dominating centrality.
+            if not target_norm or target_norm not in known_handles:
+                continue
             mention_rows.append(
                 {
-                    **base,
-                    "edge_type": "mention",
-                    "target": target.lower(),
-                    "target_raw": target,
-                    "position": m.start(),
+                    **row,
                 }
             )
 
@@ -259,6 +277,7 @@ def extract_edges(posts: Path, comments: Path, out_dir: Path) -> None:
     ]
 
     write_csv(out_dir / "edges_mentions.csv", mention_rows, mention_header)
+    write_csv(out_dir / "edges_mentions_raw.csv", mention_rows_raw, mention_header)
     write_csv(out_dir / "edges_hashtags.csv", hashtag_rows, mention_header)
     write_csv(out_dir / "edges_links.csv", link_rows, link_header)
     write_csv(

@@ -1,13 +1,13 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T18:34:29.715632+00:00
+- Generado: 2026-02-13T18:49:30.268119+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 10
-- Severidad: P0=0, P1=6, P2=4, P3=0
-- Gate G1_data_integrity: fail
+- Hallazgos abiertos: 9
+- Severidad: P0=0, P1=5, P2=4, P3=0
+- Gate G1_data_integrity: pass
 - Gate G2_method_validity: fail
 - Gate G3_reproducibility: fail
 - Gate G4_public_safety: fail
@@ -62,12 +62,12 @@
   - Estado: open
 
 ### Sociologia y redes
-- [P1] AUD-006: Top mention node='w' pagerank=0.434; nodos ruido en top10=5.
+- [P1] AUD-006: Top mention node='eudaemon_0' pagerank=0.007; nodos ruido en top10=0.
   - Claim: Centralidades del mention graph identifican actores reales.
   - Impacto: Centralidad contaminada por tokens basura; inferencia de influencia comprometida.
   - Evidencia: EVID-MENTION-001
   - Recomendacion: Normalizar/filtrar handles invalidos antes del calculo de grafos.
-  - Estado: open
+  - Estado: mitigated
 
 ### Interferencia
 - [P1] AUD-007: 42/50 top rows son texto ruidoso/base64/repetitivo.

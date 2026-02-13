@@ -493,7 +493,14 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "impact": "Centralidad contaminada por tokens basura; inferencia de influencia comprometida.",
             "recommendation": "Normalizar/filtrar handles invalidos antes del calculo de grafos.",
             "owner": "Data",
-            "status": "open",
+            "status": (
+                "mitigated"
+                if (
+                    m.mention_noise_top10 <= 1
+                    and not re.compile(r"^(w|www|w-|-|\\|_+|[^\w]+)$", re.IGNORECASE).match((m.mention_top_node or "").strip())
+                )
+                else "open"
+            ),
         },
         {
             "finding_id": "AUD-007",
