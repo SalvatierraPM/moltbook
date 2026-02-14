@@ -11,6 +11,7 @@ from typing import Dict, Iterable, List, Set, Tuple
 
 import numpy as np
 import pandas as pd
+from numpy.lib import format as npy_format
 
 try:
     import faiss  # type: ignore
@@ -40,6 +41,24 @@ def iter_jsonl(path: Path) -> Iterable[dict]:
 
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
+
+def npy_len(path: Path) -> int:
+    """
+    Return the first dimension (length) of a .npy array without loading it.
+    Works for object-dtype arrays (which cannot be memory-mapped).
+    """
+    with path.open("rb") as f:
+        version = npy_format.read_magic(f)
+        if version == (1, 0):
+            shape, _, _ = npy_format.read_array_header_1_0(f)
+        elif version == (2, 0):
+            shape, _, _ = npy_format.read_array_header_2_0(f)
+        else:  # pragma: no cover - future numpy header versions
+            shape, _, _ = npy_format.read_array_header_3_0(f)
+    if not shape:
+        return 0
+    return int(shape[0])
 
 
 def load_meta(dir_path: Path, doc_type: str) -> pd.DataFrame:
@@ -97,8 +116,8 @@ def build_indexes(meta: pd.DataFrame, embeddings_path: Path, out_dir: Path, dim:
 def clean_text(text: str) -> str:
     text = text or ""
     text = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
-    text = re.sub(r"https?://\\S+|www\\.\\S+", " ", text)
-    text = re.sub(r"\\s+", " ", text).strip()
+    text = re.sub(r"https?://\S+|www\.\S+", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
 
@@ -168,7 +187,10 @@ def main() -> None:
     if not comment_index_dir.exists() or not any(comment_index_dir.glob("index_*.faiss")):
         build_indexes(meta_comments, get_embeddings_path(comments_dir, "comment"), comment_index_dir, dim, args.hnsw_m, args.ef_construction)
 
-    comment_lookup = meta_comments.set_index("doc_id")
+    # `doc_id` is not guaranteed unique (resume runs can duplicate meta rows). For lookups we
+    # keep the first occurrence to avoid pandas returning a DataFrame (which then stringifies
+    # into multi-line fields inside the CSV).
+    comment_lookup = meta_comments.drop_duplicates(subset=["doc_id"], keep="first").set_index("doc_id")
     output_matches = out_dir / "matches_post_comment.csv"
     progress_path = out_dir / "matches_post_comment.progress.json"
 
@@ -194,7 +216,7 @@ def main() -> None:
         ids_path = comment_index_dir / f"index_{last_lang}_ids.npy"
         if not ids_path.exists():
             return None, 0
-        per_post_k = min(args.top_k, len(np.load(ids_path, allow_pickle=True)))
+        per_post_k = min(int(args.top_k), npy_len(ids_path))
         if per_post_k <= 0:
             return None, 0
         remainder = count_last % per_post_k
@@ -208,16 +230,18 @@ def main() -> None:
 
     resume_lang = None
     resume_offset = 0
-    if args.resume:
+    if args.resume and output_matches.exists():
+        # Prefer output-derived resume (trims partial rows) over the progress JSON.
+        # The progress JSON can lag the output (or be ahead if the process crashed mid-flush).
+        resume_lang, resume_offset = load_progress_fallback()
+    elif args.resume:
+        # Fresh run (or missing output): ignore any stale progress file.
+        resume_lang, resume_offset = None, 0
         if progress_path.exists():
             try:
-                progress = json.loads(progress_path.read_text(encoding="utf-8"))
-                resume_lang = progress.get("lang")
-                resume_offset = int(progress.get("post_offset", 0) or 0)
+                progress_path.unlink()
             except Exception:
-                resume_lang, resume_offset = load_progress_fallback()
-        else:
-            resume_lang, resume_offset = load_progress_fallback()
+                pass
 
     file_exists = output_matches.exists()
     mode = "a" if args.resume and file_exists else "w"
@@ -236,17 +260,50 @@ def main() -> None:
             ])
 
         post_langs = meta_posts["lang"].fillna("unknown").astype(str).unique().tolist()
+
+        # Precompute per-language totals for stable progress logs without loading large ID arrays.
+        langs_to_process: List[str] = []
+        posts_count_by_lang: Dict[str, int] = {}
+        per_post_k_by_lang: Dict[str, int] = {}
         for lang in sorted(post_langs):
-            if resume_lang and lang < resume_lang:
-                continue
             index_path = comment_index_dir / f"index_{lang}.faiss"
             ids_path = comment_index_dir / f"index_{lang}_ids.npy"
             if not index_path.exists() or not ids_path.exists():
                 continue
-
             post_idxs = meta_posts.index[meta_posts["lang"].fillna("unknown").astype(str) == lang].to_numpy()
             if len(post_idxs) == 0:
                 continue
+            langs_to_process.append(lang)
+            posts_count_by_lang[lang] = int(len(post_idxs))
+            try:
+                n_comments_lang = npy_len(ids_path)
+            except Exception:
+                n_comments_lang = 0
+            per_post_k_by_lang[lang] = max(0, min(int(args.top_k), int(n_comments_lang)))
+
+        cum_posts_before: Dict[str, int] = {}
+        cum_matches_before: Dict[str, int] = {}
+        total_posts = 0
+        total_matches = 0
+        for lang in langs_to_process:
+            cum_posts_before[lang] = total_posts
+            cum_matches_before[lang] = total_matches
+            total_posts += posts_count_by_lang.get(lang, 0)
+            total_matches += posts_count_by_lang.get(lang, 0) * per_post_k_by_lang.get(lang, 0)
+
+        print(
+            f"Will process {total_posts} posts across {len(langs_to_process)} langs "
+            f"(expected matches: {total_matches}).",
+            flush=True,
+        )
+
+        for lang in langs_to_process:
+            if resume_lang and lang < resume_lang:
+                continue
+            index_path = comment_index_dir / f"index_{lang}.faiss"
+            ids_path = comment_index_dir / f"index_{lang}_ids.npy"
+
+            post_idxs = meta_posts.index[meta_posts["lang"].fillna("unknown").astype(str) == lang].to_numpy()
 
             index = faiss.read_index(str(index_path))
             comment_ids = np.load(ids_path, allow_pickle=True)
@@ -292,6 +349,16 @@ def main() -> None:
                         indent=2,
                     ),
                     encoding="utf-8",
+                )
+                # Lightweight, stable progress log for long runs (works well with `tail -f`).
+                done_posts = cum_posts_before.get(lang, 0) + int(start + len(sl))
+                done_matches = cum_matches_before.get(lang, 0) + int(start + len(sl)) * per_post_k_by_lang.get(lang, 0)
+                pct_posts = (done_posts / total_posts * 100.0) if total_posts else 0.0
+                pct_matches = (done_matches / total_matches * 100.0) if total_matches else 0.0
+                print(
+                    f"[{lang}] posts {start + len(sl)}/{len(post_idxs)} | overall {done_posts}/{total_posts} ({pct_posts:.2f}%) | "
+                    f"matches {done_matches}/{total_matches} ({pct_matches:.2f}%)",
+                    flush=True,
                 )
 
     # Summary + public samples
