@@ -321,10 +321,10 @@ def build_claim_matrix(m: Metrics) -> list[dict[str, Any]]:
         },
         {
             "claim_id": "CLM-007",
-            "claim": "Reproducibilidad puede variar porque dependencias no estan fijadas por lockfile.",
+            "claim": "La reproducibilidad puede variar si se reinstala solo desde pyproject (rango >=) en vez de usar el lockfile.",
             "evidence_datasets": "pyproject.toml",
-            "computation_notes": "Dependencias declaradas con rangos >=; no hay lockfile.",
-            "limitations": "El riesgo se materializa al reconstruir en entornos distintos; mitigable con lockfile.",
+            "computation_notes": "Dependencias declaradas con rangos >=; el proyecto incluye requirements.lock para fijarlas en practica.",
+            "limitations": "El riesgo se materializa si el lockfile no se usa o se regenera en otro entorno/fecha.",
             "confidence": "alta",
         },
     ]

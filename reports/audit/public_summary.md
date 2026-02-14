@@ -1,6 +1,6 @@
 # Resumen publico de auditoria
 
-- Fecha: 2026-02-14T18:23:56.456272+00:00
+- Fecha: 2026-02-14T18:25:50.900238+00:00
 - Hallazgos abiertos: 4
 - P0: 0 | P1: 0 | P2: 4 | P3: 0
 
