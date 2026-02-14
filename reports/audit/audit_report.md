@@ -1,6 +1,6 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-13T22:26:43.304159+00:00
+- Generado: 2026-02-14T18:23:56.456272+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 

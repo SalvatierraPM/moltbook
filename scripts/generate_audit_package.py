@@ -776,7 +776,14 @@ def build_report(now: str, m: Metrics, findings: list[dict[str, str]], gates: di
 def build_public_summary(now: str, findings: list[dict[str, str]], gates: dict[str, Any]) -> str:
     severity = counts_by_severity(findings)
     open_findings = [f for f in findings if f["status"] != "mitigated"]
-    top_risks = [f for f in open_findings if f["severity"] in {"P0", "P1"}][:5]
+    sev_rank = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+    open_sorted = sorted(open_findings, key=lambda f: (sev_rank.get(f["severity"], 9), f["finding_id"]))
+    # Prefer P0/P1 if present; otherwise surface P2 so the public summary isn't empty.
+    top_risks = [f for f in open_sorted if f["severity"] in {"P0", "P1"}][:5]
+    if not top_risks:
+        top_risks = open_sorted[:5]
+    highest_open = open_sorted[0] if open_sorted else None
+    top_sev = highest_open["severity"] if highest_open else "P0"
     lines = [
         "# Resumen publico de auditoria",
         "",
@@ -788,14 +795,18 @@ def build_public_summary(now: str, findings: list[dict[str, str]], gates: dict[s
     ]
     for gate, payload in gates["gates"].items():
         lines.append(f"- {gate}: {payload['status']}")
-    lines.extend(["", "## Riesgos prioritarios (P1)", ""])
+    lines.extend(["", f"## Riesgos prioritarios (abiertos, top {top_sev})", ""])
     for f in top_risks:
-        lines.append(f"- {f['finding_id']} ({f['domain']}): {f['issue']}")
+        lines.append(f"- {f['finding_id']} [{f['severity']}] ({f['domain']}): {f['issue']}")
     lines.extend(
         [
             "",
             "## Proximo hito",
-            "- Cerrar AUD-005 (benchmark ontologico multilengue) para validar comparabilidad de actos/moods.",
+            (
+                f"- Cerrar {highest_open['finding_id']} ({highest_open['domain']}) y regenerar auditoria."
+                if highest_open
+                else "- No hay hallazgos abiertos. Mantener gates en verde con auditorias recurrentes."
+            ),
         ]
     )
     return "\n".join(lines)
@@ -804,16 +815,18 @@ def build_public_summary(now: str, findings: list[dict[str, str]], gates: dict[s
 def build_public_summary_json(now: str, findings: list[dict[str, str]], gates: dict[str, Any]) -> dict[str, Any]:
     open_findings = [f for f in findings if f["status"] != "mitigated"]
     severity = counts_by_severity(findings)
+    sev_rank = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+    open_sorted = sorted(open_findings, key=lambda f: (sev_rank.get(f["severity"], 9), f["finding_id"]))
     top = [
-        {
-            "finding_id": f["finding_id"],
-            "severity": f["severity"],
-            "domain": f["domain"],
-            "issue": f["issue"],
-        }
-        for f in open_findings
+        {"finding_id": f["finding_id"], "severity": f["severity"], "domain": f["domain"], "issue": f["issue"]}
+        for f in open_sorted
         if f["severity"] in {"P0", "P1"}
     ][:6]
+    if not top:
+        top = [
+            {"finding_id": f["finding_id"], "severity": f["severity"], "domain": f["domain"], "issue": f["issue"]}
+            for f in open_sorted[:6]
+        ]
     return {
         "generated_at": now,
         "model": "P0-P3",
