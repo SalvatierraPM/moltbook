@@ -361,6 +361,8 @@ def main() -> None:
 
         incidence = human_incidence_score(text)
         for k, v in incidence.items():
+            if not isinstance(v, (int, float)):
+                continue
             incidence_totals[k] += v
             if doc_type == "post":
                 incidence_totals_posts[k] += v
@@ -570,9 +572,14 @@ def main() -> None:
         return {
             "scope": scope,
             "avg_score": (totals.get("human_incidence_score", 0.0) / docs) if docs else 0.0,
+            "avg_score_human": (totals.get("score_human", 0.0) / docs) if docs else 0.0,
+            "avg_score_prompt": (totals.get("score_prompt", 0.0) / docs) if docs else 0.0,
+            "avg_score_narrative": (totals.get("score_narrative", 0.0) / docs) if docs else 0.0,
+            "avg_score_tooling": (totals.get("score_tooling", 0.0) / docs) if docs else 0.0,
             "human_ref_rate": (totals.get("human_refs", 0.0) / docs) if docs else 0.0,
             "prompt_ref_rate": (totals.get("prompt_refs", 0.0) / docs) if docs else 0.0,
             "tooling_ref_rate": (totals.get("tooling_refs", 0.0) / docs) if docs else 0.0,
+            "narrative_ref_rate": (totals.get("narrative_refs", 0.0) / docs) if docs else 0.0,
         }
 
     incidence_rows = [
@@ -583,7 +590,18 @@ def main() -> None:
     write_csv(
         out_dir / "human_incidence_summary.csv",
         incidence_rows,
-        ["scope", "avg_score", "human_ref_rate", "prompt_ref_rate", "tooling_ref_rate"],
+        [
+            "scope",
+            "avg_score",
+            "avg_score_human",
+            "avg_score_prompt",
+            "avg_score_narrative",
+            "avg_score_tooling",
+            "human_ref_rate",
+            "prompt_ref_rate",
+            "tooling_ref_rate",
+            "narrative_ref_rate",
+        ],
     )
 
     top_interference_sorted = sorted(top_interference, key=lambda x: x[0], reverse=True)
@@ -618,9 +636,15 @@ def main() -> None:
             "submolt",
             "created_at",
             "human_incidence_score",
+            "score_human",
+            "score_prompt",
+            "score_narrative",
+            "score_tooling",
             "human_refs",
             "prompt_refs",
             "tooling_refs",
+            "narrative_refs",
+            "evidence_type",
             "text_excerpt",
         ],
     )

@@ -1,5 +1,1 @@
 task_id,severity,component,fix_type,effort_estimate,dependency,acceptance_criterion
-TASK-AUD-003,P2,Cobertura temporal,tecnico,S,EVID-COVERAGE-001,Mantener toggle por defecto en actividad real y reforzar notas en tablas run-based.
-TASK-AUD-008,P2,Incidencia humana,tecnico,S,EVID-INCID-001,Introducir subscore narrativo y etiqueta de tipo de evidencia.
-TASK-AUD-009,P2,Transmision IA vs humana,metodologico,S,EVID-REPORT-001,Publicar sensibilidad por threshold y baseline VSM/embeddings comparado.
-TASK-AUD-013,P2,Operacion deploy,tecnico,S,EVID-NETLIFY-001,Documentar estado de integracion y enlace de repo en runbook operativo.

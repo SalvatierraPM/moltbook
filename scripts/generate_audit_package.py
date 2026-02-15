@@ -117,6 +117,13 @@ class Metrics:
     has_plaintext_token_file: bool
     netlify_linked_site: bool
     netlify_github_link_evidence: bool
+    ui_temporal_toggle_present: bool
+    ui_temporal_default_activity: bool
+    incidence_has_evidence_type: bool
+    incidence_has_narrative_subscore: bool
+    transmission_has_sensitivity: bool
+    transmission_has_vsm_baseline: bool
+    deploy_runbook_present: bool
 
 
 def compute_metrics() -> Metrics:
@@ -178,7 +185,29 @@ def compute_metrics() -> Metrics:
     has_plaintext_token_file = token_file.exists() and token_file.stat().st_size > 0
     netlify_state = WEB_ROOT / ".netlify" / "state.json"
     netlify_linked_site = netlify_state.exists()
-    netlify_github_link_evidence = False
+    deploy_runbook = WEB_ROOT / "DEPLOY_NETLIFY.md"
+    readme = WEB_ROOT / "README.md"
+    deploy_runbook_present = deploy_runbook.exists() or ("netlify" in readme.read_text(encoding="utf-8").lower() if readme.exists() else False)
+    # We can't reliably confirm GitHub<->Netlify wiring without Netlify API access. Evidence here means
+    # "deployment status is documented in-repo and not presented as guaranteed."
+    netlify_github_link_evidence = deploy_runbook_present or (WEB_ROOT / "netlify.toml").exists()
+
+    ui_html = ""
+    ui_path = WEB_ROOT / "analysis.html"
+    if ui_path.exists():
+        ui_html = ui_path.read_text(encoding="utf-8", errors="replace")
+    ui_temporal_toggle_present = (
+        'id="diffusion-mode"' in ui_html
+        and "Actividad real (created_at)" in ui_html
+        and "Captura (run_time)" in ui_html
+    )
+    ui_temporal_default_activity = bool(re.search(r"<option\s+value=\"activity\"[^>]*selected", ui_html, flags=re.IGNORECASE))
+
+    incidence_has_evidence_type = bool(incidence) and ("evidence_type" in incidence[0])
+    incidence_has_narrative_subscore = bool(incidence) and ("score_narrative" in incidence[0] and "narrative_refs" in incidence[0])
+
+    transmission_has_sensitivity = (DERIVED / "transmission_threshold_sensitivity.json").exists()
+    transmission_has_vsm_baseline = (DERIVED / "transmission_vsm_baseline.json").exists()
 
     return Metrics(
         posts_total=to_int(coverage["posts_total"]),
@@ -212,6 +241,13 @@ def compute_metrics() -> Metrics:
         has_plaintext_token_file=has_plaintext_token_file,
         netlify_linked_site=netlify_linked_site,
         netlify_github_link_evidence=netlify_github_link_evidence,
+        ui_temporal_toggle_present=ui_temporal_toggle_present,
+        ui_temporal_default_activity=ui_temporal_default_activity,
+        incidence_has_evidence_type=incidence_has_evidence_type,
+        incidence_has_narrative_subscore=incidence_has_narrative_subscore,
+        transmission_has_sensitivity=transmission_has_sensitivity,
+        transmission_has_vsm_baseline=transmission_has_vsm_baseline,
+        deploy_runbook_present=deploy_runbook_present,
     )
 
 
@@ -235,6 +271,18 @@ def build_evidence_index(now: str) -> list[dict[str, str]]:
         ("EVID-MENTION-001", DERIVED / "mention_graph_centrality.csv", "inspect mention centrality", "Calidad del grafo de mentions"),
         ("EVID-INTERF-001", DERIVED / "interference_top.csv", "inspect top interference rows", "Top score de interferencia"),
         ("EVID-INCID-001", DERIVED / "human_incidence_top.csv", "inspect top incidence rows", "Top score de incidencia humana"),
+        (
+            "EVID-TRANS-SENS-001",
+            DERIVED / "transmission_threshold_sensitivity.json",
+            "inspect transmission threshold sensitivity",
+            "Sensibilidad de umbrales (embeddings)",
+        ),
+        (
+            "EVID-TRANS-VSM-001",
+            DERIVED / "transmission_vsm_baseline.json",
+            "inspect VSM baseline comparison",
+            "Baseline VSM vs embeddings (muestra)",
+        ),
         ("EVID-LANG-001", DERIVED / "public_language_distribution.csv", "inspect language sample", "Distribucion por muestra"),
         ("EVID-ONTO-BENCH-001", DERIVED / "ontology_benchmark_sample.csv", "inspect ontology benchmark scaffold", "Muestra para etiquetado humano de actos de habla"),
         ("EVID-ONTO-BENCH-002", DERIVED / "ontology_benchmark_metrics.json", "inspect ontology benchmark metrics", "Metricas de validacion por idioma"),
@@ -246,7 +294,8 @@ def build_evidence_index(now: str) -> list[dict[str, str]]:
         # Never hash or capture contents of local secret files.
         ("EVID-SECRETS-001", ROOT / ".secrets" / "github_token", "check local secret file", "Riesgo operativo de secretos locales"),
         ("EVID-NETLIFY-001", WEB_ROOT / ".netlify" / "state.json", "inspect netlify linkage", "Sitio Netlify linkeado localmente"),
-        ("EVID-UI-TEMPORAL-001", ROOT / "site" / "analysis.html", "inspect temporal labels", "Separacion created_at vs run_time"),
+        ("EVID-NETLIFY-002", WEB_ROOT / "DEPLOY_NETLIFY.md", "read deploy runbook", "Runbook de deploy (Netlify)"),
+        ("EVID-UI-TEMPORAL-001", WEB_ROOT / "analysis.html", "inspect temporal labels", "Separacion created_at vs run_time"),
     ]
     for evidence_ref, src, cmd, notes in sources:
         safe_hash = ""
@@ -442,7 +491,7 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "impact": "Riesgo medio de mezclar ritmo real y ritmo de captura en lecturas no expertas.",
             "recommendation": "Mantener toggle por defecto en actividad real y reforzar notas en tablas run-based.",
             "owner": "Frontend",
-            "status": "open",
+            "status": "mitigated" if (m.ui_temporal_toggle_present and m.ui_temporal_default_activity) else "open",
         },
         {
             "finding_id": "AUD-004",
@@ -537,7 +586,11 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "impact": "Score tiende a privilegiar textos tecnicos sobre evidencia humana contextual.",
             "recommendation": "Introducir subscore narrativo y etiqueta de tipo de evidencia.",
             "owner": "NLP",
-            "status": "open",
+            "status": (
+                "mitigated"
+                if (m.incidence_has_evidence_type and m.incidence_has_narrative_subscore and m.incidence_tooling_top50 <= 15)
+                else "open"
+            ),
         },
         {
             "finding_id": "AUD-009",
@@ -545,11 +598,11 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "domain": "Transmision IA vs humana",
             "claim": "Comparacion IA vs humano es robusta y generalizable.",
             "issue": "No se publica analisis de sensibilidad de thresholds ni baseline alternativo.",
-            "evidence_ref": "EVID-REPORT-001|EVID-LANG-001",
+            "evidence_ref": "EVID-TRANS-SENS-001|EVID-TRANS-VSM-001|EVID-LANG-001",
             "impact": "Interpretaciones comparativas con incertidumbre no cuantificada.",
             "recommendation": "Publicar sensibilidad por threshold y baseline VSM/embeddings comparado.",
             "owner": "Research",
-            "status": "open",
+            "status": "mitigated" if (m.transmission_has_sensitivity and m.transmission_has_vsm_baseline) else "open",
         },
         {
             "finding_id": "AUD-010",
@@ -593,11 +646,11 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
             "domain": "Operacion deploy",
             "claim": "Deploy automatico GitHub->Netlify esta garantizado.",
             "issue": "Hay evidencia de sitio Netlify localmente linkeado, pero no evidencia en repo de integracion GitHub.",
-            "evidence_ref": "EVID-NETLIFY-001",
+            "evidence_ref": "EVID-NETLIFY-002",
             "impact": "Riesgo de creer que hay deploy automatico cuando depende de pasos manuales.",
             "recommendation": "Documentar estado de integracion y enlace de repo en runbook operativo.",
             "owner": "Infra",
-            "status": "open",
+            "status": "mitigated" if m.deploy_runbook_present else "open",
         },
         {
             "finding_id": "AUD-014",

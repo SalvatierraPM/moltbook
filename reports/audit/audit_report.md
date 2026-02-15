@@ -1,12 +1,12 @@
 # Auditoria Integral v1
 
-- Generado: 2026-02-14T18:25:50.900238+00:00
+- Generado: 2026-02-14T23:49:51.607822+00:00
 - Alcance: pipeline, datos derivados, reporte, UI, operacion/deploy.
 - Modelo de severidad: P0-P3.
 
 ## Resumen ejecutivo
-- Hallazgos abiertos: 4
-- Severidad: P0=0, P1=0, P2=4, P3=0
+- Hallazgos abiertos: 0
+- Severidad: P0=0, P1=0, P2=0, P3=0
 - Gate G1_data_integrity: pass
 - Gate G2_method_validity: pass
 - Gate G3_reproducibility: pass
@@ -43,7 +43,7 @@
   - Impacto: Riesgo medio de mezclar ritmo real y ritmo de captura en lecturas no expertas.
   - Evidencia: EVID-COVERAGE-001|EVID-DIFFUSION-001|EVID-ACTIVITY-001|EVID-UI-TEMPORAL-001
   - Recomendacion: Mantener toggle por defecto en actividad real y reforzar notas en tablas run-based.
-  - Estado: open
+  - Estado: mitigated
 
 ### Memetica
 - [P1] AUD-004: Raw top20: 18/20 con patrones API/tooling; vista cultural top20: 0/20.
@@ -78,20 +78,20 @@
   - Estado: mitigated
 
 ### Incidencia humana
-- [P2] AUD-008: 34/50 top rows tienen tooling_refs>=10 (sesgo tecnico).
+- [P2] AUD-008: 10/50 top rows tienen tooling_refs>=10 (sesgo tecnico).
   - Claim: Score captura intervencion humana relevante.
   - Impacto: Score tiende a privilegiar textos tecnicos sobre evidencia humana contextual.
   - Evidencia: EVID-INCID-001
   - Recomendacion: Introducir subscore narrativo y etiqueta de tipo de evidencia.
-  - Estado: open
+  - Estado: mitigated
 
 ### Transmision IA vs humana
 - [P2] AUD-009: No se publica analisis de sensibilidad de thresholds ni baseline alternativo.
   - Claim: Comparacion IA vs humano es robusta y generalizable.
   - Impacto: Interpretaciones comparativas con incertidumbre no cuantificada.
-  - Evidencia: EVID-REPORT-001|EVID-LANG-001
+  - Evidencia: EVID-TRANS-SENS-001|EVID-TRANS-VSM-001|EVID-LANG-001
   - Recomendacion: Publicar sensibilidad por threshold y baseline VSM/embeddings comparado.
-  - Estado: open
+  - Estado: mitigated
 
 ### Reproducibilidad
 - [P1] AUD-010: Dependencias en pyproject usan rangos '>='; lockfile=yes.
@@ -121,9 +121,9 @@
 - [P2] AUD-013: Hay evidencia de sitio Netlify localmente linkeado, pero no evidencia en repo de integracion GitHub.
   - Claim: Deploy automatico GitHub->Netlify esta garantizado.
   - Impacto: Riesgo de creer que hay deploy automatico cuando depende de pasos manuales.
-  - Evidencia: EVID-NETLIFY-001
+  - Evidencia: EVID-NETLIFY-002
   - Recomendacion: Documentar estado de integracion y enlace de repo en runbook operativo.
-  - Estado: open
+  - Estado: mitigated
 
 ### Producto publico
 - [P3] AUD-014: El riesgo misleading temporal esta mitigado en graficos principales y texto explicativo.
