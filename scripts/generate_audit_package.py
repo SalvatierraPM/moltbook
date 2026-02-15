@@ -252,6 +252,21 @@ def compute_metrics() -> Metrics:
 
 
 def build_evidence_index(now: str) -> list[dict[str, str]]:
+    def human_source_path(src: Path) -> str:
+        """Avoid embedding machine-local absolute paths in the audit artifacts."""
+
+        try:
+            return src.relative_to(ROOT).as_posix()
+        except ValueError:
+            pass
+        try:
+            rel = src.relative_to(WEB_ROOT)
+            return f"reporte-analisis-memetico-ontologico-moltbook-ui/{rel.as_posix()}"
+        except ValueError:
+            pass
+        # Fallback: keep it stable and non-sensitive.
+        return src.name
+
     entries: list[dict[str, str]] = []
     sources: list[tuple[str, Path, str, str]] = [
         ("EVID-REPORT-001", ROOT / "reports" / "public_report.md", "read report claims", "Reporte publico base"),
@@ -303,7 +318,7 @@ def build_evidence_index(now: str) -> list[dict[str, str]]:
             safe_hash = sha256_file(src)
         entry = {
             "evidence_ref": evidence_ref,
-            "source_path": str(src),
+            "source_path": human_source_path(src),
             "command": cmd,
             "hash": safe_hash,
             "timestamp": now,

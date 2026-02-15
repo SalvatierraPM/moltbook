@@ -33,6 +33,7 @@
             <div class="nav-menu-group">
               <div class="nav-menu-title">General</div>
               <a href="#resumen">Resumen</a>
+              <a href="#acerca">Acerca del proyecto</a>
               <a href="#objetivos">Objetivos</a>
               <a href="#datos">Datos</a>
               <a href="#definiciones">Definiciones</a>
@@ -157,6 +158,66 @@
         </div>
       </section>
 
+      <section id="acerca" class="section">
+        <div class="section-head">
+          <h2>Acerca del proyecto</h2>
+          <p>
+            Por que lo hice, desde donde lo hice, y que asumo (y que no) al leer estos datos.
+            La meta es que este observatorio sea <strong>auditable</strong> y mejore con ayuda de otras personas.
+          </p>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Motivacion</h3>
+            <p>
+              Queria construir un observatorio publico sobre cultura IA en Moltbook: que se repite,
+              que se difunde, que comunidades concentran el volumen y como aparecen señales de
+              interaccion humano↔IA dentro del lenguaje.
+            </p>
+            <p>
+              No busca demostrar causalidad ni “la verdad” sobre la red: busca dejar un mapa reproducible
+              que permita navegar el corpus y generar mejores preguntas.
+            </p>
+          </div>
+          <div class="card wide">
+            <h3>Autor y postura</h3>
+            <p>
+              Soy el autor de este repo/reporte (Pabli). <strong>No soy experto</strong> en linguistica, sociologia
+              o seguridad: esto es un proyecto de ingenieria + exploracion. Por eso el enfoque prioriza
+              reglas simples, trazabilidad y limites explicitados.
+            </p>
+            <p>
+              Si ves fallas, sesgos o ideas mejores, la invitacion es a criticarlas y mejorar el pipeline.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-2 method-grid">
+          <div class="card wide">
+            <h3>Datos (que son y que no son)</h3>
+            <ul class="bullet-list">
+              <li>Contenido publico (posts + comentarios) sujeto a robots/ToS.</li>
+              <li>Volumen de este snapshot: <span id="about-posts">–</span> posts y <span id="about-comments">–</span> comentarios.</li>
+              <li>Ventana (created_at): <span id="about-window">–</span>.</li>
+              <li>Los resultados son descriptivos: no prueban intencion ni autoria.</li>
+            </ul>
+          </div>
+          <div class="card wide">
+            <h3>Open source (plan)</h3>
+            <ul class="bullet-list">
+              <li>Publicar el scraper, el pipeline de embeddings y esta UI para que cualquiera lo replique.</li>
+              <li>Redistribuir datos crudos depende de ToS/robots; si no aplica, el repo igual permite reproducirlos localmente.</li>
+              <li>Contribuciones bienvenidas: mejorar ontologia, limpiar ruido, validar heuristicas, agregar analisis longitudinal.</li>
+            </ul>
+            <div class="callout">
+              <strong>Repo publico:</strong>
+              <a href="https://github.com/SalvatierraPM/reporte-analisis-memetico-ontologico-moltbook-ui" target="_blank" rel="noopener noreferrer">reporte-analisis-memetico-ontologico-moltbook-ui</a>.
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="objetivos" class="section">
         <div class="section-head">
           <h2>Objetivos claros de analisis</h2>
@@ -221,7 +282,12 @@
           </div>
         </div>
         <div class="table-card">
-          <div class="table-header">Top Submolts por volumen</div>
+          <div class="table-header">
+            Top Submolts por volumen
+            <span class="table-actions">
+              <button class="toggle" id="report-submolts-hide-general" type="button">Ocultar general</button>
+            </span>
+          </div>
           <div class="table-scroll">
             <table id="report-submolt-table">
               <thead>
@@ -240,6 +306,7 @@
           <div>Que mide: cobertura por comunidad y volumen global.</div>
           <div>Como se calcula: agregados de `submolt_stats.csv`.</div>
           <div>Como leerlo: identifica focos de conversacion y sesgos del scrapeo.</div>
+          <div>Upvotes Prom.: promedio de upvotes (score) en posts del submolt; no incluye comentarios.</div>
         </div>
         <div class="callout">
           Nota sobre runs: cada run es una ejecucion del scraper. Las metricas por run
@@ -666,16 +733,26 @@
                   <td>Embeddings multilingues + FAISS (same-lang) + VSM baseline.</td>
                   <td>Comparar narrativas con distancia semantica controlada.</td>
                 </tr>
-                <tr>
-                  <td>Comparacion</td>
-                  <td>Similitud intra vs inter comunidad.</td>
-                  <td>Medir si ideas cruzan o quedan encapsuladas.</td>
-                </tr>
-                <tr>
-                  <td>Etiquetado humano</td>
-                  <td>Uso de incidencia humana para separar muestras.</td>
-                  <td>Evita inferencias arbitrarias sobre autorias.</td>
-                </tr>
+	                <tr>
+	                  <td>Comparacion</td>
+	                  <td>Similitud intra vs inter comunidad.</td>
+	                  <td>Medir si ideas cruzan o quedan encapsuladas.</td>
+	                </tr>
+	                <tr>
+	                  <td>Sensibilidad</td>
+	                  <td>Conteos por threshold (0.70–0.95) sobre matches top-k.</td>
+	                  <td>Evita que una conclusion dependa de un umbral arbitrario.</td>
+	                </tr>
+	                <tr>
+	                  <td>Baseline</td>
+	                  <td>TF-IDF (VSM) + shuffled same-lang.</td>
+	                  <td>Separar copia/plantilla (solape lexical) de variacion semantica.</td>
+	                </tr>
+	                <tr>
+	                  <td>Etiquetado humano</td>
+	                  <td>Uso de incidencia humana para separar muestras.</td>
+	                  <td>Evita inferencias arbitrarias sobre autorias.</td>
+	                </tr>
               </tbody>
             </table>
           </div>
@@ -968,7 +1045,7 @@
             </div>
             <div class="glossary-item">
               <strong>TF-IDF</strong>
-              <div>Pondera terminos para resaltar lo distintivo de un texto.</div>
+              <div>Medida lexical: compara textos por palabras compartidas (ponderadas).</div>
             </div>
             <div class="glossary-item">
               <strong>SVD</strong>
@@ -990,18 +1067,34 @@
               <strong>Co-ocurrencia</strong>
               <div>Conceptos que aparecen juntos en un mismo texto.</div>
             </div>
-            <div class="glossary-item">
-              <strong>Embeddings</strong>
-              <div>Vectores semanticos para comparar narrativas por similitud.</div>
-            </div>
-            <div class="glossary-item">
-              <strong>FAISS</strong>
-              <div>Indexado ANN para buscar similitud semantica a gran escala.</div>
-            </div>
-            <div class="glossary-item">
-              <strong>VSM</strong>
-              <div>Vector Space Model, baseline interpretable de similitud.</div>
-            </div>
+	            <div class="glossary-item">
+	              <strong>Embeddings</strong>
+	              <div>Medida semantica: compara significado aunque cambien las palabras.</div>
+	            </div>
+	            <div class="glossary-item">
+	              <strong>Score (coseno)</strong>
+	              <div>Similaridad 0–1 entre embeddings normalizados; 1.0 suele ser texto casi identico.</div>
+	            </div>
+	            <div class="glossary-item">
+	              <strong>FAISS</strong>
+	              <div>Indexado ANN para buscar similitud semantica a gran escala.</div>
+	            </div>
+	            <div class="glossary-item">
+	              <strong>same-lang</strong>
+	              <div>Los vecinos se buscan dentro del mismo idioma detectado para evitar matches falsos.</div>
+	            </div>
+	            <div class="glossary-item">
+	              <strong>unknown (idioma)</strong>
+	              <div>Idioma no detectado (texto corto, emojis, mezcla, codigo). Se trata como bucket propio.</div>
+	            </div>
+	            <div class="glossary-item">
+	              <strong>Threshold</strong>
+	              <div>Umbral del score: define cuan estricta es la condicion “similares”.</div>
+	            </div>
+	            <div class="glossary-item">
+	              <strong>VSM</strong>
+	              <div>Baseline de similitud por solape de palabras (control lexical).</div>
+	            </div>
             <div class="glossary-item">
               <strong>Parquet</strong>
               <div>Formato columnar eficiente para series grandes.</div>
@@ -1206,7 +1299,8 @@
         <div class="explain">
           <div>Que mide: actos de habla, moods, epistemica y co-ocurrencias.</div>
           <div>Para que sirve: mapear tono discursivo y asociaciones conceptuales.</div>
-          <div>Nota: co-ocurrencia basada en vocabulario de conceptos base.</div>
+          <div>Co-ocurrencia: conteo de docs donde aparecen ambos conceptos (vocabulario base).</div>
+          <div>Interpretacion: pares altos indican asociacion de menciones, no causalidad; conceptos muy frecuentes tienden a dominar el ranking.</div>
           <div>Clusters semanticos: aproximados via co-ocurrencias (clustering formal pendiente).</div>
           <div>Datos: `ontology_summary.csv`, `ontology_concepts_top.csv`, `ontology_cooccurrence_top.csv`.</div>
         </div>
@@ -1366,40 +1460,44 @@
               </table>
             </div>
           </div>
-          <div class="table-card">
-            <div class="table-header">Redes: comunidades en replies (top tamaños)</div>
-            <div class="table-scroll">
-              <table id="report-reply-community-table">
-                <thead>
-                  <tr>
-                    <th>Comunidad</th>
-                    <th>Nodos</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="table-card">
-            <div class="table-header">Redes: comunidades en mentions (top tamaños)</div>
-            <div class="table-scroll">
-              <table id="report-mention-community-table">
-                <thead>
-                  <tr>
-                    <th>Comunidad</th>
-                    <th>Nodos</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </details>
-        <div class="explain">
-          <div>Que mide: hubs y brokers en grafos de interaccion.</div>
-          <div>Para que sirve: localizar actores centrales y flujos de conversacion.</div>
-          <div>Datos: `reply_graph_centrality.csv`, `mention_graph_centrality.csv`, `*_communities.csv`.</div>
-        </div>
+	          <div class="table-card">
+	            <div class="table-header">Redes: comunidades en replies (top tamaños)</div>
+	            <div class="table-scroll">
+	              <table id="report-reply-community-table">
+	                <thead>
+	                  <tr>
+	                    <th>Comunidad</th>
+	                    <th>Nodos</th>
+	                    <th>% Nodos</th>
+	                  </tr>
+	                </thead>
+	                <tbody></tbody>
+	              </table>
+	            </div>
+	          </div>
+	          <div class="table-card">
+	            <div class="table-header">Redes: comunidades en mentions (top tamaños)</div>
+	            <div class="table-scroll">
+	              <table id="report-mention-community-table">
+	                <thead>
+	                  <tr>
+	                    <th>Comunidad</th>
+	                    <th>Nodos</th>
+	                    <th>% Nodos</th>
+	                  </tr>
+	                </thead>
+	                <tbody></tbody>
+	              </table>
+	            </div>
+	          </div>
+	        </details>
+	        <div class="explain">
+	          <div>Que mide: hubs y brokers en grafos de interaccion.</div>
+	          <div>Definicion de <strong>comunidad</strong>: clusters de autores detectados por modularidad (greedy) sobre el grafo de replies/mentions (convertido a no-dirigido) en el subset mas activo (top nodos).</div>
+	          <div>Como leer la tabla: <strong>Comunidad</strong> es un ID arbitrario; <strong>Nodos</strong> = autores dentro del cluster; <strong>% Nodos</strong> es share dentro del subset analizado.</div>
+	          <div>Para que sirve: localizar actores centrales y flujos de conversacion.</div>
+	          <div>Datos: `reply_graph_centrality.csv`, `mention_graph_centrality.csv`, `*_communities.csv`.</div>
+	        </div>
 
         <div class="grid-2 method-grid">
           <div class="card wide">
@@ -1445,14 +1543,15 @@
         </div>
 
         <div class="grid-2 method-grid">
-          <div class="card wide">
-            <h3>Lenguaje: muestra y sesgo</h3>
-            <ul class="bullet-list">
-              <li>Distribucion basada en muestra estadistica, no censo completo.</li>
-              <li>Se usa para detectar sesgos de idioma y mezcla cultural.</li>
-              <li>Comparar con submolts antes de concluir tendencias globales.</li>
-            </ul>
-          </div>
+	          <div class="card wide">
+	            <h3>Lenguaje: muestra y sesgo</h3>
+	            <ul class="bullet-list">
+	              <li>Distribucion basada en muestra estadistica, no censo completo.</li>
+	              <li><strong>unknown</strong> = idioma no detectado (texto corto, emojis, mezcla, codigo).</li>
+	              <li>Se usa para detectar sesgos de idioma y mezcla cultural.</li>
+	              <li>Comparar con submolts antes de concluir tendencias globales.</li>
+	            </ul>
+	          </div>
           <div class="card wide">
             <h3>Interpretacion rapida</h3>
             <ul class="bullet-list">
@@ -1464,7 +1563,12 @@
         <details class="details">
           <summary>Ver detalle: distribucion por idioma</summary>
           <div class="table-card">
-            <div class="table-header">Lenguaje: distribucion por idioma (muestra)</div>
+            <div class="table-header">
+              Lenguaje: distribucion por idioma (muestra)
+              <span class="table-actions">
+                <button class="toggle" id="report-language-hide-en" type="button">Ocultar ingles (en)</button>
+              </span>
+            </div>
             <div class="table-scroll">
               <table id="report-language-table">
                 <thead>
@@ -1479,36 +1583,40 @@
             </div>
           </div>
         </details>
-        <div class="explain">
-          <div>Que mide: presencia relativa de idiomas en posts y comentarios.</div>
-          <div>Para que sirve: detectar sesgo linguistico y mezcla cultural.</div>
-          <div>Datos: `public_language_distribution.csv` (muestra estadistica).</div>
-        </div>
-
-        <div class="grid-2 method-grid">
-          <div class="card wide">
-            <h3>Transmision IA vs humana</h3>
-            <ul class="bullet-list">
-              <li>Se presenta como lectura cualitativa guiada.</li>
-              <li>Las muestras muestran narrativas explicitas sobre transmision.</li>
-              <li>No se infiere autoria real sin evidencia adicional.</li>
-            </ul>
-          </div>
-          <div class="card wide">
-            <h3>Embeddings + FAISS (estado actual)</h3>
+	        <div class="explain">
+	          <div>Que mide: presencia relativa de idiomas en posts y comentarios.</div>
+	          <div>Definicion: <strong>unknown</strong> = no se pudo detectar idioma (texto corto, emojis, mezcla, codigo).</div>
+	          <div>Para que sirve: detectar sesgo linguistico y mezcla cultural.</div>
+	          <div>Datos: `public_language_distribution.csv` (muestra estadistica).</div>
+	        </div>
+	
+	        <div class="grid-2 method-grid">
+	          <div class="card wide">
+	            <h3>Transmision IA vs humana</h3>
+	            <ul class="bullet-list">
+	              <li><strong>No es etiquetado de autoria:</strong> no clasificamos cuentas como IA vs humano.</li>
+	              <li><strong>Transmision</strong> aqui = similitud semantica entre textos (operacional, no causal).</li>
+	              <li>La muestra es cualitativa (filtro por co-mencion IA/agente + humano), no representativa.</li>
+	            </ul>
+	          </div>
+	          <div class="card wide">
+	            <h3>Embeddings + FAISS (estado actual)</h3>
             <ul class="bullet-list">
               <li>Embeddings multilingues con normalizacion para similitud coseno.</li>
               <li>FAISS HNSW por idioma (same-lang) para escalabilidad.</li>
               <li>Top-k=5 vecinos por documento para detectar narrativa cercana.</li>
             </ul>
           </div>
-        </div>
-        <div class="table-card">
-          <div class="table-header">Transmision IA vs Humano (muestras)</div>
-          <div class="table-scroll">
-            <table id="report-transmission-table">
-              <thead>
-                <tr>
+	        </div>
+	        <div class="table-card">
+	          <div class="table-header">
+	            Transmision IA vs Humano (muestra cualitativa)
+	            <span class="info-tip" data-tip="Se filtra por co-mencion IA/agente + humano para lectura. No es censo ni ground-truth.">i</span>
+	          </div>
+	          <div class="table-scroll">
+	            <table id="report-transmission-table">
+	              <thead>
+	                <tr>
                   <th>Fuente</th>
                   <th>Submolt</th>
                   <th>Fecha</th>
@@ -1518,13 +1626,14 @@
               <tbody></tbody>
             </table>
           </div>
-        </div>
-        <div class="explain">
-          <div>Que mide: narrativas explicitas sobre como viajan ideas entre IA y humanos.</div>
-          <div>Para que sirve: lectura cualitativa y base para matching semantico.</div>
-          <div>Metodo: VSM + embeddings (embeddings completados en este build).</div>
-          <div>Datos: `public_transmission_samples.csv` (muestra).</div>
-        </div>
+	        </div>
+	        <div class="explain">
+	          <div>Que muestra: ejemplos de posts donde co-aparecen IA/agente y humano (lectura cualitativa).</div>
+	          <div>Como se construye: filtro por keywords sobre `public_transmission_samples.csv` + orden por recencia.</div>
+	          <div>Para que sirve: anclar interpretacion; la transmision cuantitativa se mide abajo (embeddings + baseline).</div>
+	          <div>Metodo cuantitativo: embeddings (coseno, same-lang) + baseline VSM (TF-IDF) + sensibilidad por umbral.</div>
+	          <div>Datos: `public_transmission_samples.csv`, `transmission_threshold_sensitivity.json`, `transmission_vsm_baseline.json`.</div>
+	        </div>
 
         <div class="callout">
           <strong>Embeddings completados:</strong>
@@ -1552,10 +1661,10 @@
             <div class="stat-value" id="emb-langs">–</div>
           </div>
         </div>
-        <details class="details">
-          <summary>Ver detalle: embeddings y pares similares</summary>
-          <div class="table-card">
-            <div class="table-header">Embeddings: top idiomas por matches</div>
+	        <details class="details">
+	          <summary>Ver detalle: embeddings y pares similares</summary>
+	          <div class="table-card">
+	            <div class="table-header">Embeddings: top idiomas por matches</div>
             <div class="table-scroll">
               <table id="report-embedding-lang-table">
                 <thead>
@@ -1569,35 +1678,39 @@
               </table>
             </div>
           </div>
-          <div class="table-card">
-            <div class="table-header">Embeddings: pares mas similares (same-lang)</div>
-            <div class="table-scroll">
-              <table id="report-embedding-pairs-table">
-                <thead>
-                  <tr>
-                    <th>Score</th>
-                    <th>Submolt A</th>
-                    <th>Submolt B</th>
-                    <th>Texto A</th>
-                    <th>Texto B</th>
+	          <div class="table-card">
+	            <div class="table-header">Embeddings: pares mas similares (same-lang)</div>
+	            <div class="table-scroll">
+	              <table id="report-embedding-pairs-table">
+	                <thead>
+	                  <tr>
+	                    <th>Score</th>
+	                    <th>Idioma</th>
+	                    <th>Submolt A</th>
+	                    <th>Submolt B</th>
+	                    <th>Texto A</th>
+	                    <th>Texto B</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
               </table>
             </div>
           </div>
-        </details>
-        <div class="explain">
-          <div>Que mide: proximidad semantica entre documentos dentro del mismo idioma.</div>
-          <div>Para que sirve: detectar narrativas replicadas o compartidas entre submolts.</div>
-          <div>Metodo: embeddings E5 + FAISS HNSW (same-lang), top-k=5 vecinos.</div>
-          <div>Datos: `public_embeddings_summary.json`, `public_embeddings_lang_top.csv`, `public_embeddings_pairs_top.csv`.</div>
-        </div>
-
-        <div class="callout">
-          <strong>Embeddings post vs comentario:</strong>
-          compara post con respuestas del mismo idioma para medir eco o respuesta semantica.
-        </div>
+	        </details>
+	        <div class="explain">
+	          <div>Que mide: proximidad semantica entre documentos dentro del mismo idioma.</div>
+	          <div>Para que sirve: detectar narrativas replicadas o compartidas entre submolts.</div>
+	          <div>Tip: haz click en “Texto A/B” para ver el texto completo (lookup publico).</div>
+	          <div>Nota: scores ~1.0 suelen ser duplicados/plantillas/rituales; la tabla muestra una muestra legible, no “lo mas importante”.</div>
+	          <div>Metodo: embeddings E5 normalizados (similitud coseno) + FAISS HNSW (same-lang), top-k=5 vecinos.</div>
+	          <div>Datos: `public_embeddings_summary.json`, `public_embeddings_lang_top.csv`, `public_embeddings_pairs_top.csv`.</div>
+	        </div>
+	
+	        <div class="callout">
+	          <strong>Embeddings post vs comentario:</strong>
+	          compara cada post con el comentario mas cercano semantica del mismo idioma en todo el corpus
+	          (no necesariamente un reply real) para medir eco o respuesta narrativa.
+	        </div>
         <div class="hero-stats">
           <div class="stat-card">
             <div class="stat-label">Posts (scope)</div>
@@ -1637,17 +1750,18 @@
               </table>
             </div>
           </div>
-          <div class="table-card">
-            <div class="table-header">Post→Comentario: pares mas similares</div>
-            <div class="table-scroll">
-              <table id="report-embedding-pc-pairs-table">
-                <thead>
-                  <tr>
-                    <th>Score</th>
-                    <th>Submolt post</th>
-                    <th>Submolt coment</th>
-                    <th>Texto post</th>
-                    <th>Texto comment</th>
+	          <div class="table-card">
+	            <div class="table-header">Post→Comentario: pares mas similares</div>
+	            <div class="table-scroll">
+	              <table id="report-embedding-pc-pairs-table">
+	                <thead>
+	                  <tr>
+	                    <th>Score</th>
+	                    <th>Idioma</th>
+	                    <th>Submolt post</th>
+	                    <th>Submolt coment</th>
+	                    <th>Texto post</th>
+	                    <th>Texto comment</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -1655,18 +1769,83 @@
             </div>
           </div>
         </details>
-        <div class="explain">
-          <div>Que mide: similitud semantica entre posts y comentarios en el mismo idioma.</div>
-          <div>Para que sirve: ver si las respuestas repiten o desplazan la narrativa original.</div>
-          <div>Metodo: embeddings E5 + FAISS (indexado por idioma) con top-k=5.</div>
-          <div>Nota: total_matches puede ser menor a posts*5 si un idioma no tiene suficientes comentarios para indexar.</div>
-          <div>
-            Datos: `embeddings_post_comment/public_embeddings_post_comment_summary.json`,
-            `embeddings_post_comment/public_embeddings_post_comment_lang_top.csv`,
-            `embeddings_post_comment/public_embeddings_post_comment_pairs_top.csv`.
-          </div>
-        </div>
-      </section>
+	        <div class="explain">
+	          <div>Que mide: similitud semantica entre posts y comentarios en el mismo idioma.</div>
+	          <div>Para que sirve: ver si las respuestas repiten o desplazan la narrativa original.</div>
+	          <div>Tip: haz click en “Texto post/comment” para ver el texto completo (lookup publico).</div>
+	          <div>Nota: pares “perfectos” con emoji-only (p.ej. 🦞) suelen caer en <strong>unknown</strong> y no aportan contenido; se tratan como ruido.</div>
+	          <div>Metodo: embeddings E5 + FAISS (indexado por idioma) con top-k=5; el comentario puede venir de otro post.</div>
+	          <div>Nota: total_matches puede ser menor a posts*5 si un idioma no tiene suficientes comentarios para indexar.</div>
+	          <div>
+	            Datos: `embeddings_post_comment/public_embeddings_post_comment_summary.json`,
+	            `embeddings_post_comment/public_embeddings_post_comment_lang_top.csv`,
+	            `embeddings_post_comment/public_embeddings_post_comment_pairs_top.csv`.
+	          </div>
+	        </div>
+	
+	        <details class="details">
+	          <summary>Ver detalle: transmision (sensibilidad por threshold + baseline VSM)</summary>
+	          <div class="table-card">
+	            <div class="table-header">
+	              Transmision: sensibilidad por threshold (post→coment)
+	              <span class="info-tip" data-tip="Cuenta pares de `matches_post_comment.csv` que sobreviven si exiges score >= threshold. Es sensibilidad del ranking top-k, no ground-truth.">i</span>
+	            </div>
+	            <div class="table-scroll">
+	              <table id="report-transmission-threshold-table">
+	                <thead>
+	                  <tr>
+	                    <th>Threshold</th>
+	                    <th>Pares >= t</th>
+	                    <th>% misma submolt</th>
+	                    <th>Top idiomas</th>
+	                    <th>Volumen (rel.)</th>
+	                  </tr>
+	                </thead>
+	                <tbody></tbody>
+	              </table>
+	            </div>
+	          </div>
+	          <div class="table-card">
+	            <div class="table-header">
+	              Baseline VSM (TF-IDF) vs embeddings
+	              <span class="info-tip" data-tip="Compara similitud lexical (TF-IDF) en pares matched vs shuffled (same-lang). AUC alto sugiere que parte del match se explica por solape de tokens.">i</span>
+	            </div>
+	            <div class="hero-stats compact">
+	              <div class="stat-card">
+	                <div class="stat-label">AUC VSM</div>
+	                <div class="stat-value" id="trans-vsm-auc">–</div>
+	              </div>
+	              <div class="stat-card">
+	                <div class="stat-label">Corr emb↔VSM</div>
+	                <div class="stat-value" id="trans-vsm-corr">–</div>
+	              </div>
+	              <div class="stat-card">
+	                <div class="stat-label">VSM mean (matched)</div>
+	                <div class="stat-value" id="trans-vsm-mmean">–</div>
+	              </div>
+	              <div class="stat-card">
+	                <div class="stat-label">VSM mean (shuffled)</div>
+	                <div class="stat-value" id="trans-vsm-smean">–</div>
+	              </div>
+	              <div class="stat-card">
+	                <div class="stat-label">VSM p90 (matched)</div>
+	                <div class="stat-value" id="trans-vsm-mp90">–</div>
+	              </div>
+	              <div class="stat-card">
+	                <div class="stat-label">VSM p90 (shuffled)</div>
+	                <div class="stat-value" id="trans-vsm-sp90">–</div>
+	              </div>
+	            </div>
+	          </div>
+	        </details>
+	        <div class="explain">
+	          <div>Que mide: cuan estable es el conteo de pares “similares” cuando cambias el threshold.</div>
+	          <div>Como se calcula: sobre `matches_post_comment.csv` (top-k por post) y su score (coseno embeddings, same-lang).</div>
+	          <div>Como leerlo: thresholds altos (p.ej. 0.95) capturan casi duplicados; thresholds medios (0.90) capturan narrativa cercana.</div>
+	          <div>Baseline: TF-IDF (VSM) + shuffled same-lang para separar solape lexical vs señal semantica.</div>
+	          <div>Datos: `transmission_threshold_sensitivity.json`, `transmission_vsm_baseline.json`.</div>
+	        </div>
+	      </section>
 
       <section id="interpretacion" class="section">
         <div class="section-head">
@@ -1715,10 +1894,32 @@
               <li>Moods: trust 64,246; curiosity 29,513; ambition 28,774.</li>
               <li>Epistemicos: evidence 104,404; hedge 41,610; certainty 7,826.</li>
               <li>Conceptos top: agents 18.1%, agent 16.6%, human 13.6%.</li>
-              <li>Co-ocurrencia top: agent + agents (60,277), agent + human (34,222).</li>
+              <li>Co-ocurrencias por conteo tienden a inflarse con singular/plural (p. ej. agent + agents).</li>
             </ul>
             <p><strong>Justificacion metodologica:</strong> deteccion de patrones ES/EN + co-ocurrencias de conceptos (`ontology_summary.csv`, `ontology_concepts_top.csv`).</p>
-            <p><strong>Interpretacion:</strong> discurso afirmativo y tecnopractico, con narrativa central en torno a agentes y su relacion con humanos.</p>
+            <p><strong>Interpretacion:</strong> discurso tecnopractico y afirmativo. Que "agents" domine es esperable en este contexto; lo informativo es que el resto del vocabulario se organiza alrededor de memoria, contexto, datos, tooling y seguridad.</p>
+
+            <div class="callout">
+              <strong>Anti-sesgo:</strong>
+              cuando el tema central domina (agent/human), es facil confundir “lo obvio” con un hallazgo.
+              Para evitar eso, abajo se muestra la misma lectura <strong>sin el nucleo</strong> (agent/agents/human/humans/ai).
+            </div>
+            <div class="rank-grid">
+              <div class="rank-card">
+                <div class="rank-title">
+                  Conceptos mas presentes (sin nucleo)
+                  <span class="info-tip" data-tip="Excluye agent/agents/human/humans/ai para ver qué estructura el discurso cuando quitamos el tema central.">i</span>
+                </div>
+                <div class="rank-list" id="insight-onto-concepts-nocore">–</div>
+              </div>
+              <div class="rank-card">
+                <div class="rank-title">
+                  Co-ocurrencias mas utiles (sin nucleo)
+                  <span class="info-tip" data-tip="Filtra singular/plural (agent+agents, human+humans) y excluye el núcleo para evitar artefactos.">i</span>
+                </div>
+                <div class="rank-list" id="insight-onto-pairs-nocore">–</div>
+              </div>
+            </div>
           </div>
           <div class="card wide">
             <h3>4) Sociologia cuantitativa</h3>
@@ -1740,6 +1941,7 @@
               <li>Interferencia (scope all): injection_rate 0.30%, disclaimer_rate 0.37%, code_fence_rate 4.25%.</li>
               <li>Incidencia humana: human_ref_rate 5.04%, prompt_ref_rate 4.33%, tooling_ref_rate 36.2%.</li>
             </ul>
+            <p><strong>Definicion operativa:</strong> interferencia = patrones de injection/disclaimer en el texto (mas contexto tecnico). Incidencia humana = evidencia textual (humano, prompt, narrativa IRL, tooling); no es “deteccion de autoria”.</p>
             <p><strong>Justificacion metodologica:</strong> heuristicas regex en `interference_summary.csv` y `human_incidence_summary.csv`.</p>
             <p><strong>Interpretacion:</strong> la interferencia directa es baja; la presencia de tooling es alta y coherente con la memetica tecnica.</p>
           </div>
@@ -1750,6 +1952,35 @@
               <li>Post→comentario: mean_score 0.906; cross_submolt 83.7% (48 idiomas).</li>
               <li>Pares top dominados por plantillas MBC-20 y emojis 🦞 (ritual semantico).</li>
             </ul>
+            <div class="callout">
+              <strong>TF-IDF (VSM) vs embeddings, en simple:</strong>
+              embeddings compara <em>significado</em>; TF-IDF compara <em>palabras compartidas</em>.
+              Usamos TF-IDF como control para separar “plantilla/copia” (mucho solape lexical) de
+              “parafrasis/variacion” (poco solape lexical pero alta similitud semantica).
+            </div>
+            <div class="hero-stats compact">
+              <div class="stat-card">
+                <div class="stat-label">Corr (emb↔TF-IDF)</div>
+                <div class="stat-value" id="vsm-corr">–</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">AUC TF-IDF (matched vs random)</div>
+                <div class="stat-value" id="vsm-auc">–</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">TF-IDF mean (matched)</div>
+                <div class="stat-value" id="vsm-mean-matched">–</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">TF-IDF mean (random)</div>
+                <div class="stat-value" id="vsm-mean-random">–</div>
+              </div>
+            </div>
+            <div class="explain">
+              <div>Lectura rapida: si TF-IDF y embeddings son altos, suele ser plantilla/copia. Si embeddings es alto pero TF-IDF bajo, suele ser parafrasis o variacion.</div>
+              <div>Nota: el baseline usa muestreo y pares aleatorios (mismo idioma) como “control”.</div>
+              <div>Datos: `transmission_vsm_baseline.json`.</div>
+            </div>
             <p><strong>Justificacion metodologica:</strong> embeddings E5 + FAISS same-lang con top-k=5 vecinos por documento.</p>
             <p><strong>Interpretacion:</strong> la similitud cruza comunidades; los comentarios responden con desplazamiento semantico en vez de copia literal.</p>
           </div>
@@ -2185,16 +2416,22 @@
               <div class="example-source">Fuente: ontology_summary.csv</div>
             </div>
             <div class="example-item">
-              <div class="example-label">Concepto mas frecuente</div>
-              <div class="example-value" id="example-onto-concept">–</div>
-              <div class="example-meta">Share: <span id="example-onto-concept-share">–</span></div>
+              <div class="example-label">Concepto nucleo (top)</div>
+              <div class="example-value" id="example-onto-core-concept">–</div>
+              <div class="example-meta">Share: <span id="example-onto-core-concept-share">–</span></div>
               <div class="example-source">Fuente: ontology_concepts_top.csv</div>
             </div>
             <div class="example-item">
-              <div class="example-label">Par de co-ocurrencia top</div>
-              <div class="example-value" id="example-onto-cooccurrence">–</div>
-              <div class="example-meta">Conteo: <span id="example-onto-cooccurrence-count">–</span></div>
-              <div class="example-source">Fuente: ontology_cooccurrence_top.csv</div>
+              <div class="example-label">Concepto top (sin nucleo)</div>
+              <div class="example-value" id="example-onto-concept-nocore">–</div>
+              <div class="example-meta">Share: <span id="example-onto-concept-nocore-share">–</span></div>
+              <div class="example-source">Fuente: ontology_concepts_top.csv (filtrado)</div>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Co-ocurrencia top (sin nucleo)</div>
+              <div class="example-value" id="example-onto-cooccurrence-nocore">–</div>
+              <div class="example-meta">Conteo: <span id="example-onto-cooccurrence-nocore-count">–</span></div>
+              <div class="example-source">Fuente: ontology_cooccurrence_top.csv (filtrado)</div>
             </div>
           </div>
         </details>
@@ -2392,8 +2629,9 @@
             <ul class="bullet-list">
               <li>Referencias explicitas a humanos: "soy humano", "mi creador".</li>
               <li>Menciones a prompts o instrucciones: "segun el prompt".</li>
-              <li>Referencias a tooling: API, endpoint, token, script.</li>
-              <li>Resultado: human_incidence_score continuo.</li>
+              <li>Narrativa situada (IRL): "hoy/ayer", "mi trabajo", etc.</li>
+              <li>Tooling: API, endpoint, token, script (pesa poco para no dominar).</li>
+              <li>Resultado: human_incidence_score continuo (proxy, no prueba de autoria).</li>
             </ul>
           </div>
         </div>
@@ -2409,13 +2647,18 @@
             </ul>
           </div>
           <div class="card wide">
-            <h3>Interpretacion responsable</h3>
+            <h3>Formula de scoring (incidencia humana)</h3>
             <ul class="bullet-list">
-              <li>Un score alto no prueba intervencion humana.</li>
-              <li>Se usa para priorizar lectura, no para etiquetar.</li>
-              <li>Debe combinarse con analisis cualitativo.</li>
+              <li>score = human*2.5 + prompt*1.5 + narrative*0.9 + tooling*0.15</li>
+              <li>human/prompt/narrative: señales de presencia humana en el texto.</li>
+              <li>tooling: contexto tecnico (ponderado bajo para evitar que lo domine todo).</li>
             </ul>
           </div>
+        </div>
+        <div class="callout">
+          <strong>Interpretacion responsable:</strong>
+          un score alto no prueba intervencion ni autoria humana; se usa para priorizar lectura y auditoria,
+          y debe combinarse con analisis cualitativo.
         </div>
 
         <div class="table-card">
@@ -2538,6 +2781,7 @@
             <ul class="bullet-list">
               <li>Memes basados en n-gramas no capturan sinonimos o ironia.</li>
               <li>Co-ocurrencia no implica causalidad ni direccion.</li>
+              <li>Ontologia usa vocabulario base: terminos nucleo dominan por diseno; mirar la vista "sin nucleo" para reducir auto-sesgo.</li>
               <li>Heuristicas de interferencia generan falsos positivos/negativos.</li>
             </ul>
           </div>
@@ -2811,6 +3055,14 @@
               embeddings_post_comment/matches_post_comment.csv
             </a>
             <span>Matches completos post→comentario (same-lang).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/transmission_threshold_sensitivity.json">transmission_threshold_sensitivity.json</a>
+            <span>Sensibilidad: cuantos pares sobreviven al cambiar el threshold de embeddings (post→comentario).</span>
+          </div>
+          <div class="data-row">
+            <a href="../data/derived/transmission_vsm_baseline.json">transmission_vsm_baseline.json</a>
+            <span>Control lexical: TF-IDF (VSM) vs embeddings (matched vs shuffled same-lang).</span>
           </div>
           <div class="data-row">
             <a href="../data/derived/public_submolt_examples.csv">public_submolt_examples.csv</a>

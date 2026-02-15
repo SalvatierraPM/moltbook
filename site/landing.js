@@ -13,6 +13,8 @@ const files = {
   authors: "author_stats.csv",
   language: "public_language_distribution.csv",
   transmission: "public_transmission_samples.csv",
+  transmissionSensitivity: "transmission_threshold_sensitivity.json",
+  transmissionVsmBaseline: "transmission_vsm_baseline.json",
   embeddingsSummary: "public_embeddings_summary.json",
   embeddingsLang: "public_embeddings_lang_top.csv",
   embeddingsPairs: "public_embeddings_pairs_top.csv",
@@ -26,7 +28,50 @@ const files = {
   interferenceTop: "interference_top.csv",
   incidenceTop: "human_incidence_top.csv",
   submoltExamples: "public_submolt_examples.csv",
+  docLookup: "public_doc_lookup.json",
 };
+
+const REPORT_LIMITS = {
+  submoltsVolume: 25,
+  memeLife: 25,
+  ontologyConcepts: 25,
+  ontologyCooccurrence: 25,
+  diffusionEngagement: 25,
+};
+
+const CORE_CONCEPT_LEMMAS = new Set(["agent", "human", "ai"]);
+const CONCEPT_LEMMA_MAP = {
+  agents: "agent",
+  humans: "human",
+  tokens: "token",
+  models: "model",
+  tools: "tool",
+  prompts: "prompt",
+  policies: "policy",
+  memes: "meme",
+  modelo: "model",
+  lenguaje: "language",
+  ontologia: "ontology",
+  etica: "ethics",
+};
+
+function conceptLemma(concept) {
+  const raw = String(concept || "").trim().toLowerCase();
+  return CONCEPT_LEMMA_MAP[raw] || raw;
+}
+
+function isVariantPair(a, b) {
+  return conceptLemma(a) === conceptLemma(b);
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 function loadCSV(path) {
   if (window.Papa && window.Papa.parse) {
@@ -198,6 +243,57 @@ function humanizeFeature(feature) {
     .replace(/_/g, " ");
 }
 
+function ensureTextModal() {
+  let overlay = document.getElementById("text-modal-overlay");
+  if (overlay) return overlay;
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div class="modal-overlay" id="text-modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="text-modal-title">
+        <div class="modal-head">
+          <div class="modal-head-copy">
+            <div class="modal-title" id="text-modal-title">Texto completo</div>
+            <div class="modal-meta" id="text-modal-meta"></div>
+          </div>
+          <button class="toggle modal-close" id="text-modal-close" type="button">Cerrar</button>
+        </div>
+        <div class="modal-body">
+          <pre class="modal-pre" id="text-modal-text"></pre>
+        </div>
+      </div>
+    </div>`
+  );
+  overlay = document.getElementById("text-modal-overlay");
+  const closeBtn = document.getElementById("text-modal-close");
+  const close = () => {
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  };
+  closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+  overlay.__close = close;
+  return overlay;
+}
+
+function openTextModal({ title, meta, text }) {
+  const overlay = ensureTextModal();
+  const titleEl = document.getElementById("text-modal-title");
+  const metaEl = document.getElementById("text-modal-meta");
+  const textEl = document.getElementById("text-modal-text");
+  titleEl.textContent = title || "Texto completo";
+  metaEl.textContent = meta || "";
+  textEl.textContent = text || "(texto no disponible)";
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
 async function init() {
   const [
     submoltStats,
@@ -212,6 +308,8 @@ async function init() {
     authors,
     language,
     transmission,
+    transmissionSensitivity,
+    transmissionVsmBaseline,
     embeddingsSummary,
     embeddingsLang,
     embeddingsPairs,
@@ -225,6 +323,7 @@ async function init() {
     interferenceTop,
     incidenceTop,
     submoltExamples,
+    docLookup,
   ] = await Promise.all([
     loadCSV(DATA_BASE + files.submoltStats),
     loadCSV(DATA_BASE + files.diffusionRuns),
@@ -238,6 +337,8 @@ async function init() {
     loadCSV(DATA_BASE + files.authors),
     loadCSV(DATA_BASE + files.language),
     loadCSV(DATA_BASE + files.transmission),
+    loadJSON(DATA_BASE + files.transmissionSensitivity),
+    loadJSON(DATA_BASE + files.transmissionVsmBaseline),
     loadJSON(DATA_BASE + files.embeddingsSummary),
     loadCSV(DATA_BASE + files.embeddingsLang),
     loadCSV(DATA_BASE + files.embeddingsPairs),
@@ -251,7 +352,42 @@ async function init() {
     loadCSV(DATA_BASE + files.interferenceTop),
     loadCSV(DATA_BASE + files.incidenceTop),
     loadCSV(DATA_BASE + files.submoltExamples),
+    loadJSON(DATA_BASE + files.docLookup).catch(() => null),
   ]);
+
+  const filters = {
+    hideGeneral: false,
+    hideEn: false,
+  };
+
+  const docLookupMap = (docLookup && docLookup.docs) || {};
+  const lookupDocText = (docId) => {
+    if (!docId) return null;
+    const hit = docLookupMap[String(docId)];
+    if (hit && typeof hit.text === "string") return hit.text;
+    return null;
+  };
+
+  document.addEventListener("click", (e) => {
+    const target = e.target && e.target.closest ? e.target.closest(".text-link[data-doc-id]") : null;
+    if (!target) return;
+    e.preventDefault();
+    const docId = target.dataset.docId;
+    const docType = target.dataset.docType || "";
+    const submolt = target.dataset.docSubmolt || "";
+    const createdAt = target.dataset.docCreatedAt || "";
+    const score = target.dataset.docScore || "";
+    const text = lookupDocText(docId) || "";
+    const meta = [
+      docType && `tipo=${docType}`,
+      submolt && `submolt=${submolt}`,
+      createdAt && `fecha=${createdAt}`,
+      score && `score=${score}`,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    openTextModal({ title: `Doc ${shortId(docId)}`, meta, text });
+  });
 
   const totalPosts = submoltStats.reduce((acc, r) => acc + (r.posts || 0), 0);
   const totalComments = submoltStats.reduce((acc, r) => acc + (r.comments || 0), 0);
@@ -286,22 +422,41 @@ async function init() {
   document.getElementById("coverage-dup-posts").textContent = fmtNumber(coverage.posts_duplicates);
   document.getElementById("coverage-dup-comments").textContent = fmtNumber(coverage.comments_duplicates);
 
-  const topSubmolts = [...submoltStats]
-    .sort((a, b) => ((b.posts || 0) + (b.comments || 0)) - ((a.posts || 0) + (a.comments || 0)))
-    .slice(0, 6);
-  setTableRows(
-    "report-submolt-table",
-    topSubmolts
-      .map(
-        (r) => `<tr>
-          <td>${r.submolt}</td>
-          <td>${fmtNumber(r.posts)}</td>
-          <td>${fmtNumber(r.comments)}</td>
-          <td>${fmtFloat(r.mean_upvotes, 1)}</td>
-        </tr>`
-      )
-      .join("")
-  );
+  const aboutPosts = document.getElementById("about-posts");
+  if (aboutPosts) aboutPosts.textContent = fmtNumber(totalPosts);
+  const aboutComments = document.getElementById("about-comments");
+  if (aboutComments) aboutComments.textContent = fmtNumber(totalComments);
+  const aboutWindow = document.getElementById("about-window");
+  if (aboutWindow) aboutWindow.textContent = `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`;
+
+  const renderSubmoltVolumeTable = () => {
+    const topSubmolts = [...submoltStats]
+      .filter((r) => (filters.hideGeneral ? String(r.submolt || "").toLowerCase() !== "general" : true))
+      .sort((a, b) => ((b.posts || 0) + (b.comments || 0)) - ((a.posts || 0) + (a.comments || 0)))
+      .slice(0, REPORT_LIMITS.submoltsVolume);
+    setTableRows(
+      "report-submolt-table",
+      topSubmolts
+        .map(
+          (r) => `<tr>
+            <td>${r.submolt}</td>
+            <td>${fmtNumber(r.posts)}</td>
+            <td>${fmtNumber(r.comments)}</td>
+            <td>${fmtFloat(r.mean_upvotes, 1)}</td>
+          </tr>`
+        )
+        .join("")
+    );
+  };
+  renderSubmoltVolumeTable();
+  const hideGeneralBtn = document.getElementById("report-submolts-hide-general");
+  if (hideGeneralBtn) {
+    hideGeneralBtn.addEventListener("click", () => {
+      filters.hideGeneral = !filters.hideGeneral;
+      hideGeneralBtn.classList.toggle("active", filters.hideGeneral);
+      renderSubmoltVolumeTable();
+    });
+  }
 
   const topMemeCounts = [...memeCandidates]
     .sort((a, b) => (b.count || 0) - (a.count || 0))
@@ -326,7 +481,7 @@ async function init() {
 
   const topMemeLife = [...memeClass]
     .sort((a, b) => (b.lifetime_hours || 0) - (a.lifetime_hours || 0))
-    .slice(0, 6);
+    .slice(0, REPORT_LIMITS.memeLife);
   setTableRows(
     "report-meme-life-table",
     topMemeLife
@@ -406,7 +561,7 @@ async function init() {
       .join("")
   );
 
-  const concepts = ontologyConcepts.slice(0, 6);
+  const concepts = ontologyConcepts.slice(0, REPORT_LIMITS.ontologyConcepts);
   setTableRows(
     "report-concepts-table",
     concepts
@@ -419,13 +574,22 @@ async function init() {
       )
       .join("")
   );
-  const exampleConcept = concepts[0] || {};
-  const exampleConceptEl = document.getElementById("example-onto-concept");
-  if (exampleConceptEl) exampleConceptEl.textContent = exampleConcept.concept || "–";
-  const exampleConceptShare = document.getElementById("example-onto-concept-share");
-  if (exampleConceptShare) exampleConceptShare.textContent = fmtPercent(exampleConcept.share);
+  const exampleCoreConcept = concepts[0] || {};
+  const exampleCoreConceptEl = document.getElementById("example-onto-core-concept");
+  if (exampleCoreConceptEl) exampleCoreConceptEl.textContent = exampleCoreConcept.concept || "–";
+  const exampleCoreConceptShare = document.getElementById("example-onto-core-concept-share");
+  if (exampleCoreConceptShare) exampleCoreConceptShare.textContent = fmtPercent(exampleCoreConcept.share);
 
-  const cooccurrence = ontologyCooccurrence.slice(0, 6);
+  const noCoreConcepts = [...ontologyConcepts].filter((r) => !CORE_CONCEPT_LEMMAS.has(conceptLemma(r.concept)));
+  const exampleNoCoreConcept = noCoreConcepts[0] || {};
+  const exampleNoCoreConceptEl = document.getElementById("example-onto-concept-nocore");
+  if (exampleNoCoreConceptEl) exampleNoCoreConceptEl.textContent = exampleNoCoreConcept.concept || "–";
+  const exampleNoCoreConceptShare = document.getElementById("example-onto-concept-nocore-share");
+  if (exampleNoCoreConceptShare) exampleNoCoreConceptShare.textContent = fmtPercent(exampleNoCoreConcept.share);
+
+  const cooccurrence = [...ontologyCooccurrence]
+    .filter((r) => !isVariantPair(r.concept_a, r.concept_b))
+    .slice(0, REPORT_LIMITS.ontologyCooccurrence);
   setTableRows(
     "report-cooccurrence-table",
     cooccurrence
@@ -438,19 +602,125 @@ async function init() {
       )
       .join("")
   );
-  const examplePair = cooccurrence[0] || {};
-  const examplePairEl = document.getElementById("example-onto-cooccurrence");
-  if (examplePairEl) {
-    const a = examplePair.concept_a || "–";
-    const b = examplePair.concept_b || "–";
-    examplePairEl.textContent = `${a} + ${b}`;
+  const noCorePairs = [...ontologyCooccurrence]
+    .filter((r) => !isVariantPair(r.concept_a, r.concept_b))
+    .filter((r) => !CORE_CONCEPT_LEMMAS.has(conceptLemma(r.concept_a)) && !CORE_CONCEPT_LEMMAS.has(conceptLemma(r.concept_b)));
+  const examplePairNoCore = noCorePairs[0] || {};
+  const examplePairNoCoreEl = document.getElementById("example-onto-cooccurrence-nocore");
+  if (examplePairNoCoreEl) {
+    const a = examplePairNoCore.concept_a || "–";
+    const b = examplePairNoCore.concept_b || "–";
+    examplePairNoCoreEl.textContent = `${a} + ${b}`;
   }
-  const examplePairCount = document.getElementById("example-onto-cooccurrence-count");
-  if (examplePairCount) examplePairCount.textContent = fmtNumber(examplePair.count);
+  const examplePairNoCoreCount = document.getElementById("example-onto-cooccurrence-nocore-count");
+  if (examplePairNoCoreCount) examplePairNoCoreCount.textContent = fmtNumber(examplePairNoCore.count);
+
+  const totalDocs = (() => {
+    const first = ontologyConcepts && ontologyConcepts.length ? ontologyConcepts[0] : null;
+    const docCount = first && first.doc_count ? Number(first.doc_count) : null;
+    const share = first && first.share ? Number(first.share) : null;
+    if (docCount && share) return docCount / share;
+    return null;
+  })();
+
+  const insightConceptEl = document.getElementById("insight-onto-concepts-nocore");
+  const insightPairEl = document.getElementById("insight-onto-pairs-nocore");
+
+  const renderRankRows = (rows, max, valueText, labelText) =>
+    rows
+      .map((r) => {
+        const label = labelText(r);
+        const value = Number(r.value) || 0;
+        const pct = max > 0 ? (value / max) * 100 : 0;
+        return `<div class="rank-row">
+          <div class="rank-label" title="${escapeHtml(label)}">${escapeHtml(label)}</div>
+          <div class="rank-bar"><span style="width:${pct.toFixed(1)}%"></span></div>
+          <div class="rank-value">${valueText(r)}</div>
+        </div>`;
+      })
+      .join("");
+
+  if (insightConceptEl) {
+    const topNoCore = noCoreConcepts.slice(0, 8);
+    const maxShare = topNoCore.length ? Number(topNoCore[0].share) || 0 : 0;
+    const rows = topNoCore.map((r) => ({ raw: r, value: r.share }));
+    insightConceptEl.innerHTML = rows.length
+      ? renderRankRows(rows, maxShare, (x) => fmtPercent(x.raw.share), (x) => x.raw.concept)
+      : "–";
+  }
+
+  if (insightPairEl) {
+    const topNoCorePairs = noCorePairs.slice(0, 8);
+    const maxCount = topNoCorePairs.length ? Number(topNoCorePairs[0].count) || 0 : 0;
+    const rows = topNoCorePairs.map((r) => ({ raw: r, value: r.count }));
+    insightPairEl.innerHTML = rows.length
+      ? renderRankRows(
+          rows,
+          maxCount,
+          (x) => {
+            const share = totalDocs ? ` (${fmtPercent(Number(x.raw.count) / totalDocs)})` : "";
+            return `${fmtNumber(x.raw.count)}${share}`;
+          },
+          (x) => `${x.raw.concept_a} + ${x.raw.concept_b}`
+        )
+      : "–";
+  }
+
+  const vsm = transmissionVsmBaseline || {};
+  const metricsAll = (vsm.metrics && (vsm.metrics._all || vsm.metrics.all)) || {};
+  const corrEl = document.getElementById("vsm-corr");
+  if (corrEl) corrEl.textContent = fmtFloat(metricsAll.corr_embedding_vs_vsm, 2);
+  const aucEl = document.getElementById("vsm-auc");
+  if (aucEl) aucEl.textContent = fmtFloat(metricsAll.auc_vsm_matched_vs_shuffled, 3);
+  const meanMatchedEl = document.getElementById("vsm-mean-matched");
+  if (meanMatchedEl) meanMatchedEl.textContent = fmtFloat(metricsAll.vsm_matched?.mean, 3);
+  const meanRandomEl = document.getElementById("vsm-mean-random");
+  if (meanRandomEl) meanRandomEl.textContent = fmtFloat(metricsAll.vsm_shuffled?.mean, 3);
+
+  const transAucEl = document.getElementById("trans-vsm-auc");
+  if (transAucEl) transAucEl.textContent = fmtFloat(metricsAll.auc_vsm_matched_vs_shuffled, 3);
+  const transCorrEl = document.getElementById("trans-vsm-corr");
+  if (transCorrEl) transCorrEl.textContent = fmtFloat(metricsAll.corr_embedding_vs_vsm, 2);
+  const transMMeanEl = document.getElementById("trans-vsm-mmean");
+  if (transMMeanEl) transMMeanEl.textContent = fmtFloat(metricsAll.vsm_matched?.mean, 3);
+  const transSMeanEl = document.getElementById("trans-vsm-smean");
+  if (transSMeanEl) transSMeanEl.textContent = fmtFloat(metricsAll.vsm_shuffled?.mean, 3);
+  const transMP90El = document.getElementById("trans-vsm-mp90");
+  if (transMP90El) transMP90El.textContent = fmtFloat(metricsAll.vsm_matched?.p90, 3);
+  const transSP90El = document.getElementById("trans-vsm-sp90");
+  if (transSP90El) transSP90El.textContent = fmtFloat(metricsAll.vsm_shuffled?.p90, 3);
+
+  const sensitivity = transmissionSensitivity || {};
+  const thresholds = Array.isArray(sensitivity.thresholds) ? sensitivity.thresholds : [];
+  if (thresholds.length) {
+    const maxPairs = thresholds.reduce((mx, r) => Math.max(mx, Number(r.pair_count) || 0), 0) || 1;
+    const sorted = [...thresholds].sort((a, b) => (Number(b.threshold) || 0) - (Number(a.threshold) || 0));
+    setTableRows(
+      "report-transmission-threshold-table",
+      sorted
+        .map((r) => {
+          const pairs = Number(r.pair_count) || 0;
+          const pct = Math.max(0, Math.min(100, (pairs / maxPairs) * 100));
+          const topLangs = (Array.isArray(r.top_lang) ? r.top_lang : [])
+            .slice(0, 3)
+            .map((x) => x.key)
+            .filter(Boolean)
+            .join(", ");
+          return `<tr>
+            <td>${fmtFloat(r.threshold, 2)}</td>
+            <td>${fmtNumber(pairs)}</td>
+            <td>${fmtPercent(Number(r.share_same_submolt) || 0)}</td>
+            <td>${escapeHtml(topLangs || "–")}</td>
+            <td><div class="rank-bar"><span style="width:${pct.toFixed(1)}%"></span></div></td>
+          </tr>`;
+        })
+        .join("")
+    );
+  }
 
   const topDiffusion = [...diffusionSubmolts]
     .sort((a, b) => (b.mean_comments || 0) - (a.mean_comments || 0))
-    .slice(0, 6);
+    .slice(0, REPORT_LIMITS.diffusionEngagement);
   setTableRows(
     "report-diffusion-table",
     topDiffusion
@@ -503,13 +773,14 @@ async function init() {
   );
 
   const summarize = (rows) => {
+    const total = rows.length || 1;
     const counts = new Map();
     rows.forEach((r) => {
       const key = String(r.community);
       counts.set(key, (counts.get(key) || 0) + 1);
     });
     return [...counts.entries()]
-      .map(([community, count]) => ({ community, count }))
+      .map(([community, count]) => ({ community, count, share: count / total }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 6);
   };
@@ -522,6 +793,7 @@ async function init() {
         (r) => `<tr>
           <td>${r.community}</td>
           <td>${fmtNumber(r.count)}</td>
+          <td>${fmtPercent(r.share)}</td>
         </tr>`
       )
       .join("")
@@ -540,6 +812,7 @@ async function init() {
         (r) => `<tr>
           <td>${r.community}</td>
           <td>${fmtNumber(r.count)}</td>
+          <td>${fmtPercent(r.share)}</td>
         </tr>`
       )
       .join("")
@@ -581,26 +854,53 @@ async function init() {
   commentLang.forEach((r) => {
     combined[r.lang] = (combined[r.lang] || 0) + (r.share || 0);
   });
-  const topLangs = Object.entries(combined)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6)
-    .map(([lang]) => lang);
   const postMap = Object.fromEntries(postsLang.map((r) => [r.lang, r.share || 0]));
   const commentMap = Object.fromEntries(commentLang.map((r) => [r.lang, r.share || 0]));
-  setTableRows(
-    "report-language-table",
-    topLangs
-      .map(
-        (lang) => `<tr>
-          <td>${lang}</td>
-          <td>${fmtPercent(postMap[lang] || 0)}</td>
-          <td>${fmtPercent(commentMap[lang] || 0)}</td>
-        </tr>`
-      )
-      .join("")
-  );
 
-  const topTransmission = [...transmission]
+  const renderLanguageTable = () => {
+    const top = Object.entries(combined)
+      .sort((a, b) => b[1] - a[1])
+      .filter(([lang]) => (filters.hideEn ? lang !== "en" : true))
+      .slice(0, 6)
+      .map(([lang]) => lang);
+    setTableRows(
+      "report-language-table",
+      top
+        .map(
+          (lang) => `<tr>
+            <td>${lang}</td>
+            <td>${fmtPercent(postMap[lang] || 0)}</td>
+            <td>${fmtPercent(commentMap[lang] || 0)}</td>
+          </tr>`
+        )
+        .join("")
+    );
+  };
+
+  renderLanguageTable();
+  const hideEnBtn = document.getElementById("report-language-hide-en");
+  if (hideEnBtn) {
+    hideEnBtn.addEventListener("click", () => {
+      filters.hideEn = !filters.hideEn;
+      hideEnBtn.classList.toggle("active", filters.hideEn);
+      renderLanguageTable();
+    });
+  }
+
+  const transmissionText = (r) => String(r.text || "").toLowerCase();
+  const nonTrivialTransmission = [...transmission].filter((r) => String(r.text || "").trim().length >= 40);
+  const txCoMention = nonTrivialTransmission.filter((r) => {
+    const t = transmissionText(r);
+    const hasHuman = t.includes("human") || t.includes("humano");
+    const hasAi = t.includes("ai") || t.includes("agent");
+    return hasHuman && hasAi;
+  });
+  const txAiOnly = nonTrivialTransmission.filter((r) => {
+    const t = transmissionText(r);
+    return t.includes("ai") || t.includes("agent");
+  });
+  const txPool = txCoMention.length ? txCoMention : txAiOnly.length ? txAiOnly : nonTrivialTransmission;
+  const topTransmission = txPool
     .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")))
     .slice(0, 6);
   setTableRows(
@@ -611,7 +911,7 @@ async function init() {
           <td>${r.source}</td>
           <td>${r.submolt || "unknown"}</td>
           <td>${String(r.created_at || "").slice(0, 16).replace("T", " ")}</td>
-          <td>${truncate(r.text, 120)}</td>
+          <td class="cell-text">${escapeHtml(r.text)}</td>
         </tr>`
       )
       .join("")
@@ -657,17 +957,73 @@ async function init() {
       .join("")
   );
 
-  const topEmbPairs = [...embeddingsPairs].slice(0, 6);
+  const pickEmbPairs = (rows, k = 6) => {
+    const bannedNeedles = [
+      "claw token ecosystem:",
+      "mbc-20",
+      "mbc20.xyz",
+      "bags.fm",
+      "crab-rave",
+    ];
+    const isBanned = (t) => bannedNeedles.some((n) => String(t || "").toLowerCase().includes(n));
+
+    const out = [];
+    const usedLang = new Set();
+    const usedSubmolt = new Set();
+
+    const passes = [
+      (r) => !isBanned(r.doc_excerpt) && !isBanned(r.neighbor_excerpt),
+      () => true,
+    ];
+
+    for (const accept of passes) {
+      for (const r of rows) {
+        if (out.length >= k) break;
+        if (!accept(r)) continue;
+        const lang = String(r.doc_lang || "unknown");
+        const sub = String(r.doc_submolt || "unknown");
+        if (usedLang.has(lang)) continue;
+        if (usedSubmolt.has(sub)) continue;
+        out.push(r);
+        usedLang.add(lang);
+        usedSubmolt.add(sub);
+      }
+      if (out.length >= k) break;
+    }
+
+    return out;
+  };
+
+  const topEmbPairs = pickEmbPairs([...embeddingsPairs], 6);
   setTableRows(
     "report-embedding-pairs-table",
     topEmbPairs
       .map(
         (r) => `<tr>
           <td>${fmtFloat(r.score, 3)}</td>
+          <td>${r.doc_lang || "unknown"}</td>
           <td>${r.doc_submolt || "unknown"}</td>
           <td>${r.neighbor_submolt || "unknown"}</td>
-          <td>${truncate(r.doc_excerpt, 80)}</td>
-          <td>${truncate(r.neighbor_excerpt, 80)}</td>
+          <td class="cell-text">
+            <button
+              class="text-link"
+              type="button"
+              data-doc-id="${escapeHtml(r.doc_id)}"
+              data-doc-submolt="${escapeHtml(r.doc_submolt || "unknown")}"
+              data-doc-created-at="${escapeHtml(String(r.doc_created_at || "").slice(0, 16).replace("T", " "))}"
+              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
+            >${escapeHtml(truncate(r.doc_excerpt, 140))}</button>
+          </td>
+          <td class="cell-text">
+            <button
+              class="text-link"
+              type="button"
+              data-doc-id="${escapeHtml(r.neighbor_id)}"
+              data-doc-submolt="${escapeHtml(r.neighbor_submolt || "unknown")}"
+              data-doc-created-at="${escapeHtml(String(r.neighbor_created_at || "").slice(0, 16).replace("T", " "))}"
+              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
+            >${escapeHtml(truncate(r.neighbor_excerpt, 140))}</button>
+          </td>
         </tr>`
       )
       .join("")
@@ -694,10 +1050,31 @@ async function init() {
       .map(
         (r) => `<tr>
           <td>${fmtFloat(r.score, 3)}</td>
+          <td>${r.lang || "unknown"}</td>
           <td>${r.post_submolt || "unknown"}</td>
           <td>${r.comment_submolt || "unknown"}</td>
-          <td>${truncate(r.post_excerpt, 80)}</td>
-          <td>${truncate(r.comment_excerpt, 80)}</td>
+          <td class="cell-text">
+            <button
+              class="text-link"
+              type="button"
+              data-doc-id="${escapeHtml(r.post_id)}"
+              data-doc-type="post"
+              data-doc-submolt="${escapeHtml(r.post_submolt || "unknown")}"
+              data-doc-created-at="${escapeHtml(String(r.post_created_at || "").slice(0, 16).replace("T", " "))}"
+              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
+            >${escapeHtml(truncate(r.post_excerpt, 140))}</button>
+          </td>
+          <td class="cell-text">
+            <button
+              class="text-link"
+              type="button"
+              data-doc-id="${escapeHtml(r.comment_id)}"
+              data-doc-type="comment"
+              data-doc-submolt="${escapeHtml(r.comment_submolt || "unknown")}"
+              data-doc-created-at="${escapeHtml(String(r.comment_created_at || "").slice(0, 16).replace("T", " "))}"
+              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
+            >${escapeHtml(truncate(r.comment_excerpt, 140))}</button>
+          </td>
         </tr>`
       )
       .join("")
@@ -713,7 +1090,17 @@ async function init() {
           <td>${r.doc_type}</td>
           <td>${r.submolt}</td>
           <td>${fmtFloat(r.score, 1)}</td>
-          <td>${truncate(r.text_excerpt, 90)}</td>
+          <td class="cell-text">
+            <button
+              class="text-link"
+              type="button"
+              data-doc-id="${escapeHtml(r.doc_id)}"
+              data-doc-type="${escapeHtml(r.doc_type)}"
+              data-doc-submolt="${escapeHtml(r.submolt)}"
+              data-doc-created-at="${escapeHtml(String(r.created_at || "").slice(0, 16).replace("T", " "))}"
+              data-doc-score="${escapeHtml(fmtFloat(r.score, 1))}"
+            >${escapeHtml(truncate(r.text_excerpt, 160))}</button>
+          </td>
         </tr>`
       )
       .join("")
@@ -738,7 +1125,17 @@ async function init() {
           <td>${r.doc_type}</td>
           <td>${r.submolt}</td>
           <td>${fmtFloat(r.human_incidence_score, 1)}</td>
-          <td>${truncate(r.text_excerpt, 90)}</td>
+          <td class="cell-text">
+            <button
+              class="text-link"
+              type="button"
+              data-doc-id="${escapeHtml(r.doc_id)}"
+              data-doc-type="${escapeHtml(r.doc_type)}"
+              data-doc-submolt="${escapeHtml(r.submolt)}"
+              data-doc-created-at="${escapeHtml(String(r.created_at || "").slice(0, 16).replace("T", " "))}"
+              data-doc-score="${escapeHtml(fmtFloat(r.human_incidence_score, 1))}"
+            >${escapeHtml(truncate(r.text_excerpt, 160))}</button>
+          </td>
         </tr>`
       )
       .join("")
@@ -765,7 +1162,16 @@ async function init() {
             <td>${String(r.created_at || "").slice(0, 16).replace("T", " ")}</td>
             <td>${shortId(r.doc_id)}</td>
             <td>${fmtNumber(r.upvotes)}</td>
-            <td>${truncate(r.text_excerpt, 120)}</td>
+            <td class="cell-text">
+              <button
+                class="text-link"
+                type="button"
+                data-doc-id="${escapeHtml(r.doc_id)}"
+                data-doc-type="${escapeHtml(r.doc_type)}"
+                data-doc-submolt="${escapeHtml(r.submolt)}"
+                data-doc-created-at="${escapeHtml(String(r.created_at || "").slice(0, 16).replace("T", " "))}"
+              >${escapeHtml(truncate(r.text_excerpt, 200))}</button>
+            </td>
           </tr>`
         )
         .join("")

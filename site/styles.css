@@ -533,6 +533,18 @@ main {
   gap: 8px;
 }
 
+.table-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-actions .toggle {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
 .table-scroll {
   overflow-x: auto;
 }
@@ -548,6 +560,29 @@ th, td {
   border-bottom: 1px solid rgba(30, 28, 26, 0.08);
   text-align: left;
   white-space: nowrap;
+}
+
+.cell-text {
+  white-space: normal;
+  line-height: 1.35;
+  max-width: 680px;
+  word-break: break-word;
+}
+
+.text-link {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.text-link:hover {
+  text-decoration: underline;
 }
 
 th {
@@ -643,6 +678,79 @@ input, select {
   color: var(--muted);
 }
 
+.hero-stats.compact {
+  margin-top: 14px;
+}
+
+.rank-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.rank-card {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.rank-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rank-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.rank-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) 1.6fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.rank-label {
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-bar {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(31, 138, 112, 0.12);
+  overflow: hidden;
+}
+
+.rank-bar > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(31, 138, 112, 0.95), rgba(242, 95, 44, 0.85));
+  border-radius: 999px;
+}
+
+.rank-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .details {
   margin-top: 12px;
   background: var(--card);
@@ -678,6 +786,77 @@ input, select {
 
 .details.example {
   background: rgba(31, 138, 112, 0.05);
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 16, 14, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 6vw;
+  z-index: 40;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  width: min(980px, 100%);
+  max-height: 82vh;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-head-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.modal-title {
+  font-weight: 700;
+}
+
+.modal-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.modal-close {
+  margin-left: auto;
+}
+
+.modal-body {
+  padding: 14px 16px;
+  overflow: auto;
+}
+
+.modal-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.5;
 }
 
 .example-grid {

@@ -7,6 +7,13 @@
 - Reporte completo: datos, metodologia, estrategias, resultados y anexos tecnicos.
 - UI dinamica + datasets auditables en CSV/JSONL/Parquet.
 
+## Acerca del proyecto
+- Motivacion: construir un observatorio auditable sobre cultura IA (memes, lenguaje, estructura social) en Moltbook y dejar un mapa reproducible para exploracion y critica.
+- Quien soy: soy el autor del repo/reporte (Pabli). No soy experto en linguistica, sociologia o seguridad; este trabajo es ingenieria + exploracion, con limites explicitados.
+- Datos: contenido publico (posts + comentarios) recolectado respetando robots/ToS; este snapshot cubre 2026-01-28 a 2026-02-11 (created_at).
+- Open source: mi plan es publicar el scraper, el pipeline de embeddings y la UI; la redistribucion de datos crudos depende de ToS/robots, pero el pipeline permite reproducirlos localmente.
+- Ayuda buscada: mejoras de ontologia, limpieza de ruido, validacion cualitativa de heuristicas y analisis longitudinal.
+
 ## Interpretacion actualizada (snapshot final)
 - Volumen: 152,980 posts y 704,450 comentarios (~4.60 comentarios por post).
 - Duplicados bajos: posts 0.00%, comentarios 0.07%.
@@ -14,7 +21,7 @@
 - Estado: snapshot final; el scraping se detiene a partir de esta version del reporte.
 - Memetica dominante: n-gramas frecuentes incluyen "api v1", "agentmarket cloud", "cloud api".
 - Ontologia: los actos de afirmacion representan ~70.7% del total de actos; tono principal de confianza, curiosidad, ambicion.
-- Conceptos: "agents" lidera el vocabulario y la co-ocurrencia dominante es agent + agents.
+- Conceptos: "agents" lidera el vocabulario (18.1%), pero esto es esperable (tema central) y se infla por variantes singular/plural (agent + agents). Para una lectura mas util, mirar "sin nucleo": memory (7.5%), context (7.0%), data (5.6%); y el par top sin nucleo es context + memory (17,578).
 - Redes: reply graph muestra hubs claros; mention graph incluye ruido (tokens tipo w, -, \), requiere limpieza adicional.
 - Interferencia/incidencia: los scores altos suelen corresponder a texto tecnico, metadata o artefactos (base64), usar como ranking, no prueba.
 - Embeddings (post-post): 152,980 docs indexados en 45 idiomas, similitud media 0.943, cross-submolt 49.8%.
@@ -171,6 +178,14 @@ Marco conceptual: al afirmar se asume veracidad y relevancia; al declarar, consi
 - memory: doc_count=63,972, share=7.46%
 - context: doc_count=59,682, share=6.96%
 - humans: doc_count=55,555, share=6.48%
+Nota: el top global refleja el nucleo del tema (agent/human) y ademas mezcla singular/plural. Para reducir auto-sesgo, una vista util es excluir {agent(s), human(s), ai}.
+#### Conceptos (Top, sin nucleo)
+- memory: share=7.46%
+- context: share=6.96%
+- data: share=5.60%
+- community: share=3.64%
+- token: share=3.18%
+- model: share=3.10%
 #### Co-ocurrencias (Top pares)
 - agent + agents: count=60,277
 - agent + human: count=34,222
@@ -178,6 +193,14 @@ Marco conceptual: al afirmar se asume veracidad y relevancia; al declarar, consi
 - human + humans: count=31,929
 - context + human: count=27,807
 - agents + data: count=19,050
+- Lectura: agent + agents y human + humans son artefactos de singular/plural; no describen una relacion conceptual nueva.
+#### Co-ocurrencias (Top pares, sin nucleo)
+- context + memory: count=17,578
+- context + data: count=6,490
+- data + memory: count=5,810
+- context + model: count=5,335
+- data + model: count=4,969
+- memory + model: count=4,857
 - Embeddings ontologicos: vectores por submolt + PCA 2D (ontology_submolt_embedding_2d.csv).
 
 ### Sociologia cuantitativa
@@ -377,6 +400,9 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 **Justificacion metodologica**
 - Embeddings multilingues E5 con FAISS HNSW same-lang; top-k=5 vecinos por documento.
 - Post→comentario busca el comentario mas semantico en todo el corpus (no necesariamente reply real).
+**TF-IDF (VSM) vs embeddings (control lexical)**
+- En una muestra de 1,995 pares "matched" (embeddings los considera similares) vs 1,995 pares aleatorios del mismo idioma, TF-IDF muestra mean 0.137 vs 0.037 y AUC 0.647; la correlacion embeddings↔TF-IDF es 0.582 (`transmission_vsm_baseline.json`).
+- Interpretacion: la señal de embeddings se explica parcialmente por solape de tokens (plantillas/copia), pero tambien captura similitud no-lexical (parafrasis/variacion).
 **Interpretacion**
 - La similitud post-post alta indica narrativas repetidas y plantillas compartidas entre submolts.
 - El descenso de similitud en post→comentario sugiere respuesta semantica con desplazamiento (no copia literal).
@@ -536,8 +562,9 @@ General funciona como mezclador: no destaca por un rasgo fuerte, pero domina en 
 
 ## Anexo tecnico: Interferencia e incidencia humana
 - Interferencia: patrones de injection + disclaimers + codigo/URLs/emojis.
-- Incidencia humana: referencias a humano, prompts y tooling.
+- Incidencia humana: referencias a humano, prompts, narrativa situada (IRL) y tooling (ponderado bajo para no dominar).
 - Score (interferencia): inj*2 + dis*1.5 + code*0.5 + urls*0.3 + emojis*0.1.
+- Score (incidencia humana): human*2.5 + prompt*1.5 + narrative*0.9 + tooling*0.15.
 - Salidas: interference_summary.csv, interference_top.csv, human_incidence_summary.csv, human_incidence_top.csv.
 - Limitaciones: heuristico, falsos positivos, necesita revision humana.
 ### Ejemplos reales
@@ -549,6 +576,7 @@ General funciona como mezclador: no destaca por un rasgo fuerte, pero domina en 
 - Runs son fotografias; created_at define tiempo real.
 - Patrones linguisticos no capturan ironia ni contexto complejo.
 - Co-ocurrencia no implica causalidad.
+- Ontologia basada en vocabulario: el nucleo (agent/human) domina por diseño y las variantes singular/plural pueden inflar co-ocurrencias.
 - Incidencia humana es evidencia textual, no autor real.
 
 ## Uso publico y futuras extensiones
@@ -562,6 +590,9 @@ General funciona como mezclador: no destaca por un rasgo fuerte, pero domina en 
 - data/derived/diffusion_runs.csv: difusion por run (captura).
 - data/derived/diffusion_submolts.csv: difusion por submolt (resumen).
 - data/derived/activity_daily.csv: actividad real por dia (created_at).
+- data/derived/public_transmission_samples.csv: muestras cualitativas de transmision IA vs humana.
+- data/derived/transmission_threshold_sensitivity.json: sensibilidad de conteos al variar threshold de embeddings (post→comentario).
+- data/derived/transmission_vsm_baseline.json: baseline TF-IDF (VSM) vs embeddings (matched vs shuffled same-lang).
 - data/derived/public_embeddings_summary.json: resumen embeddings.
 - data/derived/public_embeddings_lang_top.csv: top idiomas por similitud.
 - data/derived/public_embeddings_pairs_top.csv: muestra de pares similares.

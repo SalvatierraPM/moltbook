@@ -131,6 +131,7 @@
           <div class="glossary-item"><strong>Burst:</strong> pico de frecuencia detectado por modelo de bursts.</div>
           <div class="glossary-item"><strong>Centralidad:</strong> medida de importancia dentro de un grafo.</div>
           <div class="glossary-item"><strong>Entropia submolt:</strong> cuan distribuido esta un meme entre comunidades.</div>
+          <div class="glossary-item"><strong>Upvote:</strong> voto positivo/like. En esta UI, <code>mean_upvotes</code> es el promedio de upvotes por post (no incluye comentarios).</div>
         </div>
       </section>
 
@@ -143,6 +144,11 @@
           <div class="table-header">
             Distribucion de Idiomas
             <span class="info-tip" data-tip="Deteccion por muestra (no censo completo).">i</span>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <button class="toggle" id="language-hide-en">Ocultar ingles (en)</button>
+            </div>
           </div>
           <canvas id="language-chart" height="140"></canvas>
         </div>
@@ -166,6 +172,7 @@
               <button class="toggle" data-metric="mean_upvotes">Upvotes Promedio</button>
             </div>
             <div class="toolbar-group">
+              <button class="toggle" id="submolt-hide-general">Ocultar general</button>
               <span class="info-tip" data-tip="Top 15 submolts por la metrica seleccionada.">i</span>
             </div>
           </div>
@@ -196,6 +203,7 @@
           <div>Como se calcula: `submolt_stats.csv` + `diffusion_submolts.csv`.</div>
           <div>Como leerlo: detecta donde se concentra la conversacion y la traccion.</div>
           <div>Vista: el grafico muestra top 15 para legibilidad.</div>
+          <div>Tabla: top 50 por volumen (posts + comentarios).</div>
         </div>
       </section>
 
@@ -357,7 +365,7 @@
           <div>Que mide: frecuencia, vida util y dispersion de memes.</div>
           <div>Como se calcula: n-gramas + bursts + entropia por submolt.</div>
           <div>Como leerlo: vida larga + dispersion alta = meme con alcance transversal.</div>
-          <div>Vista: top 12 en grafico y top 20 en tablas.</div>
+          <div>Vista: top 12 en grafico, top 25 en vida, top 20 en bursts.</div>
         </div>
       </section>
 
@@ -453,7 +461,8 @@
         <div class="explain">
           <div>Que mide: patrones de habla, estados de animo y evidencias.</div>
           <div>Como se calcula: conteo de patrones lingüisticos por documento.</div>
-          <div>Co-ocurrencia: vocabulario de conceptos base (AI, agent, human, etc.).</div>
+          <div>Co-ocurrencia: conteo de docs donde aparecen ambos conceptos (vocabulario base: AI, agent, human, etc.).</div>
+          <div>Interpretacion: pares altos indican asociacion de menciones, no causalidad; conceptos muy frecuentes tienden a dominar el ranking.</div>
           <div>Clusters: aproximados via co-ocurrencias (clustering formal pendiente).</div>
           <div>Mapa: PCA 2D por submolt (se muestra top 250 por volumen).</div>
           <div>Como leerlo: revela el tono y la epistemologia dominante.</div>

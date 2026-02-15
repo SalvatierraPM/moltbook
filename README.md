@@ -8,6 +8,13 @@ This project builds a reproducible pipeline to collect public Moltbook data (sub
 - Computes memetic diffusion, topic/ontology structures, and interference signals.
 - Generates a paper-style report in Markdown with charts.
 
+## Acerca del proyecto (ES)
+Hice este proyecto para construir un observatorio reproducible sobre cultura IA en Moltbook: memes, patrones de lenguaje, estructura social y señales de “interferencia/incidencia humana” como herramientas de exploracion (no como pruebas causales).
+
+No soy experto en linguistica, sociologia o seguridad. El enfoque esta intencionalmente orientado a interpretabilidad y auditoria: reglas simples, datasets derivados verificables y limites explicitados.
+
+Mi plan es que el repo sea open source (scraper + embeddings + UI + derivados). La redistribucion de datos crudos puede estar limitada por robots/ToS; incluso en ese caso, el pipeline permite reproducirlos localmente.
+
 ## Ethics & compliance
 - Only collect data you are authorized to access.
 - Respect `robots.txt` and Terms of Service.

@@ -26,9 +26,24 @@ const files = {
   incidenceTop: "human_incidence_top.csv",
   embeddingsSummary: "public_embeddings_summary.json",
   embeddingsPostCommentSummary: "embeddings_post_comment/public_embeddings_post_comment_summary.json",
+  docLookup: "public_doc_lookup.json",
 };
 
 const state = {};
+state.filters = {
+  hideLanguageEn: false,
+  hideSubmoltGeneral: false,
+};
+
+const LIMITS = {
+  submoltTable: 50,
+  memeSurvivalTable: 25,
+  memeBurstTable: 20,
+  ontologyConceptsTable: 30,
+  ontologyCooccurrenceTable: 30,
+  interferenceDocsTable: 30,
+  incidenceDocsTable: 30,
+};
 
 function loadCSV(path) {
   if (window.Papa && window.Papa.parse) {
@@ -139,6 +154,91 @@ function truncate(text, max = 120) {
   const clean = String(text).replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   return `${clean.slice(0, max - 1)}…`;
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function ensureTextModal() {
+  let overlay = document.getElementById("text-modal-overlay");
+  if (overlay) return overlay;
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div class="modal-overlay" id="text-modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="text-modal-title">
+        <div class="modal-head">
+          <div class="modal-head-copy">
+            <div class="modal-title" id="text-modal-title">Texto completo</div>
+            <div class="modal-meta" id="text-modal-meta"></div>
+          </div>
+          <button class="toggle modal-close" id="text-modal-close" type="button">Cerrar</button>
+        </div>
+        <div class="modal-body">
+          <pre class="modal-pre" id="text-modal-text"></pre>
+        </div>
+      </div>
+    </div>`
+  );
+  overlay = document.getElementById("text-modal-overlay");
+  const closeBtn = document.getElementById("text-modal-close");
+  const close = () => {
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  };
+  closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+  overlay.__close = close;
+  return overlay;
+}
+
+function openTextModal({ title, meta, text }) {
+  const overlay = ensureTextModal();
+  const titleEl = document.getElementById("text-modal-title");
+  const metaEl = document.getElementById("text-modal-meta");
+  const textEl = document.getElementById("text-modal-text");
+  titleEl.textContent = title || "Texto completo";
+  metaEl.textContent = meta || "";
+  textEl.textContent = text || "(texto no disponible)";
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function lookupDocText(docId) {
+  if (!docId || !state.docLookup) return null;
+  const hit = state.docLookup[String(docId)];
+  if (hit && typeof hit.text === "string") return hit.text;
+  return null;
+}
+
+function attachTextModalDelegation() {
+  document.addEventListener("click", (e) => {
+    const target = e.target && e.target.closest ? e.target.closest(".text-link[data-doc-id]") : null;
+    if (!target) return;
+    e.preventDefault();
+    const docId = target.dataset.docId;
+    const docType = target.dataset.docType || "";
+    const submolt = target.dataset.docSubmolt || "";
+    const createdAt = target.dataset.docCreatedAt || "";
+    const score = target.dataset.docScore || "";
+    const text = lookupDocText(docId) || "";
+    const meta = [docType && `tipo=${docType}`, submolt && `submolt=${submolt}`, createdAt && `fecha=${createdAt}`, score && `score=${score}`]
+      .filter(Boolean)
+      .join(" · ");
+    openTextModal({ title: `Doc ${String(docId).slice(0, 8)}`, meta, text });
+  });
 }
 
 function parseDate(raw) {
@@ -269,8 +369,12 @@ function mountEmbeddingsSummary() {
 
 let languageChart;
 function mountLanguageChart() {
-  const posts = state.language.filter((r) => r.scope === "posts");
-  const comments = state.language.filter((r) => r.scope === "comments");
+  const posts = state.language
+    .filter((r) => r.scope === "posts")
+    .filter((r) => (state.filters.hideLanguageEn ? r.lang !== "en" : true));
+  const comments = state.language
+    .filter((r) => r.scope === "comments")
+    .filter((r) => (state.filters.hideLanguageEn ? r.lang !== "en" : true));
 
   const combined = {};
   posts.forEach((r) => {
@@ -289,6 +393,14 @@ function mountLanguageChart() {
   const commentMap = Object.fromEntries(comments.map((r) => [r.lang, r.share || 0]));
 
   const ctx = document.getElementById("language-chart");
+  if (languageChart) {
+    languageChart.data.labels = langs;
+    languageChart.data.datasets[0].data = langs.map((l) => postMap[l] || 0);
+    languageChart.data.datasets[1].data = langs.map((l) => commentMap[l] || 0);
+    languageChart.update();
+    return;
+  }
+
   languageChart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -327,7 +439,9 @@ function mountLanguageChart() {
 
 let submoltChart;
 function mountSubmoltChart(metric = "posts") {
-  const sorted = [...state.submolt].sort((a, b) => (b[metric] || 0) - (a[metric] || 0));
+  const sorted = [...state.submolt]
+    .filter((r) => (state.filters.hideSubmoltGeneral ? String(r.submolt || "").toLowerCase() !== "general" : true))
+    .sort((a, b) => (b[metric] || 0) - (a[metric] || 0));
   const top = sorted.slice(0, 15);
 
   const ctx = document.getElementById("submolt-chart");
@@ -372,7 +486,7 @@ function mountSubmoltTable() {
   const tableBody = document.querySelector("#submolt-table tbody");
   const rows = [...state.submolt]
     .sort((a, b) => (b.posts || 0) + (b.comments || 0) - ((a.posts || 0) + (a.comments || 0)))
-    .slice(0, 25);
+    .slice(0, LIMITS.submoltTable);
   tableBody.innerHTML = rows
     .map(
       (r) => `<tr>
@@ -607,7 +721,7 @@ function mountMemeSurvivalTable() {
   const tableBody = document.querySelector("#meme-survival-table tbody");
   const rows = [...state.memeClass]
     .sort((a, b) => (b.lifetime_hours || 0) - (a.lifetime_hours || 0))
-    .slice(0, 20);
+    .slice(0, LIMITS.memeSurvivalTable);
   tableBody.innerHTML = rows
     .map(
       (r) => `<tr>
@@ -635,7 +749,7 @@ function mountMemeBurstTable() {
       };
     })
     .sort((a, b) => (b.burst_level || 0) - (a.burst_level || 0) || b.duration - a.duration)
-    .slice(0, 20);
+    .slice(0, LIMITS.memeBurstTable);
 
   tableBody.innerHTML = rows
     .map(
@@ -752,7 +866,7 @@ function mountOntologyTables() {
     )
     .join("");
 
-  const concepts = [...state.ontologyConcepts].slice(0, 15);
+  const concepts = [...state.ontologyConcepts].slice(0, LIMITS.ontologyConceptsTable);
   conceptsBody.innerHTML = concepts
     .map(
       (r) => `<tr>
@@ -763,7 +877,7 @@ function mountOntologyTables() {
     )
     .join("");
 
-  const pairs = [...state.ontologyCooccurrence].slice(0, 15);
+  const pairs = [...state.ontologyCooccurrence].slice(0, LIMITS.ontologyCooccurrenceTable);
   pairsBody.innerHTML = pairs
     .map(
       (r) => `<tr>
@@ -897,7 +1011,7 @@ function mountInterferenceTables() {
   const interferenceBody = document.querySelector("#interference-table tbody");
   const incidenceBody = document.querySelector("#incidence-table tbody");
 
-  const interRows = [...state.interferenceTop].slice(0, 30);
+  const interRows = [...state.interferenceTop].slice(0, LIMITS.interferenceDocsTable);
   interferenceBody.innerHTML = interRows
     .map(
       (r) => `<tr>
@@ -906,12 +1020,22 @@ function mountInterferenceTables() {
         <td>${r.submolt}</td>
         <td>${fmtFloat(r.score, 1)}</td>
         <td>${fmtNumber((r.injection_hits || 0) + (r.disclaimer_hits || 0))}</td>
-        <td>${truncate(r.text_excerpt, 120)}</td>
+        <td class="cell-text">
+          <button
+            class="text-link"
+            type="button"
+            data-doc-id="${r.doc_id}"
+            data-doc-type="${r.doc_type}"
+            data-doc-submolt="${r.submolt}"
+            data-doc-created-at="${String(r.created_at || "").slice(0, 16).replace("T", " ")}"
+            data-doc-score="${fmtFloat(r.score, 1)}"
+          >${escapeHtml(truncate(r.text_excerpt, 180))}</button>
+        </td>
       </tr>`
     )
     .join("");
 
-  const incRows = [...state.incidenceTop].slice(0, 30);
+  const incRows = [...state.incidenceTop].slice(0, LIMITS.incidenceDocsTable);
   incidenceBody.innerHTML = incRows
     .map(
       (r) => `<tr>
@@ -920,7 +1044,17 @@ function mountInterferenceTables() {
         <td>${r.submolt}</td>
         <td>${fmtFloat(r.human_incidence_score, 1)}</td>
         <td>${fmtNumber((r.human_refs || 0) + (r.prompt_refs || 0))}</td>
-        <td>${truncate(r.text_excerpt, 120)}</td>
+        <td class="cell-text">
+          <button
+            class="text-link"
+            type="button"
+            data-doc-id="${r.doc_id}"
+            data-doc-type="${r.doc_type}"
+            data-doc-submolt="${r.submolt}"
+            data-doc-created-at="${String(r.created_at || "").slice(0, 16).replace("T", " ")}"
+            data-doc-score="${fmtFloat(r.human_incidence_score, 1)}"
+          >${escapeHtml(truncate(r.text_excerpt, 180))}</button>
+        </td>
       </tr>`
     )
     .join("");
@@ -948,7 +1082,7 @@ function mountTransmissionTable() {
           <td>${r.source}</td>
           <td>${r.submolt || "unknown"}</td>
           <td>${String(r.created_at || "").slice(0, 16).replace("T", " ")}</td>
-          <td>${r.text}</td>
+          <td class="cell-text">${escapeHtml(r.text)}</td>
         </tr>`
       )
       .join("");
@@ -1063,7 +1197,7 @@ function mountAuthorTable() {
 }
 
 function attachSubmoltToggle() {
-  const buttons = document.querySelectorAll(".toggle");
+  const buttons = document.querySelectorAll(".toggle[data-metric]");
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       buttons.forEach((b) => b.classList.remove("active"));
@@ -1072,6 +1206,28 @@ function attachSubmoltToggle() {
       mountSubmoltChart(metric);
     });
   });
+}
+
+function attachFilterToggles() {
+  const langBtn = document.getElementById("language-hide-en");
+  if (langBtn) {
+    langBtn.addEventListener("click", () => {
+      state.filters.hideLanguageEn = !state.filters.hideLanguageEn;
+      langBtn.classList.toggle("active", state.filters.hideLanguageEn);
+      mountLanguageChart();
+    });
+  }
+
+  const generalBtn = document.getElementById("submolt-hide-general");
+  if (generalBtn) {
+    generalBtn.addEventListener("click", () => {
+      state.filters.hideSubmoltGeneral = !state.filters.hideSubmoltGeneral;
+      generalBtn.classList.toggle("active", state.filters.hideSubmoltGeneral);
+      const active = document.querySelector(".toggle[data-metric].active");
+      const metric = (active && active.dataset && active.dataset.metric) || "posts";
+      mountSubmoltChart(metric);
+    });
+  }
 }
 
 async function init() {
@@ -1101,6 +1257,7 @@ async function init() {
     incidenceTop,
     embeddingsSummary,
     embeddingsPostCommentSummary,
+    docLookup,
   ] = await Promise.all([
     loadCSV(DATA_BASE + files.submoltStats),
     loadCSV(DATA_BASE + files.diffusionRuns),
@@ -1127,6 +1284,7 @@ async function init() {
     loadCSV(DATA_BASE + files.incidenceTop),
     loadJSON(DATA_BASE + files.embeddingsSummary),
     loadJSON(DATA_BASE + files.embeddingsPostCommentSummary),
+    loadJSON(DATA_BASE + files.docLookup).catch(() => null),
   ]);
 
   state.submolt = mergeSubmoltStats(submoltStats, diffusionSubmolts);
@@ -1153,6 +1311,7 @@ async function init() {
   state.incidenceTop = incidenceTop;
   state.embeddingsSummary = embeddingsSummary;
   state.embeddingsPostCommentSummary = embeddingsPostCommentSummary;
+  state.docLookup = (docLookup && docLookup.docs) || {};
 
   mountSummary();
   mountCoverageQuality();
@@ -1161,6 +1320,7 @@ async function init() {
   mountSubmoltChart("posts");
   mountSubmoltTable();
   attachSubmoltToggle();
+  attachFilterToggles();
   mountDiffusionSelect();
   mountInterferenceCharts();
   mountInterferenceTables();
@@ -1174,6 +1334,7 @@ async function init() {
   mountNetworkTables();
   mountCommunityTables();
   mountAuthorTable();
+  attachTextModalDelegation();
 }
 
 init().catch((err) => {
