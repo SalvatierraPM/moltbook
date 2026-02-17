@@ -15,3 +15,7 @@
 
 ## Proximo hito
 - No hay hallazgos abiertos. Mantener gates en verde con auditorias recurrentes.
+
+## Nota de trazabilidad (2026-02-17)
+- Se aplico una correccion de regex para `act_acceptance` (deteccion de "si" explicito en espanol).
+- Delta en snapshot actual: +206 hits (posts +40, comentarios +166). Sin cambio material en conclusiones publicas.

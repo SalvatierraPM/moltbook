@@ -60,7 +60,7 @@ SPEECH_ACT_PATTERNS: Dict[str, Iterable[str]] = {
         # ES/PT
         r"\b(acepto|vale|de acuerdo|totalmente de acuerdo|concordo|fechado|combinado)\b",
         # Spanish "si/sí" is ambiguous (also conditional). Count only when it looks like an explicit "yes":
-        r"(?:(?:^|\\s)si(?:\\s*[!.?,;:]|$))",
+        r"(?:(?:^|\s)si(?:\s*[!.?,;:]|$))",
     ],
     "rejection": [
         r"\b(nope|cannot|can't|wont|won't|decline|rechazo|no puedo|no quiero|imposible)\b",

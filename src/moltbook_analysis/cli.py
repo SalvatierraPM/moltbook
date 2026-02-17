@@ -61,6 +61,8 @@ def cmd_ingest(args: argparse.Namespace) -> None:
                 post_id = row.get("id") or row.get("post_id")
                 if post_id:
                     for c in fetch_post_comments(client, str(post_id)):
+                        if isinstance(c, dict) and not c.get("post_id"):
+                            c["post_id"] = str(post_id)
                         comments_raw.append(c)
     else:
         if not robots_allows(client, args.path, allow_if_unavailable=args.allow_no_robots):

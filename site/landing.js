@@ -219,7 +219,6 @@ async function init() {
     ontologyConcepts,
     ontologyCooccurrence,
     submoltExamples,
-    docLookup,
   ] = await Promise.all([
     loadCSV(DATA_BASE + files.submoltStats),
     loadCSV(DATA_BASE + files.diffusionRuns),
@@ -238,7 +237,6 @@ async function init() {
     loadCSV(DATA_BASE + files.ontologyConcepts),
     loadCSV(DATA_BASE + files.ontologyCooccurrence),
     loadCSV(DATA_BASE + files.submoltExamples),
-    loadJSON(DATA_BASE + files.docLookup).catch(() => null),
   ]);
 
   const filters = {
@@ -248,15 +246,37 @@ async function init() {
   const txPolicy = buildTransmissionPool(transmission);
   let visibleTransmissionRows = 0;
 
-  const docLookupMap = (docLookup && docLookup.docs) || {};
+  let docLookupMap = null;
+  let docLookupLoaded = false;
+  let docLookupPromise = null;
+  const ensureDocLookupLoaded = async () => {
+    if (docLookupLoaded) return docLookupMap || {};
+    if (!docLookupPromise) {
+      docLookupPromise = loadJSON(DATA_BASE + files.docLookup)
+        .then((payload) => {
+          docLookupMap = (payload && payload.docs) || {};
+          return docLookupMap;
+        })
+        .catch(() => {
+          docLookupMap = {};
+          return docLookupMap;
+        })
+        .finally(() => {
+          docLookupLoaded = true;
+          docLookupPromise = null;
+        });
+    }
+    return docLookupPromise;
+  };
+
   const lookupDocText = (docId) => {
-    if (!docId) return null;
+    if (!docId || !docLookupMap) return null;
     const hit = docLookupMap[String(docId)];
     if (hit && typeof hit.text === "string") return hit.text;
     return null;
   };
 
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", async (e) => {
     const target = e.target && e.target.closest ? e.target.closest(".text-link[data-doc-id]") : null;
     if (!target) return;
     e.preventDefault();
@@ -265,7 +285,11 @@ async function init() {
     const submolt = target.dataset.docSubmolt || "";
     const createdAt = target.dataset.docCreatedAt || "";
     const score = target.dataset.docScore || "";
-    const text = lookupDocText(docId) || "";
+    let text = lookupDocText(docId) || "";
+    if (!text) {
+      await ensureDocLookupLoaded();
+      text = lookupDocText(docId) || "";
+    }
     const meta = [
       docType && `tipo=${docType}`,
       submolt && `submolt=${submolt}`,
@@ -849,8 +873,15 @@ async function init() {
         .join("")
     );
   }
+
+  // Load the text lookup in background after first paint.
+  void ensureDocLookupLoaded();
 }
 
 init().catch((err) => {
   console.error(err);
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raiz del repo para que ../data/derived sea accesible.</div>`
+  );
 });

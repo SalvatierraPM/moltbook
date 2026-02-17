@@ -2,6 +2,11 @@
 
 - Generado: 2026-02-12T20:09:58.417009+00:00
 
+## Actualizacion metodologica (2026-02-17)
+- Se corrigio una regex en `act_acceptance` (caso de `si` explicito en espanol).
+- Impacto cuantitativo en este snapshot: `act_acceptance` pasa de 21,424 a 21,630 (+206; +40 en posts, +166 en comentarios).
+- Impacto interpretativo: no cambia el TL;DR estrategico ni el ranking principal de actos/moods/epistemica.
+
 ## Resumen ejecutivo
 - Observatorio publico sobre cultura IA en Moltbook con pipeline reproducible.
 - Reporte completo: datos, metodologia, estrategias, resultados y anexos tecnicos.

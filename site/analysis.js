@@ -39,6 +39,17 @@ state.filters = {
   hideLanguageEn: false,
   hideSubmoltGeneral: false,
 };
+state.reply = [];
+state.replySummary = {};
+state.mention = [];
+state.mentionSummary = {};
+state.replyCommunities = [];
+state.mentionCommunities = [];
+state.authors = [];
+state.authorsLoaded = false;
+state.docLookup = {};
+state.docLookupLoaded = false;
+state.docLookupPromise = null;
 
 const LIMITS = {
   submoltTable: 50,
@@ -231,8 +242,28 @@ function lookupDocText(docId) {
   return null;
 }
 
+async function ensureDocLookupLoaded() {
+  if (state.docLookupLoaded) return state.docLookup;
+  if (!state.docLookupPromise) {
+    state.docLookupPromise = loadJSON(DATA_BASE + files.docLookup)
+      .then((payload) => {
+        state.docLookup = (payload && payload.docs) || {};
+        return state.docLookup;
+      })
+      .catch(() => {
+        state.docLookup = {};
+        return state.docLookup;
+      })
+      .finally(() => {
+        state.docLookupLoaded = true;
+        state.docLookupPromise = null;
+      });
+  }
+  return state.docLookupPromise;
+}
+
 function attachTextModalDelegation() {
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", async (e) => {
     const target = e.target && e.target.closest ? e.target.closest(".text-link[data-doc-id]") : null;
     if (!target) return;
     e.preventDefault();
@@ -241,7 +272,11 @@ function attachTextModalDelegation() {
     const submolt = target.dataset.docSubmolt || "";
     const createdAt = target.dataset.docCreatedAt || "";
     const score = target.dataset.docScore || "";
-    const text = lookupDocText(docId) || "";
+    let text = lookupDocText(docId) || "";
+    if (!text) {
+      await ensureDocLookupLoaded();
+      text = lookupDocText(docId) || "";
+    }
     const meta = [docType && `tipo=${docType}`, submolt && `submolt=${submolt}`, createdAt && `fecha=${createdAt}`, score && `score=${score}`]
       .filter(Boolean)
       .join(" · ");
@@ -866,7 +901,7 @@ function mountSummary() {
   setText("total-posts", fmtNumber(totalPosts));
   setText("total-comments", fmtNumber(totalComments));
   setText("total-submolts", fmtNumber(totalSubmolts));
-  setText("total-authors", fmtNumber(totalAuthors));
+  setText("total-authors", state.authorsLoaded ? fmtNumber(totalAuthors) : "cargando...");
   setText("total-runs", fmtNumber(totalRuns));
 
   const coverage = state.coverage || {};
@@ -2120,6 +2155,42 @@ function attachFilterToggles() {
   }
 }
 
+async function loadDeferredSections() {
+  try {
+    const [reply, replySummary, mention, mentionSummary, replyCommunities, mentionCommunities, authors] = await Promise.all([
+      loadCSV(DATA_BASE + files.reply),
+      loadJSON(DATA_BASE + files.replySummary).catch(() => ({})),
+      loadCSV(DATA_BASE + files.mention),
+      loadJSON(DATA_BASE + files.mentionSummary).catch(() => ({})),
+      loadCSV(DATA_BASE + files.replyCommunities),
+      loadCSV(DATA_BASE + files.mentionCommunities),
+      loadCSV(DATA_BASE + files.authors),
+    ]);
+
+    state.reply = reply;
+    state.replySummary = replySummary;
+    state.mention = mention;
+    state.mentionSummary = mentionSummary;
+    state.replyCommunities = replyCommunities;
+    state.mentionCommunities = mentionCommunities;
+    state.authors = authors;
+    state.authorsLoaded = true;
+
+    mountSummary();
+    mountNetworkConcentration();
+    mountNetworkTables();
+    mountCommunityTables();
+    mountAuthorTable();
+
+    // Warm large lookup after the rest of the UI is already interactive.
+    void ensureDocLookupLoaded();
+  } catch (err) {
+    console.error(err);
+    setText("total-authors", "no disponible");
+    setText("network-concentration-note", "No se pudo cargar la capa de red/autores en este momento.");
+  }
+}
+
 async function init() {
   const [
     submoltStats,
@@ -2131,14 +2202,7 @@ async function init() {
     memeClass,
     memeBursts,
     language,
-    reply,
-    replySummary,
-    mention,
-    mentionSummary,
-    replyCommunities,
-    mentionCommunities,
     transmission,
-    authors,
     coverage,
     ontologySummary,
     ontologyConcepts,
@@ -2148,7 +2212,6 @@ async function init() {
     interferenceSummary,
     embeddingsSummary,
     embeddingsPostCommentSummary,
-    docLookup,
     sociologyInterpretation,
   ] = await Promise.all([
     loadCSV(DATA_BASE + files.submoltStats),
@@ -2160,14 +2223,7 @@ async function init() {
     loadCSV(DATA_BASE + files.memeClass),
     loadCSV(DATA_BASE + files.memeBursts),
     loadCSV(DATA_BASE + files.language),
-    loadCSV(DATA_BASE + files.reply),
-    loadJSON(DATA_BASE + files.replySummary).catch(() => ({})),
-    loadCSV(DATA_BASE + files.mention),
-    loadJSON(DATA_BASE + files.mentionSummary).catch(() => ({})),
-    loadCSV(DATA_BASE + files.replyCommunities),
-    loadCSV(DATA_BASE + files.mentionCommunities),
     loadCSV(DATA_BASE + files.transmission),
-    loadCSV(DATA_BASE + files.authors),
     loadJSON(DATA_BASE + files.coverage),
     loadCSV(DATA_BASE + files.ontologySummary),
     loadCSV(DATA_BASE + files.ontologyConcepts),
@@ -2177,7 +2233,6 @@ async function init() {
     loadCSV(DATA_BASE + files.interferenceSummary).catch(() => []),
     loadJSON(DATA_BASE + files.embeddingsSummary),
     loadJSON(DATA_BASE + files.embeddingsPostCommentSummary),
-    loadJSON(DATA_BASE + files.docLookup).catch(() => null),
     loadJSON(DATA_BASE + files.sociologyInterpretation).catch(() => null),
   ]);
 
@@ -2189,16 +2244,11 @@ async function init() {
   state.memeClass = memeClass;
   state.memeBursts = memeBursts;
   state.language = language;
-  state.reply = reply;
-  state.replySummary = replySummary;
-  state.mention = mention;
-  state.mentionSummary = mentionSummary;
-  state.replyCommunities = replyCommunities;
-  state.mentionCommunities = mentionCommunities;
   state.transmission = transmission;
   state.transmissionPolicy = buildTransmissionPool(transmission);
   state.transmissionVisibleCount = 0;
-  state.authors = authors;
+  state.authors = [];
+  state.authorsLoaded = false;
   state.coverage = coverage;
   state.ontologySummary = ontologySummary;
   state.ontologyConcepts = ontologyConcepts;
@@ -2208,7 +2258,8 @@ async function init() {
   state.interferenceSummary = interferenceSummary;
   state.embeddingsSummary = embeddingsSummary;
   state.embeddingsPostCommentSummary = embeddingsPostCommentSummary;
-  state.docLookup = (docLookup && docLookup.docs) || {};
+  state.docLookup = {};
+  state.docLookupLoaded = false;
   state.sociology = sociologyInterpretation;
 
   mountStrategicTLDR();
@@ -2239,11 +2290,8 @@ async function init() {
   mountSociologyPanel();
   mountActiveFiltersSummary();
   mountCoherenceCheck();
-  mountNetworkConcentration();
-  mountNetworkTables();
-  mountCommunityTables();
-  mountAuthorTable();
   attachTextModalDelegation();
+  void loadDeferredSections();
 }
 
 init().catch((err) => {

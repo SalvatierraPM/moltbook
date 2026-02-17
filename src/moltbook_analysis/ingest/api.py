@@ -110,4 +110,7 @@ def fetch_post_comments(
         if not rows:
             break
         for row in rows:
+            # Keep the post->comment relation stable even when API payload omits post_id.
+            if isinstance(row, dict) and not row.get("post_id"):
+                row["post_id"] = post_id
             yield row
