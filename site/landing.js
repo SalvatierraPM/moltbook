@@ -1,32 +1,25 @@
-const DATA_BASE = "../data/derived/";
+const Core = window.AnalyticsCore;
+if (!Core) throw new Error("AnalyticsCore no esta cargado");
+
+const DATA_BASE = Core.DATA_BASE;
 
 const files = {
   submoltStats: "submolt_stats.csv",
   diffusionRuns: "diffusion_runs.csv",
-  diffusionSubmolts: "diffusion_submolts.csv",
   memeCandidates: "meme_candidates.csv",
   memeClass: "meme_classification.csv",
   reply: "reply_graph_centrality.csv",
-  mention: "mention_graph_centrality.csv",
   replyCommunities: "reply_graph_communities.csv",
-  mentionCommunities: "mention_graph_communities.csv",
   authors: "author_stats.csv",
   language: "public_language_distribution.csv",
   transmission: "public_transmission_samples.csv",
-  transmissionSensitivity: "transmission_threshold_sensitivity.json",
   transmissionVsmBaseline: "transmission_vsm_baseline.json",
   embeddingsSummary: "public_embeddings_summary.json",
-  embeddingsLang: "public_embeddings_lang_top.csv",
-  embeddingsPairs: "public_embeddings_pairs_top.csv",
   embeddingsPostCommentSummary: "embeddings_post_comment/public_embeddings_post_comment_summary.json",
-  embeddingsPostCommentLang: "embeddings_post_comment/public_embeddings_post_comment_lang_top.csv",
-  embeddingsPostCommentPairs: "embeddings_post_comment/public_embeddings_post_comment_pairs_top.csv",
   coverage: "coverage_quality.json",
   ontologySummary: "ontology_summary.csv",
   ontologyConcepts: "ontology_concepts_top.csv",
   ontologyCooccurrence: "ontology_cooccurrence_top.csv",
-  interferenceTop: "interference_top.csv",
-  incidenceTop: "human_incidence_top.csv",
   submoltExamples: "public_submolt_examples.csv",
   docLookup: "public_doc_lookup.json",
 };
@@ -36,33 +29,17 @@ const REPORT_LIMITS = {
   memeLife: 25,
   ontologyConcepts: 25,
   ontologyCooccurrence: 25,
-  diffusionEngagement: 25,
 };
 
-const CORE_CONCEPT_LEMMAS = new Set(["agent", "human", "ai"]);
-const CONCEPT_LEMMA_MAP = {
-  agents: "agent",
-  humans: "human",
-  tokens: "token",
-  models: "model",
-  tools: "tool",
-  prompts: "prompt",
-  policies: "policy",
-  memes: "meme",
-  modelo: "model",
-  lenguaje: "language",
-  ontologia: "ontology",
-  etica: "ethics",
-};
-
-function conceptLemma(concept) {
-  const raw = String(concept || "").trim().toLowerCase();
-  return CONCEPT_LEMMA_MAP[raw] || raw;
-}
-
-function isVariantPair(a, b) {
-  return conceptLemma(a) === conceptLemma(b);
-}
+const CORE_CONCEPT_LEMMAS = Core.CORE_CONCEPT_LEMMAS;
+const TRANSMISSION_TEXT_MIN_CHARS = Core.TRANSMISSION_TEXT_MIN_CHARS;
+const METRIC_CONTRACT_ROWS = Core.METRIC_CONTRACT_ROWS;
+const loadCSV = Core.loadCSV;
+const loadJSON = Core.loadJSON;
+const parseDate = Core.parseDate;
+const conceptLemma = Core.conceptLemma;
+const isVariantPair = Core.isVariantPair;
+const buildTransmissionPool = Core.buildTransmissionPool;
 
 function escapeHtml(text) {
   return String(text || "")
@@ -73,91 +50,6 @@ function escapeHtml(text) {
     .replaceAll("'", "&#039;");
 }
 
-function loadCSV(path) {
-  if (window.Papa && window.Papa.parse) {
-    return new Promise((resolve, reject) => {
-      Papa.parse(path, {
-        download: true,
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        complete: (res) => resolve(res.data),
-        error: (err) => reject(err),
-      });
-    });
-  }
-  return fetch(path)
-    .then((res) => {
-      if (!res.ok) throw new Error(`No se pudo cargar ${path}`);
-      return res.text();
-    })
-    .then(parseCSVFallback);
-}
-
-function parseCSVFallback(text) {
-  const rows = [];
-  let row = [];
-  let cur = "";
-  let inQuotes = false;
-  for (let i = 0; i < text.length; i += 1) {
-    const ch = text[i];
-    if (ch === "\"") {
-      if (inQuotes && text[i + 1] === "\"") {
-        cur += "\"";
-        i += 1;
-      } else {
-        inQuotes = !inQuotes;
-      }
-      continue;
-    }
-    if ((ch === "," || ch === "\n" || ch === "\r") && !inQuotes) {
-      if (ch === ",") {
-        row.push(cur);
-        cur = "";
-        continue;
-      }
-      row.push(cur);
-      cur = "";
-      if (row.length > 1 || row[0] !== "") {
-        rows.push(row);
-      }
-      row = [];
-      if (ch === "\r" && text[i + 1] === "\n") {
-        i += 1;
-      }
-      continue;
-    }
-    cur += ch;
-  }
-  if (cur || row.length) {
-    row.push(cur);
-    rows.push(row);
-  }
-  const headers = rows.shift() || [];
-  return rows
-    .filter((r) => r.length && r.some((cell) => String(cell).trim() !== ""))
-    .map((cols) => {
-      const obj = {};
-      headers.forEach((h, idx) => {
-        obj[h] = coerceValue(cols[idx]);
-      });
-      return obj;
-    });
-}
-
-function coerceValue(value) {
-  if (value === undefined || value === null) return null;
-  const raw = String(value).trim();
-  if (!raw) return null;
-  if (/^-?\d+(\.\d+)?$/.test(raw)) return Number(raw);
-  return raw;
-}
-
-async function loadJSON(path) {
-  const res = await fetch(path);
-  if (!res.ok) throw new Error(`No se pudo cargar ${path}`);
-  return res.json();
-}
 
 function fmtNumber(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return "–";
@@ -175,13 +67,6 @@ function fmtFloat(n, digits = 2) {
 function fmtPercent(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return "–";
   return `${(Number(n) * 100).toFixed(1)}%`;
-}
-
-function parseDate(raw) {
-  if (!raw) return null;
-  const iso = String(raw).replace(" ", "T").replace("+00:00", "Z");
-  const dt = new Date(iso);
-  return Number.isNaN(dt.getTime()) ? null : dt;
 }
 
 function fmtDate(dt) {
@@ -205,6 +90,12 @@ function setTableRows(id, rowsHtml) {
   const tbody = document.querySelector(`#${id} tbody`);
   if (!tbody) return;
   tbody.innerHTML = rowsHtml;
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value;
 }
 
 function humanizeFeature(feature) {
@@ -241,6 +132,21 @@ function humanizeFeature(feature) {
   return String(feature || "")
     .replace(/^(act_|mood_|epistemic_)/, "")
     .replace(/_/g, " ");
+}
+
+function mountMetricContractTable() {
+  setTableRows(
+    "report-metric-contract-table",
+    METRIC_CONTRACT_ROWS.map(
+      ([module, metric, source, transform, axis]) => `<tr>
+        <td>${escapeHtml(module)}</td>
+        <td>${escapeHtml(metric)}</td>
+        <td>${escapeHtml(source)}</td>
+        <td>${escapeHtml(transform)}</td>
+        <td>${escapeHtml(axis)}</td>
+      </tr>`
+    ).join("")
+  );
 }
 
 function ensureTextModal() {
@@ -298,59 +204,39 @@ async function init() {
   const [
     submoltStats,
     diffusionRuns,
-    diffusionSubmolts,
     memeCandidates,
     memeClass,
     reply,
-    mention,
     replyCommunities,
-    mentionCommunities,
     authors,
     language,
     transmission,
-    transmissionSensitivity,
     transmissionVsmBaseline,
     embeddingsSummary,
-    embeddingsLang,
-    embeddingsPairs,
     embeddingsPostCommentSummary,
-    embeddingsPostCommentLang,
-    embeddingsPostCommentPairs,
     coverage,
     ontologySummary,
     ontologyConcepts,
     ontologyCooccurrence,
-    interferenceTop,
-    incidenceTop,
     submoltExamples,
     docLookup,
   ] = await Promise.all([
     loadCSV(DATA_BASE + files.submoltStats),
     loadCSV(DATA_BASE + files.diffusionRuns),
-    loadCSV(DATA_BASE + files.diffusionSubmolts),
     loadCSV(DATA_BASE + files.memeCandidates),
     loadCSV(DATA_BASE + files.memeClass),
     loadCSV(DATA_BASE + files.reply),
-    loadCSV(DATA_BASE + files.mention),
     loadCSV(DATA_BASE + files.replyCommunities),
-    loadCSV(DATA_BASE + files.mentionCommunities),
     loadCSV(DATA_BASE + files.authors),
     loadCSV(DATA_BASE + files.language),
     loadCSV(DATA_BASE + files.transmission),
-    loadJSON(DATA_BASE + files.transmissionSensitivity),
     loadJSON(DATA_BASE + files.transmissionVsmBaseline),
     loadJSON(DATA_BASE + files.embeddingsSummary),
-    loadCSV(DATA_BASE + files.embeddingsLang),
-    loadCSV(DATA_BASE + files.embeddingsPairs),
     loadJSON(DATA_BASE + files.embeddingsPostCommentSummary),
-    loadCSV(DATA_BASE + files.embeddingsPostCommentLang),
-    loadCSV(DATA_BASE + files.embeddingsPostCommentPairs),
     loadJSON(DATA_BASE + files.coverage),
     loadCSV(DATA_BASE + files.ontologySummary),
     loadCSV(DATA_BASE + files.ontologyConcepts),
     loadCSV(DATA_BASE + files.ontologyCooccurrence),
-    loadCSV(DATA_BASE + files.interferenceTop),
-    loadCSV(DATA_BASE + files.incidenceTop),
     loadCSV(DATA_BASE + files.submoltExamples),
     loadJSON(DATA_BASE + files.docLookup).catch(() => null),
   ]);
@@ -359,6 +245,8 @@ async function init() {
     hideGeneral: false,
     hideEn: false,
   };
+  const txPolicy = buildTransmissionPool(transmission);
+  let visibleTransmissionRows = 0;
 
   const docLookupMap = (docLookup && docLookup.docs) || {};
   const lookupDocText = (docId) => {
@@ -406,6 +294,128 @@ async function init() {
   const createdMin = createdMins.length ? new Date(Math.min(...createdMins)) : null;
   const createdMax = createdMaxs.length ? new Date(Math.max(...createdMaxs)) : null;
 
+  const sumLanguageShare = (scope) => Core.sumLanguageShare(language, scope);
+  const sumLanguageCount = (scope) => Core.sumLanguageCount(language, scope);
+
+  const renderActiveFiltersSection = () => {
+    const variantPairs = ontologyCooccurrence.filter((r) => isVariantPair(r.concept_a, r.concept_b)).length;
+    const rows = [
+      [
+        "Ontologia",
+        "Excluir pares variantes (lemma equivalente)",
+        "activo",
+        `${fmtNumber(variantPairs)} pares variantes excluidos del ranking`,
+      ],
+      [
+        "Transmision",
+        `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars + prioridad co-mencion humano+IA`,
+        "activo",
+        `Pool=${fmtNumber(txPolicy.pool.length)} de ${fmtNumber(txPolicy.totals.raw)} (${txPolicy.policy}); vista=${fmtNumber(visibleTransmissionRows)}`,
+      ],
+      [
+        "Idiomas",
+        "Ocultar ingles (en)",
+        filters.hideEn ? "activo" : "inactivo",
+        filters.hideEn ? "La tabla excluye 'en'" : "Se muestran todos los idiomas",
+      ],
+      [
+        "Submolts",
+        "Ocultar general",
+        filters.hideGeneral ? "activo" : "inactivo",
+        filters.hideGeneral ? "La tabla de volumen excluye 'general'" : "Sin exclusiones de submolt",
+      ],
+    ];
+    setTableRows(
+      "report-active-filters-table",
+      rows
+        .map(
+          ([module, filter, status, impact]) => `<tr>
+            <td>${escapeHtml(module)}</td>
+            <td>${escapeHtml(filter)}</td>
+            <td>${escapeHtml(status)}</td>
+            <td>${escapeHtml(impact)}</td>
+          </tr>`
+        )
+        .join("")
+    );
+  };
+
+  const renderTraceabilitySection = () => {
+    const runMin = runDates.length ? new Date(Math.min(...runDates)) : null;
+    const runMax = runDates.length ? new Date(Math.max(...runDates)) : null;
+    const rows = [
+      ["Rango created_at", `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`],
+      ["Rango run_time", `${fmtDate(runMin)} — ${fmtDate(runMax)}`],
+      ["Runs unicos", fmtNumber(totalRuns)],
+      ["Volumen snapshot", `${fmtNumber(totalPosts)} posts / ${fmtNumber(totalComments)} comentarios`],
+      [
+        "Muestra idioma",
+        `${fmtNumber(sumLanguageCount("posts"))} posts + ${fmtNumber(sumLanguageCount("comments"))} comentarios`,
+      ],
+      ["Muestra transmision", `${fmtNumber(txPolicy.pool.length)} docs (de ${fmtNumber(txPolicy.totals.raw)} raw)`],
+      ["Politica transmision activa", txPolicy.policy],
+      ["Version criterios", "v1.1 (co-ocurrencia sin variantes + transmision canonica)"],
+    ];
+    setTableRows(
+      "report-traceability-table",
+      rows
+        .map(
+          ([item, value]) => `<tr>
+            <td>${escapeHtml(item)}</td>
+            <td>${escapeHtml(value)}</td>
+          </tr>`
+        )
+        .join("")
+    );
+  };
+
+  const renderCoherenceSection = () => {
+    const filteredPairs = ontologyCooccurrence
+      .filter((r) => !isVariantPair(r.concept_a, r.concept_b))
+      .slice(0, REPORT_LIMITS.ontologyCooccurrence);
+    const hasVariantInTop = filteredPairs.some((r) => isVariantPair(r.concept_a, r.concept_b));
+
+    const rebuiltTx = buildTransmissionPool(transmission);
+    const txPolicyMatch = txPolicy.pool.length === rebuiltTx.pool.length && txPolicy.policy === rebuiltTx.policy;
+
+    const postShare = sumLanguageShare("posts");
+    const commentShare = sumLanguageShare("comments");
+    const languageShareOk = Math.abs(postShare - 1) <= 0.03 && Math.abs(commentShare - 1) <= 0.03;
+
+    const postsMin = parseDate(coverage.posts_created_min);
+    const postsMax = parseDate(coverage.posts_created_max);
+    const commentsMin = parseDate(coverage.comments_created_min);
+    const commentsMax = parseDate(coverage.comments_created_max);
+    const postsRangeOk = Boolean(postsMin && postsMax && postsMin <= postsMax);
+    const commentsRangeOk = Boolean(commentsMin && commentsMax && commentsMin <= commentsMax);
+    const rangesOk = postsRangeOk && commentsRangeOk;
+
+    const totalsOk = totalPosts > 0 && totalComments > 0;
+    const checks = [
+      [
+        "Co-ocurrencia top sin pares variantes",
+        !hasVariantInTop,
+        `${fmtNumber(filteredPairs.length)} filas; variantes en top=${hasVariantInTop ? "si" : "no"}`,
+      ],
+      ["Pool de transmision canonico", txPolicyMatch, `${fmtNumber(txPolicy.pool.length)} filas; policy=${txPolicy.policy}`],
+      ["Shares de idioma normalizados", languageShareOk, `posts=${postShare.toFixed(3)} / comments=${commentShare.toFixed(3)}`],
+      ["Rangos temporales validos", rangesOk, `posts=${postsRangeOk ? "ok" : "fail"}, comments=${commentsRangeOk ? "ok" : "fail"}`],
+      ["Volumen base no vacio", totalsOk, `${fmtNumber(totalSubmolts)} submolts activos`],
+    ];
+    setTableRows(
+      "report-coherence-table",
+      checks
+        .map(
+          ([name, ok, detail]) => `<tr>
+            <td>${escapeHtml(name)}</td>
+            <td>${ok ? "PASS" : "FAIL"}</td>
+            <td>${escapeHtml(detail)}</td>
+          </tr>`
+        )
+        .join("")
+    );
+  };
+
   document.getElementById("stat-posts").textContent = fmtNumber(totalPosts);
   document.getElementById("stat-comments").textContent = fmtNumber(totalComments);
   document.getElementById("stat-submolts").textContent = fmtNumber(totalSubmolts);
@@ -428,6 +438,11 @@ async function init() {
   if (aboutComments) aboutComments.textContent = fmtNumber(totalComments);
   const aboutWindow = document.getElementById("about-window");
   if (aboutWindow) aboutWindow.textContent = `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`;
+
+  mountMetricContractTable();
+  renderTraceabilitySection();
+  renderCoherenceSection();
+  renderActiveFiltersSection();
 
   const renderSubmoltVolumeTable = () => {
     const topSubmolts = [...submoltStats]
@@ -455,24 +470,13 @@ async function init() {
       filters.hideGeneral = !filters.hideGeneral;
       hideGeneralBtn.classList.toggle("active", filters.hideGeneral);
       renderSubmoltVolumeTable();
+      renderActiveFiltersSection();
     });
   }
 
   const topMemeCounts = [...memeCandidates]
     .sort((a, b) => (b.count || 0) - (a.count || 0))
     .slice(0, 6);
-  setTableRows(
-    "report-meme-count-table",
-    topMemeCounts
-      .map(
-        (r) => `<tr>
-          <td>${r.meme}</td>
-          <td>${fmtNumber(r.count)}</td>
-          <td>${r.meme_type || "ngram"}</td>
-        </tr>`
-      )
-      .join("")
-  );
   const exampleMeme = topMemeCounts[0] || {};
   const exampleMemeTerm = document.getElementById("example-meme-term");
   if (exampleMemeTerm) exampleMemeTerm.textContent = exampleMeme.meme || "–";
@@ -527,53 +531,7 @@ async function init() {
   const exampleActRate = document.getElementById("example-onto-act-rate");
   if (exampleActRate) exampleActRate.textContent = fmtFloat(exampleAct.rate_per_doc, 3);
 
-  const moods = ontologySummary
-    .filter((r) => r.scope === "all" && String(r.feature || "").startsWith("mood_"))
-    .sort((a, b) => (b.count || 0) - (a.count || 0))
-    .slice(0, 6);
-  setTableRows(
-    "report-moods-table",
-    moods
-      .map(
-        (r) => `<tr>
-          <td>${humanizeFeature(r.feature)}</td>
-          <td>${fmtNumber(r.count)}</td>
-          <td>${fmtFloat(r.rate_per_doc, 3)}</td>
-        </tr>`
-      )
-      .join("")
-  );
-
-  const epistemic = ontologySummary
-    .filter((r) => r.scope === "all" && String(r.feature || "").startsWith("epistemic_"))
-    .sort((a, b) => (b.count || 0) - (a.count || 0))
-    .slice(0, 6);
-  setTableRows(
-    "report-epistemic-table",
-    epistemic
-      .map(
-        (r) => `<tr>
-          <td>${humanizeFeature(r.feature)}</td>
-          <td>${fmtNumber(r.count)}</td>
-          <td>${fmtFloat(r.rate_per_doc, 3)}</td>
-        </tr>`
-      )
-      .join("")
-  );
-
   const concepts = ontologyConcepts.slice(0, REPORT_LIMITS.ontologyConcepts);
-  setTableRows(
-    "report-concepts-table",
-    concepts
-      .map(
-        (r) => `<tr>
-          <td>${r.concept}</td>
-          <td>${fmtNumber(r.doc_count ?? r.count)}</td>
-          <td>${fmtPercent(r.share)}</td>
-        </tr>`
-      )
-      .join("")
-  );
   const exampleCoreConcept = concepts[0] || {};
   const exampleCoreConceptEl = document.getElementById("example-onto-core-concept");
   if (exampleCoreConceptEl) exampleCoreConceptEl.textContent = exampleCoreConcept.concept || "–";
@@ -587,21 +545,6 @@ async function init() {
   const exampleNoCoreConceptShare = document.getElementById("example-onto-concept-nocore-share");
   if (exampleNoCoreConceptShare) exampleNoCoreConceptShare.textContent = fmtPercent(exampleNoCoreConcept.share);
 
-  const cooccurrence = [...ontologyCooccurrence]
-    .filter((r) => !isVariantPair(r.concept_a, r.concept_b))
-    .slice(0, REPORT_LIMITS.ontologyCooccurrence);
-  setTableRows(
-    "report-cooccurrence-table",
-    cooccurrence
-      .map(
-        (r) => `<tr>
-          <td>${r.concept_a}</td>
-          <td>${r.concept_b}</td>
-          <td>${fmtNumber(r.count)}</td>
-        </tr>`
-      )
-      .join("")
-  );
   const noCorePairs = [...ontologyCooccurrence]
     .filter((r) => !isVariantPair(r.concept_a, r.concept_b))
     .filter((r) => !CORE_CONCEPT_LEMMAS.has(conceptLemma(r.concept_a)) && !CORE_CONCEPT_LEMMAS.has(conceptLemma(r.concept_b)));
@@ -677,64 +620,6 @@ async function init() {
   const meanRandomEl = document.getElementById("vsm-mean-random");
   if (meanRandomEl) meanRandomEl.textContent = fmtFloat(metricsAll.vsm_shuffled?.mean, 3);
 
-  const transAucEl = document.getElementById("trans-vsm-auc");
-  if (transAucEl) transAucEl.textContent = fmtFloat(metricsAll.auc_vsm_matched_vs_shuffled, 3);
-  const transCorrEl = document.getElementById("trans-vsm-corr");
-  if (transCorrEl) transCorrEl.textContent = fmtFloat(metricsAll.corr_embedding_vs_vsm, 2);
-  const transMMeanEl = document.getElementById("trans-vsm-mmean");
-  if (transMMeanEl) transMMeanEl.textContent = fmtFloat(metricsAll.vsm_matched?.mean, 3);
-  const transSMeanEl = document.getElementById("trans-vsm-smean");
-  if (transSMeanEl) transSMeanEl.textContent = fmtFloat(metricsAll.vsm_shuffled?.mean, 3);
-  const transMP90El = document.getElementById("trans-vsm-mp90");
-  if (transMP90El) transMP90El.textContent = fmtFloat(metricsAll.vsm_matched?.p90, 3);
-  const transSP90El = document.getElementById("trans-vsm-sp90");
-  if (transSP90El) transSP90El.textContent = fmtFloat(metricsAll.vsm_shuffled?.p90, 3);
-
-  const sensitivity = transmissionSensitivity || {};
-  const thresholds = Array.isArray(sensitivity.thresholds) ? sensitivity.thresholds : [];
-  if (thresholds.length) {
-    const maxPairs = thresholds.reduce((mx, r) => Math.max(mx, Number(r.pair_count) || 0), 0) || 1;
-    const sorted = [...thresholds].sort((a, b) => (Number(b.threshold) || 0) - (Number(a.threshold) || 0));
-    setTableRows(
-      "report-transmission-threshold-table",
-      sorted
-        .map((r) => {
-          const pairs = Number(r.pair_count) || 0;
-          const pct = Math.max(0, Math.min(100, (pairs / maxPairs) * 100));
-          const topLangs = (Array.isArray(r.top_lang) ? r.top_lang : [])
-            .slice(0, 3)
-            .map((x) => x.key)
-            .filter(Boolean)
-            .join(", ");
-          return `<tr>
-            <td>${fmtFloat(r.threshold, 2)}</td>
-            <td>${fmtNumber(pairs)}</td>
-            <td>${fmtPercent(Number(r.share_same_submolt) || 0)}</td>
-            <td>${escapeHtml(topLangs || "–")}</td>
-            <td><div class="rank-bar"><span style="width:${pct.toFixed(1)}%"></span></div></td>
-          </tr>`;
-        })
-        .join("")
-    );
-  }
-
-  const topDiffusion = [...diffusionSubmolts]
-    .sort((a, b) => (b.mean_comments || 0) - (a.mean_comments || 0))
-    .slice(0, REPORT_LIMITS.diffusionEngagement);
-  setTableRows(
-    "report-diffusion-table",
-    topDiffusion
-      .map(
-        (r) => `<tr>
-          <td>${r.submolt}</td>
-          <td>${fmtFloat(r.mean_score, 2)}</td>
-          <td>${fmtFloat(r.mean_comments, 2)}</td>
-          <td>${fmtNumber(r.runs_seen)}</td>
-        </tr>`
-      )
-      .join("")
-  );
-
   const topReply = [...reply]
     .sort((a, b) => (b.pagerank || 0) - (a.pagerank || 0))
     .slice(0, 6);
@@ -756,22 +641,6 @@ async function init() {
   const exampleReplyPr = document.getElementById("example-soc-reply-pr");
   if (exampleReplyPr) exampleReplyPr.textContent = fmtFloat(exampleReply.pagerank, 6);
 
-  const topMention = [...mention]
-    .sort((a, b) => (b.pagerank || 0) - (a.pagerank || 0))
-    .slice(0, 6);
-  setTableRows(
-    "report-mention-table",
-    topMention
-      .map(
-        (r) => `<tr>
-          <td>${r.node}</td>
-          <td>${fmtFloat(r.pagerank, 6)}</td>
-          <td>${fmtFloat(r.betweenness, 6)}</td>
-        </tr>`
-      )
-      .join("")
-  );
-
   const summarize = (rows) => {
     const total = rows.length || 1;
     const counts = new Map();
@@ -786,37 +655,11 @@ async function init() {
   };
 
   const replyComms = summarize(replyCommunities || []);
-  setTableRows(
-    "report-reply-community-table",
-    replyComms
-      .map(
-        (r) => `<tr>
-          <td>${r.community}</td>
-          <td>${fmtNumber(r.count)}</td>
-          <td>${fmtPercent(r.share)}</td>
-        </tr>`
-      )
-      .join("")
-  );
   const exampleCommunity = replyComms[0] || {};
   const exampleCommunityId = document.getElementById("example-soc-community");
   if (exampleCommunityId) exampleCommunityId.textContent = exampleCommunity.community ?? "–";
   const exampleCommunitySize = document.getElementById("example-soc-community-size");
   if (exampleCommunitySize) exampleCommunitySize.textContent = fmtNumber(exampleCommunity.count);
-
-  const mentionComms = summarize(mentionCommunities || []);
-  setTableRows(
-    "report-mention-community-table",
-    mentionComms
-      .map(
-        (r) => `<tr>
-          <td>${r.community}</td>
-          <td>${fmtNumber(r.count)}</td>
-          <td>${fmtPercent(r.share)}</td>
-        </tr>`
-      )
-      .join("")
-  );
 
   const topAuthors = [...authors]
     .map((r) => ({
@@ -884,25 +727,12 @@ async function init() {
       filters.hideEn = !filters.hideEn;
       hideEnBtn.classList.toggle("active", filters.hideEn);
       renderLanguageTable();
+      renderActiveFiltersSection();
     });
   }
 
-  const transmissionText = (r) => String(r.text || "").toLowerCase();
-  const nonTrivialTransmission = [...transmission].filter((r) => String(r.text || "").trim().length >= 40);
-  const txCoMention = nonTrivialTransmission.filter((r) => {
-    const t = transmissionText(r);
-    const hasHuman = t.includes("human") || t.includes("humano");
-    const hasAi = t.includes("ai") || t.includes("agent");
-    return hasHuman && hasAi;
-  });
-  const txAiOnly = nonTrivialTransmission.filter((r) => {
-    const t = transmissionText(r);
-    return t.includes("ai") || t.includes("agent");
-  });
-  const txPool = txCoMention.length ? txCoMention : txAiOnly.length ? txAiOnly : nonTrivialTransmission;
-  const topTransmission = txPool
-    .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")))
-    .slice(0, 6);
+  const topTransmission = [...txPolicy.pool].slice(0, 6);
+  visibleTransmissionRows = topTransmission.length;
   setTableRows(
     "report-transmission-table",
     topTransmission
@@ -916,6 +746,7 @@ async function init() {
       )
       .join("")
   );
+  renderActiveFiltersSection();
 
   if (embeddingsSummary) {
     const embDocs = document.getElementById("emb-docs");
@@ -943,212 +774,53 @@ async function init() {
     if (embPcCross) embPcCross.textContent = fmtPercent(embeddingsPostCommentSummary.cross_submolt_rate);
   }
 
-  const topEmbLangs = [...embeddingsLang].slice(0, 8);
-  setTableRows(
-    "report-embedding-lang-table",
-    topEmbLangs
-      .map(
-        (r) => `<tr>
-          <td>${r.doc_lang}</td>
-          <td>${fmtNumber(r.matches)}</td>
-          <td>${fmtFloat(r.mean_score, 3)}</td>
-        </tr>`
-      )
-      .join("")
+  const submoltVolumes = submoltStats
+    .map((r) => (Number(r.posts) || 0) + (Number(r.comments) || 0))
+    .sort((a, b) => b - a);
+  const totalVolume = submoltVolumes.reduce((acc, v) => acc + v, 0);
+  const top5Volume = submoltVolumes.slice(0, 5).reduce((acc, v) => acc + v, 0);
+  const top5Share = totalVolume > 0 ? top5Volume / totalVolume : null;
+
+  const topActRow = acts[0] || null;
+  const totalActCount = acts.reduce((acc, r) => acc + (Number(r.count) || 0), 0);
+  const topActShare = topActRow && totalActCount > 0 ? (Number(topActRow.count) || 0) / totalActCount : null;
+
+  const topMeme = topMemeLife[0] || null;
+  const topNetworkNode = topReply[0] || null;
+  const crossRate = embeddingsPostCommentSummary ? Number(embeddingsPostCommentSummary.cross_submolt_rate) : null;
+  const crossMean = embeddingsPostCommentSummary ? Number(embeddingsPostCommentSummary.mean_score) : null;
+  const duplicateRateComments =
+    totalComments > 0 ? (Number(coverage.comments_duplicates) || 0) / totalComments : null;
+
+  setText("obs-finding-concentration-signal", `Top 5 submolts concentran ${fmtPercent(top5Share)} del volumen.`);
+  setText(
+    "obs-finding-memetics-signal",
+    topMeme
+      ? `"${topMeme.meme}" dura ${fmtFloat(topMeme.lifetime_hours, 1)} hrs y toca ${fmtNumber(topMeme.submolts_touched)} submolts.`
+      : "Sin datos suficientes de vida memetica."
   );
-
-  const pickEmbPairs = (rows, k = 6) => {
-    const bannedNeedles = [
-      "claw token ecosystem:",
-      "mbc-20",
-      "mbc20.xyz",
-      "bags.fm",
-      "crab-rave",
-    ];
-    const isBanned = (t) => bannedNeedles.some((n) => String(t || "").toLowerCase().includes(n));
-
-    const out = [];
-    const usedLang = new Set();
-    const usedSubmolt = new Set();
-
-    const passes = [
-      (r) => !isBanned(r.doc_excerpt) && !isBanned(r.neighbor_excerpt),
-      () => true,
-    ];
-
-    for (const accept of passes) {
-      for (const r of rows) {
-        if (out.length >= k) break;
-        if (!accept(r)) continue;
-        const lang = String(r.doc_lang || "unknown");
-        const sub = String(r.doc_submolt || "unknown");
-        if (usedLang.has(lang)) continue;
-        if (usedSubmolt.has(sub)) continue;
-        out.push(r);
-        usedLang.add(lang);
-        usedSubmolt.add(sub);
-      }
-      if (out.length >= k) break;
-    }
-
-    return out;
-  };
-
-  const topEmbPairs = pickEmbPairs([...embeddingsPairs], 6);
-  setTableRows(
-    "report-embedding-pairs-table",
-    topEmbPairs
-      .map(
-        (r) => `<tr>
-          <td>${fmtFloat(r.score, 3)}</td>
-          <td>${r.doc_lang || "unknown"}</td>
-          <td>${r.doc_submolt || "unknown"}</td>
-          <td>${r.neighbor_submolt || "unknown"}</td>
-          <td class="cell-text">
-            <button
-              class="text-link"
-              type="button"
-              data-doc-id="${escapeHtml(r.doc_id)}"
-              data-doc-submolt="${escapeHtml(r.doc_submolt || "unknown")}"
-              data-doc-created-at="${escapeHtml(String(r.doc_created_at || "").slice(0, 16).replace("T", " "))}"
-              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
-            >${escapeHtml(truncate(r.doc_excerpt, 140))}</button>
-          </td>
-          <td class="cell-text">
-            <button
-              class="text-link"
-              type="button"
-              data-doc-id="${escapeHtml(r.neighbor_id)}"
-              data-doc-submolt="${escapeHtml(r.neighbor_submolt || "unknown")}"
-              data-doc-created-at="${escapeHtml(String(r.neighbor_created_at || "").slice(0, 16).replace("T", " "))}"
-              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
-            >${escapeHtml(truncate(r.neighbor_excerpt, 140))}</button>
-          </td>
-        </tr>`
-      )
-      .join("")
+  setText(
+    "obs-finding-ontology-signal",
+    topActRow
+      ? `Predomina ${humanizeFeature(topActRow.feature)} con share ${fmtPercent(topActShare)} en actos top.`
+      : "Sin datos ontologicos suficientes."
   );
-
-  const topEmbPcLangs = [...embeddingsPostCommentLang].slice(0, 8);
-  setTableRows(
-    "report-embedding-pc-lang-table",
-    topEmbPcLangs
-      .map(
-        (r) => `<tr>
-          <td>${r.lang}</td>
-          <td>${fmtNumber(r.matches)}</td>
-          <td>${fmtFloat(r.mean_score, 3)}</td>
-        </tr>`
-      )
-      .join("")
+  setText(
+    "obs-finding-network-signal",
+    topNetworkNode
+      ? `Nodo top ${String(topNetworkNode.node)} (PageRank ${fmtFloat(topNetworkNode.pagerank, 6)}).`
+      : "Sin datos de red para este snapshot."
   );
-
-  const topEmbPcPairs = [...embeddingsPostCommentPairs].slice(0, 6);
-  setTableRows(
-    "report-embedding-pc-pairs-table",
-    topEmbPcPairs
-      .map(
-        (r) => `<tr>
-          <td>${fmtFloat(r.score, 3)}</td>
-          <td>${r.lang || "unknown"}</td>
-          <td>${r.post_submolt || "unknown"}</td>
-          <td>${r.comment_submolt || "unknown"}</td>
-          <td class="cell-text">
-            <button
-              class="text-link"
-              type="button"
-              data-doc-id="${escapeHtml(r.post_id)}"
-              data-doc-type="post"
-              data-doc-submolt="${escapeHtml(r.post_submolt || "unknown")}"
-              data-doc-created-at="${escapeHtml(String(r.post_created_at || "").slice(0, 16).replace("T", " "))}"
-              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
-            >${escapeHtml(truncate(r.post_excerpt, 140))}</button>
-          </td>
-          <td class="cell-text">
-            <button
-              class="text-link"
-              type="button"
-              data-doc-id="${escapeHtml(r.comment_id)}"
-              data-doc-type="comment"
-              data-doc-submolt="${escapeHtml(r.comment_submolt || "unknown")}"
-              data-doc-created-at="${escapeHtml(String(r.comment_created_at || "").slice(0, 16).replace("T", " "))}"
-              data-doc-score="${escapeHtml(fmtFloat(r.score, 3))}"
-            >${escapeHtml(truncate(r.comment_excerpt, 140))}</button>
-          </td>
-        </tr>`
-      )
-      .join("")
+  setText(
+    "obs-finding-transmission-signal",
+    `Cross-submolt post→comentario ${fmtPercent(crossRate)} (similitud media ${fmtFloat(crossMean, 3)}).`
   );
-
-  const topInterference = [...interferenceTop].slice(0, 6);
-  setTableRows(
-    "report-interference-table",
-    topInterference
-      .map(
-        (r) => `<tr>
-          <td>${shortId(r.doc_id)}</td>
-          <td>${r.doc_type}</td>
-          <td>${r.submolt}</td>
-          <td>${fmtFloat(r.score, 1)}</td>
-          <td class="cell-text">
-            <button
-              class="text-link"
-              type="button"
-              data-doc-id="${escapeHtml(r.doc_id)}"
-              data-doc-type="${escapeHtml(r.doc_type)}"
-              data-doc-submolt="${escapeHtml(r.submolt)}"
-              data-doc-created-at="${escapeHtml(String(r.created_at || "").slice(0, 16).replace("T", " "))}"
-              data-doc-score="${escapeHtml(fmtFloat(r.score, 1))}"
-            >${escapeHtml(truncate(r.text_excerpt, 160))}</button>
-          </td>
-        </tr>`
-      )
-      .join("")
+  setText(
+    "obs-finding-quality-signal",
+    `Duplicados: posts ${fmtNumber(coverage.posts_duplicates)} / comentarios ${fmtNumber(coverage.comments_duplicates)} (${fmtPercent(
+      duplicateRateComments
+    )}).`
   );
-  const exampleInterference = topInterference[0] || {};
-  const exampleIntDoc = document.getElementById("example-int-doc");
-  if (exampleIntDoc) exampleIntDoc.textContent = exampleInterference.doc_id || "–";
-  const exampleIntScore = document.getElementById("example-int-score");
-  if (exampleIntScore) exampleIntScore.textContent = fmtFloat(exampleInterference.score, 1);
-  const exampleIntSubmolt = document.getElementById("example-int-submolt");
-  if (exampleIntSubmolt) exampleIntSubmolt.textContent = exampleInterference.submolt || "–";
-  const exampleIntText = document.getElementById("example-int-text");
-  if (exampleIntText) exampleIntText.textContent = truncate(exampleInterference.text_excerpt, 160) || "–";
-
-  const topIncidence = [...incidenceTop].slice(0, 6);
-  setTableRows(
-    "report-incidence-table",
-    topIncidence
-      .map(
-        (r) => `<tr>
-          <td>${shortId(r.doc_id)}</td>
-          <td>${r.doc_type}</td>
-          <td>${r.submolt}</td>
-          <td>${fmtFloat(r.human_incidence_score, 1)}</td>
-          <td class="cell-text">
-            <button
-              class="text-link"
-              type="button"
-              data-doc-id="${escapeHtml(r.doc_id)}"
-              data-doc-type="${escapeHtml(r.doc_type)}"
-              data-doc-submolt="${escapeHtml(r.submolt)}"
-              data-doc-created-at="${escapeHtml(String(r.created_at || "").slice(0, 16).replace("T", " "))}"
-              data-doc-score="${escapeHtml(fmtFloat(r.human_incidence_score, 1))}"
-            >${escapeHtml(truncate(r.text_excerpt, 160))}</button>
-          </td>
-        </tr>`
-      )
-      .join("")
-  );
-  const exampleHuman = topIncidence[0] || {};
-  const exampleHumDoc = document.getElementById("example-hum-doc");
-  if (exampleHumDoc) exampleHumDoc.textContent = exampleHuman.doc_id || "–";
-  const exampleHumScore = document.getElementById("example-hum-score");
-  if (exampleHumScore) exampleHumScore.textContent = fmtFloat(exampleHuman.human_incidence_score, 1);
-  const exampleHumSubmolt = document.getElementById("example-hum-submolt");
-  if (exampleHumSubmolt) exampleHumSubmolt.textContent = exampleHuman.submolt || "–";
-  const exampleHumText = document.getElementById("example-hum-text");
-  if (exampleHumText) exampleHumText.textContent = truncate(exampleHuman.text_excerpt, 160) || "–";
 
   if (submoltExamples && submoltExamples.length) {
     const rows = [...submoltExamples];

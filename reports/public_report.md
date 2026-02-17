@@ -7,6 +7,24 @@
 - Reporte completo: datos, metodologia, estrategias, resultados y anexos tecnicos.
 - UI dinamica + datasets auditables en CSV/JSONL/Parquet.
 
+## Arquitectura por capas (v2.0)
+- Capa 1 (Observatorio): lectura publica curada, hallazgos estructurales y limites explicitos.
+- Capa 2 (Exploracion): inspeccion interactiva completa (filtros, comparativas, drill-down, descargas).
+- Capa 3 (Metodologia y Auditoria): parametros, contratos de metrica, trazabilidad y validacion reproducible.
+- Regla de producto: no se eliminan datos/herramientas; se separa intencion por capa para evitar mezcla de audiencias.
+
+## TL;DR estrategico (3 minutos)
+- Concentracion alta: top 5 submolts explican 44.4% del volumen total; el top 2% de submolts (69 de 3,430) concentra 78.6%.
+- Memetica por capas: infraestructura tecnica 47.6% vs narrativa cultural 52.4% (por menciones agregadas).
+- Estilo discursivo dominante: afirmacion alta (act_assertion=0.615/doc) con evidencia media (0.122/doc) y certeza baja (0.009/doc).
+- Transmision transversal: en post->comentario, 82.8% de matches semanticos cruza submolts (similitud media 0.906).
+
+## Mapa de lectura
+- Modo rapido: `TL;DR estrategico` + `Sintesis global` + `Preguntas abiertas`.
+- Modo analitico: secciones `Resultados por modulo` y `Analisis interpretativo`.
+- Modo auditoria: `Definiciones operativas`, `Diccionario`, `Anexos tecnicos` y rutas en `data/derived/*`.
+- Guia sociologica extendida: ver `/Users/pabli/Desktop/Coding/Moltbook/reports/guia_interpretacion_sociologica.md`.
+
 ## Acerca del proyecto
 - Motivacion: construir un observatorio auditable sobre cultura IA (memes, lenguaje, estructura social) en Moltbook y dejar un mapa reproducible para exploracion y critica.
 - Quien soy: soy el autor del repo/reporte (Pabli). No soy experto en linguistica, sociologia o seguridad; este trabajo es ingenieria + exploracion, con limites explicitados.
@@ -17,7 +35,7 @@
 ## Interpretacion actualizada (snapshot final)
 - Volumen: 152,980 posts y 704,450 comentarios (~4.60 comentarios por post).
 - Duplicados bajos: posts 0.00%, comentarios 0.07%.
-- Concentracion: top 10 submolts concentran 49.7% de posts y 56.2% de comentarios.
+- Concentracion: top 5 submolts concentran 44.4% del volumen total y top 10 llegan a 53.7%; top 2% de submolts concentran 78.6%.
 - Estado: snapshot final; el scraping se detiene a partir de esta version del reporte.
 - Memetica dominante: n-gramas frecuentes incluyen "api v1", "agentmarket cloud", "cloud api".
 - Ontologia: los actos de afirmacion representan ~70.7% del total de actos; tono principal de confianza, curiosidad, ambicion.
@@ -25,7 +43,18 @@
 - Redes: reply graph muestra hubs claros; mention graph incluye ruido (tokens tipo w, -, \), requiere limpieza adicional.
 - Interferencia/incidencia: los scores altos suelen corresponder a texto tecnico, metadata o artefactos (base64), usar como ranking, no prueba.
 - Embeddings (post-post): 152,980 docs indexados en 45 idiomas, similitud media 0.943, cross-submolt 49.8%.
-- Embeddings (post→comentario): 724,719 matches en 48 idiomas, similitud media 0.906, cross-submolt 83.7% (misma submolt 16.3%).
+- Embeddings (post→comentario): 764,866 matches en 48 idiomas, similitud media 0.906, cross-submolt 82.8% (misma submolt 17.2%).
+
+## Capas culturales (infraestructura, operativa, reflexiva)
+- Infraestructura memetica (47.6%): domina en secuencias tecnicas y plantillas de ejecucion (ej. "api v1", "agentmarket cloud", "cloud api").
+- Cultura operativa (56.8% del share de conceptos rastreados): predominan agentes, herramientas, modelos, prompts, datos y automatizacion.
+- Cultura reflexiva (19.5% del share de conceptos rastreados): memoria, contexto, governance, research, lenguaje y alineacion.
+- Lectura: el sistema cultural no es solo "hablar de IA"; combina ritual tecnico de infraestructura, practica operativa diaria y una capa reflexiva estable pero minoritaria.
+
+## Tesis epistemologica explicita
+- Este proyecto no busca demostrar causalidad social.
+- Busca construir una forma auditable de observar cultura IA sin moralismo, alarmismo ni fetichismo tecnico.
+- Enfoque: separar medicion, interpretacion y limites de inferencia para mantener trazabilidad y falsabilidad.
 
 ## Definiciones operativas
 - Post: publicacion original con titulo y contenido.
@@ -297,10 +326,10 @@ Nota: el grafo de mentions puede incluir tokens ruidosos; interpretar con cautel
 - score=1.000 | general -> crypto | CLAW Mint {"p":"mbc-20","op":"mint","tick":"CLAW","amt":"100"}
 
 ### Embeddings post→comentario (same-lang)
-- Modelo: intfloat/multilingual-e5-small | posts=152,980 | comments=704,450 | matches=724,719 | mean_score=0.906 | cross_submolt=83.7% | langs=48
+- Modelo: intfloat/multilingual-e5-small | posts=152,980 | comments=704,450 | matches=764,866 | mean_score=0.906 | cross_submolt=82.8% | langs=48
 - Nota: total_matches < posts*5 porque algunos idiomas no tienen suficientes comentarios para index.
 #### Top idiomas por matches
-- en: matches=644,907, mean_score=0.907
+- en: matches=685,055, mean_score=0.907
 - zh-cn: matches=22,210, mean_score=0.915
 - ca: matches=5,905, mean_score=0.883
 - unknown: matches=5,395, mean_score=0.910
@@ -395,7 +424,7 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 ### 6) Transmision de ideas IA vs humanas (VSM + embeddings)
 **Evidencia cuantitativa**
 - Post-post: 764,855 matches, mean_score 0.943, median 0.937, cross_submolt 49.8% (45 idiomas).
-- Post→comentario: 724,719 matches, mean_score 0.906, median 0.906, cross_submolt 83.7% (48 idiomas).
+- Post→comentario: 764,866 matches, mean_score 0.906, median 0.906, cross_submolt 82.8% (48 idiomas).
 - Pares top evidencian rituales: plantillas MBC-20 y cadenas de emojis (🦞) concentran similitud extrema.
 **Justificacion metodologica**
 - Embeddings multilingues E5 con FAISS HNSW same-lang; top-k=5 vecinos por documento.
@@ -410,11 +439,43 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 **Implicaciones**
 - La transmision IA vs humana no es local; es una red de patrones compartidos que circulan entre comunidades.
 
+### 7) Caso focal: patron ritual `🦞🦞🦞` por submolt
+**Evidencia cuantitativa**
+- Filtro exacto `🦞🦞🦞` sobre crudos API: 354 posts (15 submolts) y 1,441 comentarios (127 submolts).
+- En posts, concentracion extrema en `crab-rave`: 317/354 (89.5%); luego `general` 9 (2.5%), `shitposts` 8 (2.3%), `introductions` 4 (1.1%).
+- En comentarios, `crab-rave` sigue liderando (413/1,441 = 28.7%), pero el patron se dispersa: `introductions` 125 (8.7%), `ponderings` 109 (7.6%), `philosophy` 101 (7.0%), `technology` 57 (4.0%).
+- Repeticion alta: en posts hay 44 textos exactos unicos sobre 354 ocurrencias; en comentarios, 532/1,441.
+- Plantillas dominantes entre comentarios: `Sacred Sign` (395), `The Eye sees` (386), `Devoted` (386), `The Way is patient` (347).
+- Ventana temporal del patron: posts 2026-01-30 a 2026-02-08; comentarios 2026-01-31 a 2026-02-09 (UTC).
+**Justificacion metodologica**
+- Fuente: `data/raw/api_fetch/posts.jsonl` y `data/raw/api_fetch/comments.jsonl`.
+- Para comentarios, el submolt se imputa via `post_id -> submolt` desde `posts.jsonl`.
+- Conteo literal (match exacto de string), sin stemming ni expansion semantica, para aislar el ritual simbolico.
+**Interpretacion**
+- `🦞🦞🦞` funciona principalmente como marcador ritual/identitario, no como tema semantico estable.
+- El nucleo de origen es `crab-rave` (publicacion), y la expansion sucede sobre todo por comentarios plantilla en submolts no especializados.
+- Esto explica parte de los pares de similitud extrema en embeddings: no siempre hay convergencia argumentativa, a menudo hay convergencia ritual.
+**Implicaciones**
+- Conviene tratar `🦞🦞🦞` como senal memetica transversal en analisis de transmision, separandola de contenido proposicional.
+- Para comparativas entre submolts, una vista "sin ritual emoji" puede reducir sesgo de plantilla y mejorar lectura tematica.
+
 ### Sintesis global
 - Cultura tecnopractica: los textos mas frecuentes son plantillas y formatos operativos, no solo opinion.
 - Discurso afirmativo: la red privilegia la afirmacion (mas que duda o juicio) y se enmarca en confianza/curiosidad.
 - Centralizacion estructural: pocas comunidades y autores moldean el volumen total.
 - Transmision transversal: la similitud semantica cruza submolts, reforzando la idea de una narrativa global compartida.
+
+### Implicancias para el futuro de comunidades IA
+- Gobernanza: con concentracion alta (top 2% de submolts = 78.6% del volumen), la moderacion y curacion en pocos hubs impacta toda la red.
+- Diseno de producto: la capa operativa dominante favorece herramientas, playbooks y formatos repetibles sobre debates abstractos.
+- Riesgo de monocultura: si la convergencia de estilo sigue creciendo, puede bajar la diversidad epistemica aunque suba el volumen.
+- Oportunidad: la capa reflexiva (memory/context/governance) ya existe; si se institucionaliza, puede mejorar calidad deliberativa sin frenar iteracion.
+
+### Preguntas abiertas
+- Monocultura o especializacion: la homogeneidad estilistica aumenta o solo se concentra en submolts grandes?
+- Coordinacion o convergencia: la alta similitud cross-submolt refleja copia coordinada o evolucion paralela por entorno comun?
+- Firma LLM: afirmacion alta + certeza baja es un rasgo estructural estable de discurso agente o un efecto de esta ventana temporal?
+- Intervencion util: que cambios de ranking/recomendacion suben diversidad epistemica sin romper traccion operativa?
 
 ### Analisis interpretativo por submolt (contrastes narrativos)
 Este bloque baja el analisis a comunidades especificas. La idea no es “psicologizar” submolts, sino comparar perfiles cuantitativos y narrativos medidos por los mismos indicadores.

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Moltbook Observatory - Metodologia y Auditoria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body class="audit">
+    <div class="grain"></div>
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-mark">◎</span>
+        <span>Observatory - Auditoria tecnica</span>
+      </div>
+      <div class="nav-links nav-actions">
+        <a href="index.html">Inicio</a>
+        <a href="/about">About</a>
+        <details class="nav-menu">
+          <summary>Secciones</summary>
+          <div class="nav-menu-panel">
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Marco</div>
+              <a href="#metodologia">Metodologia</a>
+              <a href="#audit-gates">Gates y estado</a>
+              <a href="/about">About y autor</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Auditoria</div>
+              <a href="#audit-contract">Contrato de metricas</a>
+              <a href="#audit-filters">Filtros activos</a>
+              <a href="#audit-traceability">Trazabilidad</a>
+              <a href="#audit-coherence">Coherencia</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Reproducibilidad</div>
+              <a href="#audit-sources">Fuentes y scripts</a>
+            </div>
+          </div>
+        </details>
+        <div class="mode-switch" aria-label="Modo de vista">
+          <a class="mode-chip" href="index.html">Observatorio</a>
+          <a class="mode-chip" href="analysis.html">Exploracion</a>
+          <a class="mode-chip active" href="audit.html">Auditoria</a>
+          <a class="mode-chip" href="/about">About</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="pill">Capa 3 · Metodologia y Auditoria</div>
+        <h1>Validacion tecnica, trazabilidad y reproducibilidad</h1>
+        <p>
+          Esta capa consolida definiciones operativas, filtros activos y chequeos de coherencia
+          para que cualquier colaborador pueda auditar el observatorio sin friccion.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section id="metodologia" class="section">
+        <div class="section-head">
+          <h2>Metodologia formal</h2>
+          <p>Pipeline reproducible de ingesta a derivados, con criterios explicitos y auditables.</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-step">
+            <span>01</span>
+            <div>
+              <h4>Ingesta</h4>
+              <p>Captura de posts/comentarios bajo robots y ToS, con run_id y timestamps.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <span>02</span>
+            <div>
+              <h4>Normalizacion</h4>
+              <p>Limpieza de campos, resolucion de IDs, control de duplicados y rangos temporales.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <span>03</span>
+            <div>
+              <h4>Derivados</h4>
+              <p>Memetica, ontologia, redes, transmision y controles de calidad en `data/derived`.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <span>04</span>
+            <div>
+              <h4>Publicacion</h4>
+              <p>Separacion por capas: Observatorio (publico), Exploracion (laboratorio), Auditoria (tecnica).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit-gates" class="section">
+        <div class="section-head">
+          <h2>Estado de gates</h2>
+          <p>Resumen de estado actual de auditoria y reportes tecnicos versionados.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-label">Resumen publico</div>
+            <p><a href="../reports/audit/public_summary.md">reports/audit/public_summary.md</a></p>
+          </div>
+          <div class="card">
+            <div class="card-label">Auditoria integral</div>
+            <p><a href="../reports/audit/audit_report.md">reports/audit/audit_report.md</a></p>
+          </div>
+          <div class="card">
+            <div class="card-label">Matriz claim-evidencia</div>
+            <p><a href="../reports/audit/claim_matrix.csv">reports/audit/claim_matrix.csv</a></p>
+          </div>
+          <div class="card">
+            <div class="card-label">Lineage</div>
+            <p><a href="../reports/audit/data_lineage.csv">reports/audit/data_lineage.csv</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit-contract" class="section">
+        <div class="section-head">
+          <h2>Contrato de metricas</h2>
+          <p>Definicion formal por modulo: fuente, transformacion y eje temporal.</p>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table id="analysis-metric-contract-table">
+              <thead>
+                <tr>
+                  <th>Modulo</th>
+                  <th>Metrica</th>
+                  <th>Fuente</th>
+                  <th>Transformacion y filtro</th>
+                  <th>Eje temporal</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit-filters" class="section">
+        <div class="section-head">
+          <h2>Filtros activos (runtime)</h2>
+          <p>Filtros que alteran ranking o lectura y que deben explicitarse para auditoria.</p>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table id="analysis-active-filters-table">
+              <thead>
+                <tr>
+                  <th>Modulo</th>
+                  <th>Filtro</th>
+                  <th>Estado</th>
+                  <th>Impacto</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit-traceability" class="section">
+        <div class="section-head">
+          <h2>Trazabilidad del snapshot</h2>
+          <p>Cobertura temporal, volumen y politicas de muestra activas para el snapshot publicado.</p>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table id="analysis-traceability-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit-coherence" class="section">
+        <div class="section-head">
+          <h2>Chequeo de coherencia</h2>
+          <p>Validaciones de consistencia entre transformaciones, filtros y vistas publicas.</p>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table id="analysis-coherence-table">
+              <thead>
+                <tr>
+                  <th>Chequeo</th>
+                  <th>Estado</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit-sources" class="section">
+        <div class="section-head">
+          <h2>Fuentes, scripts y salidas</h2>
+          <p>Rutas clave para reproducir, inspeccionar y validar el observatorio.</p>
+        </div>
+        <div class="download-grid">
+          <a class="download" href="../reports/analysis_schema.md">reports/analysis_schema.md</a>
+          <a class="download" href="../reports/audit/quality_gates.yaml">reports/audit/quality_gates.yaml</a>
+          <a class="download" href="../reports/audit/evidence_index.json">reports/audit/evidence_index.json</a>
+          <a class="download" href="../reports/audit/ontology_labeling_protocol.md">reports/audit/ontology_labeling_protocol.md</a>
+          <a class="download" href="../scripts/derive_signals.py">scripts/derive_signals.py</a>
+          <a class="download" href="../scripts/meme_models.py">scripts/meme_models.py</a>
+          <a class="download" href="../scripts/quant_sociology.py">scripts/quant_sociology.py</a>
+          <a class="download" href="../scripts/diffusion_metrics.py">scripts/diffusion_metrics.py</a>
+          <a class="download" href="../scripts/check_ui_coherence.js">scripts/check_ui_coherence.js</a>
+          <a class="download" href="../analysis#downloads">Catalogo de derivados (UI)</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>Auditoria tecnica para reproducibilidad y validacion externa.</div>
+      <div class="footer-links">
+        <a href="mailto:salvatierra.pablom@gmail.com">salvatierra.pablom@gmail.com</a>
+        <a href="https://github.com/SalvatierraPM" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </footer>
+
+    <script src="analytics-core.js"></script>
+    <script src="nav.js"></script>
+    <script src="analysis.js"></script>
+  </body>
+</html>

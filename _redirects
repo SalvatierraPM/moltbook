@@ -1,0 +1,3 @@
+# Pretty route for About page (keep URL as /about).
+/about  /site/about.html  200
+/about/  /site/about.html  200

@@ -11,3 +11,6 @@ src/*.egg-info/
 data/
 output/
 tmp/
+
+# Local Netlify folder
+.netlify

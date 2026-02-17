@@ -104,6 +104,11 @@ Environment variables (optional):
 - Derived features: `data/derived/`
 - Reports: `reports/`
 
+## Web layers (site/)
+- `site/index.html`: Capa 1 (Observatorio publico). Lectura curada para publico general.
+- `site/analysis.html`: Capa 2 (Exploracion). Inspeccion interactiva con filtros y drill-down.
+- `site/audit.html`: Capa 3 (Metodologia y Auditoria). Contrato de metricas, trazabilidad y coherencia.
+
 ## Interpretables and matchmaking
 Derive ontologia del lenguaje signals, human incidence markers, and vector space matches:
 ```bash
@@ -145,6 +150,15 @@ python scripts/quant_sociology.py \
   --edges-replies data/derived/edges_replies.csv \
   --edges-mentions data/derived/edges_mentions.csv \
   --out-dir data/derived
+```
+
+## Sociological interpretation (auto)
+Generate an auditable narrative layer (JSON for UI + Markdown for reports) directly from `data/derived`:
+```bash
+python3 scripts/build_sociology_interpretation.py \
+  --derived data/derived \
+  --out-json data/derived/public_sociology_interpretation.json \
+  --out-md reports/interpretacion_sociologica_auto.md
 ```
 
 ## Memetic modeling (multi-level)
