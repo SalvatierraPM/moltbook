@@ -100,31 +100,31 @@ function setText(id, value) {
 
 function humanizeFeature(feature) {
   const map = {
-    act_request: "peticion",
+    act_request: "petición",
     act_offer: "oferta",
     act_promise: "promesa",
-    act_declaration: "declaracion",
+    act_declaration: "declaración",
     act_judgment: "juicio",
     act_assertion: "afirmación",
-    act_acceptance: "aceptacion",
+    act_acceptance: "aceptación",
     act_rejection: "rechazo",
-    act_clarification: "aclaracion",
+    act_clarification: "aclaración",
     act_question_mark: "pregunta",
-    mood_ambition: "ambicion",
-    mood_resignation: "resignacion",
+    mood_ambition: "ambición",
+    mood_resignation: "resignación",
     mood_resentment: "resentimiento",
     mood_trust: "confianza",
     mood_curiosity: "curiosidad",
     mood_gratitude: "gratitud",
     mood_wonder: "asombro",
-    mood_joy: "alegria",
+    mood_joy: "alegría",
     mood_sadness: "tristeza",
     mood_fear: "miedo",
     mood_anger: "enojo",
     mood_disgust: "asco",
     mood_surprise: "sorpresa",
     epistemic_evidence: "evidencia",
-    epistemic_hedge: "atenuacion",
+    epistemic_hedge: "atenuación",
     epistemic_certainty: "certeza",
     epistemic_uncertainty: "incertidumbre",
   };
@@ -537,23 +537,33 @@ async function init() {
     .filter((r) => r.scope === "all" && String(r.feature || "").startsWith("act_"))
     .sort((a, b) => (b.count || 0) - (a.count || 0))
     .slice(0, 6);
-  setTableRows(
-    "report-acts-table",
-    acts
-      .map(
-        (r) => `<tr>
-          <td>${humanizeFeature(r.feature)}</td>
-          <td>${fmtNumber(r.count)}</td>
-          <td>${fmtFloat(r.rate_per_doc, 3)}</td>
-        </tr>`
-      )
-      .join("")
-  );
+  const actsRankEl = document.getElementById("report-acts-rank");
+  if (actsRankEl) {
+    const maxCount = acts.length ? Number(acts[0].count) || 0 : 0;
+    const rows = acts.map((r) => ({ raw: r, value: Number(r.count) || 0 }));
+    actsRankEl.innerHTML = rows.length
+      ? renderRankRows(
+          rows,
+          maxCount,
+          (x) => `${fmtNumber(x.raw.count)} · ${fmtFloat(x.raw.rate_per_doc, 3)} rate/doc`,
+          (x) => humanizeFeature(x.raw.feature)
+        )
+      : "–";
+  }
   const exampleAct = acts[0] || {};
   const exampleActEl = document.getElementById("example-onto-act");
   if (exampleActEl) exampleActEl.textContent = exampleAct.feature ? humanizeFeature(exampleAct.feature) : "–";
   const exampleActRate = document.getElementById("example-onto-act-rate");
   if (exampleActRate) exampleActRate.textContent = fmtFloat(exampleAct.rate_per_doc, 3);
+  const totalActCount = acts.reduce((acc, r) => acc + (Number(r.count) || 0), 0);
+  const topActShare = acts.length && totalActCount > 0 ? (Number(acts[0].count) || 0) / totalActCount : null;
+  const actsNoteEl = document.getElementById("report-acts-note");
+  if (actsNoteEl) {
+    actsNoteEl.textContent =
+      acts.length && topActShare !== null
+        ? `Acto dominante: ${humanizeFeature(acts[0].feature)} (${fmtPercent(topActShare)} del top ${acts.length}).`
+        : "Sin datos suficientes para actos del habla.";
+  }
 
   const concepts = ontologyConcepts.slice(0, REPORT_LIMITS.ontologyConcepts);
   const exampleCoreConcept = concepts[0] || {};
@@ -593,8 +603,8 @@ async function init() {
   const insightConceptEl = document.getElementById("insight-onto-concepts-nocore");
   const insightPairEl = document.getElementById("insight-onto-pairs-nocore");
 
-  const renderRankRows = (rows, max, valueText, labelText) =>
-    rows
+  function renderRankRows(rows, max, valueText, labelText) {
+    return rows
       .map((r) => {
         const label = labelText(r);
         const value = Number(r.value) || 0;
@@ -606,6 +616,7 @@ async function init() {
         </div>`;
       })
       .join("");
+  }
 
   if (insightConceptEl) {
     const topNoCore = noCoreConcepts.slice(0, 8);
@@ -806,8 +817,8 @@ async function init() {
   const top5Share = totalVolume > 0 ? top5Volume / totalVolume : null;
 
   const topActRow = acts[0] || null;
-  const totalActCount = acts.reduce((acc, r) => acc + (Number(r.count) || 0), 0);
-  const topActShare = topActRow && totalActCount > 0 ? (Number(topActRow.count) || 0) / totalActCount : null;
+  const topActShareForSignal =
+    topActRow && totalActCount > 0 ? (Number(topActRow.count) || 0) / totalActCount : null;
 
   const topMeme = topMemeLife[0] || null;
   const topNetworkNode = topReply[0] || null;
@@ -826,7 +837,7 @@ async function init() {
   setText(
     "obs-finding-ontology-signal",
     topActRow
-      ? `Predomina ${humanizeFeature(topActRow.feature)} con share ${fmtPercent(topActShare)} en actos top.`
+      ? `Predomina ${humanizeFeature(topActRow.feature)} con share ${fmtPercent(topActShareForSignal)} en actos top.`
       : "Sin datos ontológicos suficientes."
   );
   setText(
