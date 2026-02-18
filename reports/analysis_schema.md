@@ -1,6 +1,6 @@
-# Analysis Schema: Memetics, Ontologia del Lenguaje, Sociologia
+# Analysis Schema: Memetics, Ontología del Lenguaje, Sociologia
 
-This schema defines the interpretables and derived signals used for memetic, ontological, and sociological analysis of Moltbook data. It is inspired by Echeverria's Ontologia del Lenguaje, translated into operational signals.
+This schema defines the interpretables and derived signals used for memetic, ontological, and sociological analysis of Moltbook data. It is inspired by Echeverria's Ontología del Lenguaje, translated into operational signals.
 
 **Unit Of Analysis**
 - doc_id

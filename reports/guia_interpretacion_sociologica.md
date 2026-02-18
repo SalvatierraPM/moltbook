@@ -1,17 +1,17 @@
-# Guia de interpretacion y explicacion sociologica
+# Guia de interpretacion y explicacion sociológica
 
-Este documento convierte metricas en lectura social auditable. La idea es pasar de "cuanto paso" a "que significa para la cultura de la red".
+Este documento convierte métricas en lectura social auditable. La idea es pasar de "cuánto pasó" a "qué significa para la cultura de la red".
 
 ## 1) Actividad y cobertura del snapshot
 
-### 1.1 Metricas globales (posts, comentarios, submolts, autores, runs, ventana temporal)
+### 1.1 Métricas globales (posts, comentarios, submolts, autores, runs, ventana temporal)
 **Interpretacion extendida**  
-No es metadata secundaria: es el marco de validez del observatorio. Define que tan grande es el microscopio y que tan grande es el objeto.
+No es metadata secundaria: es el marco de validez del observatorio. Define qué tan grande es el microscopio y qué tan grande es el objeto.
 
-**Como leerlo (heuristicas concretas)**
+**Cómo leerlo (heuristicas concretas)**
 - Ventana temporal corta: captura eventos. Ventana larga: captura habitos.
 - Si sube el numero de submolts activos, sube el ancho cultural potencial.
-- Mucho volumen con pocos autores: red mas cercana a broadcasting que a conversacion.
+- Mucho volumen con pocos autores: red más cercana a broadcasting que a conversación.
 - Con multiples runs, revisar consistencia entre ejecuciones antes de inferir cambio cultural.
 
 **Lo que NO significa**
@@ -20,47 +20,47 @@ No es metadata secundaria: es el marco de validez del observatorio. Define que t
 
 **Pregunta auditable**
 - Si repito el pipeline con el mismo snapshot, obtengo los mismos agregados?
-- Si amplio o reduzco ventana temporal, que patrones se sostienen?
+- Si amplio o reduzco ventana temporal, qué patrones se sostienen?
 
-### 1.2 Concentracion: Top N submolts por volumen (curva acumulada / Gini)
+### 1.2 Concentración: Top N submolts por volumen (curva acumulada / Gini)
 **Interpretacion extendida**  
-Responde si la red se comporta como "barrios" o como "mall": diversidad con peso real, o diversidad decorativa con concentracion en pocos hubs.
+Responde si la red se comporta como "barrios" o como "mall": diversidad con peso real, o diversidad decorativa con concentración en pocos hubs.
 
-**Como leerlo (lecturas condicionales)**
-- Top 5 con porcion muy alta: oligopolio cultural de atencion.
-- Curva acumulada que sube rapido: hay muchas comunidades, pero pocas pesan.
-- Gini creciente entre snapshots: centralizacion creciente del sistema.
+**Cómo leerlo (lecturas condicionales)**
+- Top 5 con porcion muy alta: oligopolio cultural de atención.
+- Curva acumulada que sube rápido: hay muchas comunidades, pero pocas pesan.
+- Gini creciente entre snapshots: centralización creciente del sistema.
 
 **Mecanismos posibles**
-- Diseno de feed/recomendacion.
+- Diseno de feed/recomendación.
 - Efecto reputacion (club historico).
 - Barreras de entrada en comunidades pequenas.
-- Atractores tematicos de alto volumen.
+- Atractores temáticos de alto volumen.
 
 **Errores comunes**
 - Volumen no equivale a calidad.
-- Concentracion no implica manipulacion por si sola.
+- Concentración no implica manipulación por si sola.
 
 **Pregunta auditable**
-- La concentracion se mantiene al normalizar por tamano de comunidad o al mirar solo comentarios?
+- La concentración se mantiene al normalizar por tamaño de comunidad o al mirar solo comentarios?
 
-### 1.3 Actividad por idioma (incluyendo filtros tipo ocultar ingles / ocultar general)
+### 1.3 Actividad por idioma (incluyendo filtros tipo ocultar inglés / ocultar general)
 **Interpretacion extendida**  
 Idioma es barrera cultural: dos grupos pueden compartir tema sin compartir memes o marcos.
 
-**Como leerlo**
-- Posts dominados por un idioma y comentarios mixtos: publicacion global, debate local.
-- Si al ocultar ingles cambia todo el mapa: sesgo fuerte de lingua franca.
-- Idioma minoritario con alta densidad de comentarios: mayor cohesion comunitaria.
+**Cómo leerlo**
+- Posts dominados por un idioma y comentarios mixtos: publicación global, debate local.
+- Si al ocultar inglés cambia todo el mapa: sesgo fuerte de lingua franca.
+- Idioma minoritario con alta densidad de comentarios: mayor cohesión comunitaria.
 
-**Que NO significa**
+**Qué NO significa**
 - No mide calidad argumental.
 - No prueba comprension cruzada entre grupos.
 
 **Pregunta auditable**
 - Los marcos narrativos cruzan idioma por embeddings o quedan encapsulados?
 
-## 2) Memetica
+## 2) Memética
 
 ### 2.1 Infraestructura vs narrativa (top infraestructura / top narrativa cultural)
 **Interpretacion extendida**  
@@ -70,7 +70,7 @@ Separar lo que habilita hablar (infraestructura) de lo que decide hablarse (narr
 - Sube infraestructura: modo operacion (resolver, coordinar stack).
 - Sube narrativa: modo significacion (identidad, filosofia, moral, promesa).
 - Suben ambas: institucionalizacion cultural (jerga + mito).
-- Baja narrativa y sube infraestructura: fase post-hype, mas ejecucion que predica.
+- Baja narrativa y sube infraestructura: fase post-hype, más ejecución que predica.
 
 **Errores comunes**
 - Infraestructura no es "aburrida": define gatekeeping suave.
@@ -93,42 +93,42 @@ Son tres exitos memeticos distintos:
 - Frecuencia alta + dispersion baja: muletilla local.
 
 **Texto anti-humo sugerido**
-- Vida no equivale a verdad ni valor moral; equivale a estabilidad de repeticion.
+- Vida no equivale a verdad ni valor moral; equivale a estabilidad de repetición.
 - Burst no equivale a importancia estructural; equivale a sensibilidad a eventos.
 
 **Pregunta auditable**
-- La dispersion esta impulsada por 2-3 hubs o distribuida de forma organica?
+- La dispersión está impulsada por 2-3 hubs o distribuida de forma orgánica?
 
-## 3) Ontologia del lenguaje
+## 3) Ontología del lenguaje
 
-### 3.1 Actos de habla (pregunta, instruccion, afirmacion, evaluacion, burla)
+### 3.1 Actos de habla (pregunta, instruccion, afirmación, evaluacion, burla)
 **Interpretacion extendida**  
-Mide como coordina la red, no solo de que tema habla.
+Mide cómo coordina la red, no solo de qué tema habla.
 
 **Lecturas concretas**
-- Dominio de preguntas: exploracion/aprendizaje.
+- Dominio de preguntas: exploración/aprendizaje.
 - Dominio de instrucciones: modo tutorial e ingenieria.
 - Dominio de afirmaciones fuertes: mayor doctrina/polarizacion.
 - Dominio de evaluaciones/moralizacion: fase normativa.
 - Dominio de burla/ironia: defensa identitaria y expulsion de outsiders.
 
-**Que NO significa**
-- No clasifica inteligencia colectiva; clasifica estilo de coordinacion.
+**Qué NO significa**
+- No clasifica inteligencia colectiva; clasifica estilo de coordinación.
 
 **Pregunta auditable**
 - Es transversal del sistema o cambia por submolt?
 
-### 3.2 Marcadores epistemicos (certeza, duda, evidencia, condicionalidad)
+### 3.2 Marcadores epistémicos (certeza, duda, evidencia, condicionalidad)
 **Interpretacion extendida**  
-Mide como se negocia la verdad en la red.
+Mide cómo se negocia la verdad en la red.
 
 **Lecturas condicionales**
-- Sube certeza absoluta: mas doctrina o estandar cerrado.
+- Sube certeza absoluta: más doctrina o estandar cerrado.
 - Sube evidencia/condicionalidad: mayor auditabilidad argumentativa.
 - Sube duda sin evidencia: ansiedad especulativa o hype sin modelo.
 
 **Texto clave**
-- Mas "evidencia" no prueba que la evidencia sea buena; prueba que justificar es norma conversacional.
+- Más "evidencia" no prueba que la evidencia sea buena; prueba que justificar es norma conversacional.
 
 ### 3.3 Co-ocurrencia de conceptos (pares)
 **Interpretacion extendida**  
@@ -139,15 +139,15 @@ Revela paquetes narrativos: la red indica que conceptos "van juntos".
 - Pares en burst: evento o campana narrativa.
 - Pares de un solo submolt: dialecto local.
 
-**Error comun**
+**Error común**
 - Co-ocurrencia no implica causalidad.
 
 **Pregunta auditable**
-- Que pares cambian al excluir `general` o idioma dominante?
+- Qué pares cambian al excluir `general` o idioma dominante?
 
-### 3.4 PCA 2D / mapa ontologico por submolt
+### 3.4 PCA 2D / mapa ontológico por submolt
 **Interpretacion extendida**  
-No representa geografia real; representa proximidad de estilos de coordinacion.
+No representa geografia real; representa proximidad de estilos de coordinación.
 
 **Lecturas condicionales**
 - Cluster compacto: gramaticas similares.
@@ -158,30 +158,30 @@ No representa geografia real; representa proximidad de estilos de coordinacion.
 - Los ejes no tienen significado humano directo; importa la proximidad relativa.
 - Comunidades pequenas pueden ser inestables; aplicar minimo de actividad.
 
-## 4) Transmision (modulo delicado)
+## 4) Transmisión (módulo delicado)
 
 ### 4.1 Resumen de embeddings (post-post / post->coment / cross-submolt)
 **Interpretacion extendida**  
-Mide eco semantico: propagacion por sentido, no solo por copia literal.
+Mide eco semántico: propagacion por sentido, no solo por copia literal.
 
 **Lecturas condicionales**
 - Muchos matches + similitud alta: convergencia fuerte de marcos.
 - Pocos matches + similitud alta: patrones potentes en nichos/hubs.
 - Muchos matches + similitud moderada: ecos blandos de tema compartido.
-- Cross-submolt alto: difusion transversal.
+- Cross-submolt alto: difusión transversal.
 - Cross-submolt bajo: tribalizacion.
 
 **Texto anti-malentendidos**
-- Similitud no implica coordinacion intencional.
-- El modulo detecta convergencia, no plagio.
+- Similitud no implica coordinación intencional.
+- El módulo detecta convergencia, no plagio.
 
 ### 4.2 Sensibilidad por threshold
 **Interpretacion extendida**  
-Define cuan estricto eres para llamar "transmision" a un match.
+Define cuan estricto eres para llamar "transmisión" a un match.
 
-**Como leer la curva**
+**Cómo leer la curva**
 - Caida brusca al subir threshold: muchos matches ambiguos.
-- Caida lenta: senal robusta bajo criterio estricto.
+- Caida lenta: señal robusta bajo criterio estricto.
 - Codo natural: paso de tema compartido a idea compartida.
 
 **Texto de rigor**
@@ -190,18 +190,18 @@ Define cuan estricto eres para llamar "transmision" a un match.
 
 ### 4.3 TF-IDF vs embeddings (baseline)
 **Interpretacion extendida**  
-TF-IDF captura repeticion lexical; embeddings capturan repeticion semantica.
+TF-IDF captura repetición lexical; embeddings capturan repetición semántica.
 
 **Lecturas concretas**
 - TF-IDF alto + embeddings alto: copia o slogan estable.
 - TF-IDF bajo + embeddings alto: misma idea reescrita.
 - TF-IDF alto + embeddings bajo: coincidencia de keywords con sentido distinto.
 
-### 4.4 Tabla de muestras de transmision
+### 4.4 Tabla de muestras de transmisión
 **Interpretacion extendida**  
-Es el tribunal humano del modulo.
+Es el tribunal humano del módulo.
 
-**Que dejar explicito**
+**Qué dejar explícito**
 - Las muestras no son representativas; son auditables.
 - Deben incluir texto y metadatos (submolt, fecha, idioma).
 
@@ -209,11 +209,11 @@ Es el tribunal humano del modulo.
 
 ### 5.1 Centralidad (PageRank, betweenness, etc.)
 **Interpretacion extendida**  
-Mide estructura de circulacion, no verdad ni calidad.
+Mide estructura de circulación, no verdad ni calidad.
 
 **Lecturas condicionales**
 - Hubs dominantes + pocos brokers: alto agenda-setting.
-- Muchos brokers medios: red mas permeable.
+- Muchos brokers medios: red más permeable.
 - Reciprocidad baja: broadcasting/monologo.
 - Reciprocidad alta: negociacion conversacional.
 
@@ -229,20 +229,20 @@ Distingue motores locales (actividad concentrada) de viajeros (actividad distrib
 - Pocos viajeros: tendencia a tribalizacion.
 - Picos de viajeros: eventos globales o controversias transversales.
 
-## 6) Auditoria
+## 6) Auditoría
 
-### 6.1 Pipeline 01-04 (ingesta -> normalizacion -> derivados -> visualizacion)
+### 6.1 Pipeline 01-04 (ingesta -> normalización -> derivados -> visualización)
 **Interpretacion extendida**  
 Es la constitucion del observatorio: no se pide confianza, se pide reproducibilidad.
 
-**Que explicar siempre**
+**Qué explicar siempre**
 - Cada etapa produce artefactos verificables.
-- Cada grafico debe enlazar a su derivado (CSV/JSON/Parquet).
+- Cada gráfico debe enlazar a su derivado (CSV/JSON/Parquet).
 - Sin trazabilidad, la interpretacion de sistemas memeticos se vuelve propaganda.
 
-### 6.2 Contrato de metricas (claim matrix)
+### 6.2 Contrato de métricas (claim matrix)
 **Interpretacion extendida**  
-Una metrica sin contrato no es evidencia.
+Una métrica sin contrato no es evidencia.
 
 **Contrato minimo**
 - Fuente.
@@ -253,5 +253,5 @@ Una metrica sin contrato no es evidencia.
 
 ## Uso recomendado con reportes actuales
 - Usar esta guia junto a `/Users/pabli/Desktop/Coding/Moltbook/reports/public_report.md`.
-- Usar resumen ejecutivo de `/Users/pabli/Desktop/Coding/Moltbook/reports/interpretacion_sociologica.md` para publico general.
-- Respaldar cada afirmacion con datasets de `/Users/pabli/Desktop/Coding/Moltbook/data/derived`.
+- Usar resumen ejecutivo de `/Users/pabli/Desktop/Coding/Moltbook/reports/interpretacion_sociologica.md` para público general.
+- Respaldar cada afirmación con datasets de `/Users/pabli/Desktop/Coding/Moltbook/data/derived`.

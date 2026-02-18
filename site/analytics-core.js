@@ -22,23 +22,23 @@
   };
 
   const METRIC_CONTRACT_ROWS = [
-    ["Cobertura", "Volumen total", "submolt_stats.csv + author_stats.csv", "Suma por submolt + conteo unicos", "created_at"],
-    ["Memetica", "Vida y burst", "meme_classification.csv + meme_bursts.csv", "Top por vida y burst score", "created_at"],
-    ["Ontologia", "Co-ocurrencia", "ontology_cooccurrence_top.csv", "Excluir pares variantes (lemma equivalente)", "created_at"],
+    ["Cobertura", "Volumen total", "submolt_stats.csv + author_stats.csv", "Suma por submolt + conteo únicos", "created_at"],
+    ["Memética", "Vida y burst", "meme_classification.csv + meme_bursts.csv", "Top por vida y burst score", "created_at"],
+    ["Ontología", "Co-ocurrencia", "ontology_cooccurrence_top.csv", "Excluir pares variantes (lemma equivalente)", "created_at"],
     ["Redes", "Centralidad", "reply/mention_graph_*.csv", "Top por PageRank y betweenness", "created_at"],
-    ["Idiomas", "Distribucion", "public_language_distribution.csv", "Muestra estadistica por scope", "created_at (muestra)"],
-    ["Transmision", "Muestras narrativas", "public_transmission_samples.csv", `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars; priorizar co-mencion humano+IA`, "created_at"],
+    ["Idiomas", "Distribución", "public_language_distribution.csv", "Muestra estadística por scope", "created_at (muestra)"],
+    ["Transmisión", "Muestras narrativas", "public_transmission_samples.csv", `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars; priorizar co-mención humano+IA`, "created_at"],
   ];
 
   const CONFIDENCE_ROWS = [
     ["Cobertura", "alta", "Conteos directos y trazables sobre derivados estables."],
-    ["Difusion", "media", "Depende del eje temporal elegido y del muestreo por run."],
-    ["Memetica", "media", "N-gramas y bursts son descriptivos; requieren contexto cualitativo."],
-    ["Ontologia", "media", "Heuristicas interpretables, con limites en ironia/sinonimia."],
-    ["Interferencia", "media", "Score util para triage, no prueba causal de intencion."],
+    ["Difusión", "media", "Depende del eje temporal elegido y del muestreo por run."],
+    ["Memética", "media", "N-gramas y bursts son descriptivos; requieren contexto cualitativo."],
+    ["Ontología", "media", "Heurísticas interpretables, con límites en ironía/sinonimia."],
+    ["Interferencia", "media", "Score útil para triage, no prueba causal de intención."],
     ["Redes", "media", "Centralidad estructural robusta, pero no equivale a autoridad real."],
-    ["Idiomas", "media", "Estimacion por muestra, no censo completo."],
-    ["Transmision", "media-baja", "Muestra curada para lectura narrativa; no representa todo el corpus."],
+    ["Idiomas", "media", "Estimación por muestra, no censo completo."],
+    ["Transmisión", "media-baja", "Muestra curada para lectura narrativa; no representa todo el corpus."],
   ];
 
   function coerceValue(value) {

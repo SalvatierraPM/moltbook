@@ -1,5 +1,5 @@
 const Core = window.AnalyticsCore;
-if (!Core) throw new Error("AnalyticsCore no esta cargado");
+if (!Core) throw new Error("AnalyticsCore no está cargado");
 
 const DATA_BASE = Core.DATA_BASE;
 
@@ -105,7 +105,7 @@ function humanizeFeature(feature) {
     act_promise: "promesa",
     act_declaration: "declaracion",
     act_judgment: "juicio",
-    act_assertion: "afirmacion",
+    act_assertion: "afirmación",
     act_acceptance: "aceptacion",
     act_rejection: "rechazo",
     act_clarification: "aclaracion",
@@ -325,20 +325,20 @@ async function init() {
     const variantPairs = ontologyCooccurrence.filter((r) => isVariantPair(r.concept_a, r.concept_b)).length;
     const rows = [
       [
-        "Ontologia",
+        "Ontología",
         "Excluir pares variantes (lemma equivalente)",
         "activo",
         `${fmtNumber(variantPairs)} pares variantes excluidos del ranking`,
       ],
       [
-        "Transmision",
-        `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars + prioridad co-mencion humano+IA`,
+        "Transmisión",
+        `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars + prioridad co-mención humano+IA`,
         "activo",
         `Pool=${fmtNumber(txPolicy.pool.length)} de ${fmtNumber(txPolicy.totals.raw)} (${txPolicy.policy}); vista=${fmtNumber(visibleTransmissionRows)}`,
       ],
       [
         "Idiomas",
-        "Ocultar ingles (en)",
+        "Ocultar inglés (en)",
         filters.hideEn ? "activo" : "inactivo",
         filters.hideEn ? "La tabla excluye 'en'" : "Se muestran todos los idiomas",
       ],
@@ -370,15 +370,15 @@ async function init() {
     const rows = [
       ["Rango created_at", `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`],
       ["Rango run_time", `${fmtDate(runMin)} — ${fmtDate(runMax)}`],
-      ["Runs unicos", fmtNumber(totalRuns)],
+      ["Runs únicos", fmtNumber(totalRuns)],
       ["Volumen snapshot", `${fmtNumber(totalPosts)} posts / ${fmtNumber(totalComments)} comentarios`],
       [
         "Muestra idioma",
         `${fmtNumber(sumLanguageCount("posts"))} posts + ${fmtNumber(sumLanguageCount("comments"))} comentarios`,
       ],
-      ["Muestra transmision", `${fmtNumber(txPolicy.pool.length)} docs (de ${fmtNumber(txPolicy.totals.raw)} raw)`],
-      ["Politica transmision activa", txPolicy.policy],
-      ["Version criterios", "v1.1 (co-ocurrencia sin variantes + transmision canonica)"],
+      ["Muestra transmisión", `${fmtNumber(txPolicy.pool.length)} docs (de ${fmtNumber(txPolicy.totals.raw)} raw)`],
+      ["Política transmisión activa", txPolicy.policy],
+      ["Versión criterios", "v1.1 (co-ocurrencia sin variantes + transmisión canónica)"],
     ];
     setTableRows(
       "report-traceability-table",
@@ -421,10 +421,10 @@ async function init() {
         !hasVariantInTop,
         `${fmtNumber(filteredPairs.length)} filas; variantes en top=${hasVariantInTop ? "si" : "no"}`,
       ],
-      ["Pool de transmision canonico", txPolicyMatch, `${fmtNumber(txPolicy.pool.length)} filas; policy=${txPolicy.policy}`],
+      ["Pool de transmisión canónico", txPolicyMatch, `${fmtNumber(txPolicy.pool.length)} filas; policy=${txPolicy.policy}`],
       ["Shares de idioma normalizados", languageShareOk, `posts=${postShare.toFixed(3)} / comments=${commentShare.toFixed(3)}`],
-      ["Rangos temporales validos", rangesOk, `posts=${postsRangeOk ? "ok" : "fail"}, comments=${commentsRangeOk ? "ok" : "fail"}`],
-      ["Volumen base no vacio", totalsOk, `${fmtNumber(totalSubmolts)} submolts activos`],
+      ["Rangos temporales válidos", rangesOk, `posts=${postsRangeOk ? "ok" : "fail"}, comments=${commentsRangeOk ? "ok" : "fail"}`],
+      ["Volumen base no vacío", totalsOk, `${fmtNumber(totalSubmolts)} submolts activos`],
     ];
     setTableRows(
       "report-coherence-table",
@@ -821,13 +821,13 @@ async function init() {
     "obs-finding-memetics-signal",
     topMeme
       ? `"${topMeme.meme}" dura ${fmtFloat(topMeme.lifetime_hours, 1)} hrs y toca ${fmtNumber(topMeme.submolts_touched)} submolts.`
-      : "Sin datos suficientes de vida memetica."
+      : "Sin datos suficientes de vida memética."
   );
   setText(
     "obs-finding-ontology-signal",
     topActRow
       ? `Predomina ${humanizeFeature(topActRow.feature)} con share ${fmtPercent(topActShare)} en actos top.`
-      : "Sin datos ontologicos suficientes."
+      : "Sin datos ontológicos suficientes."
   );
   setText(
     "obs-finding-network-signal",
@@ -882,6 +882,6 @@ init().catch((err) => {
   console.error(err);
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raiz del repo para que ../data/derived sea accesible.</div>`
+    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raíz del repo para que ../data/derived sea accesible.</div>`
   );
 });

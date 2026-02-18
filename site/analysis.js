@@ -1,5 +1,5 @@
 const Core = window.AnalyticsCore;
-if (!Core) throw new Error("AnalyticsCore no esta cargado");
+if (!Core) throw new Error("AnalyticsCore no está cargado");
 
 const DATA_BASE = Core.DATA_BASE;
 
@@ -347,7 +347,7 @@ function humanizeFeature(feature) {
     act_promise: "promesa",
     act_declaration: "declaracion",
     act_judgment: "juicio",
-    act_assertion: "afirmacion",
+    act_assertion: "afirmación",
     act_acceptance: "aceptacion",
     act_rejection: "rechazo",
     act_clarification: "aclaracion",
@@ -408,20 +408,20 @@ function mountActiveFiltersSummary() {
   const visibleTx = Number(state.transmissionVisibleCount || 0);
   const rows = [
     [
-      "Ontologia",
+      "Ontología",
       "Excluir pares variantes (lemma equivalente)",
       "activo",
       `${fmtNumber(variants)} pares variantes excluidos del ranking`,
     ],
     [
-      "Transmision",
-      `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars + prioridad co-mencion humano+IA`,
+      "Transmisión",
+      `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars + prioridad co-mención humano+IA`,
       "activo",
       `Pool=${fmtNumber(tx.pool.length)} de ${fmtNumber(tx.totals.raw)} (${tx.policy}); vista=${fmtNumber(visibleTx)}`,
     ],
     [
       "Idiomas",
-      "Ocultar ingles (en)",
+      "Ocultar inglés (en)",
       state.filters.hideLanguageEn ? "activo" : "inactivo",
       state.filters.hideLanguageEn ? "El ranking visual excluye 'en'" : "Se muestran todos los idiomas",
     ],
@@ -465,15 +465,15 @@ function mountTraceability() {
       `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`,
     ],
     ["Rango run_time", `${fmtDate(runMin)} — ${fmtDate(runMax)}`],
-    ["Runs unicos", fmtNumber(totalRuns)],
+    ["Runs únicos", fmtNumber(totalRuns)],
     ["Volumen snapshot", `${fmtNumber(totalPosts)} posts / ${fmtNumber(totalComments)} comentarios`],
     [
       "Muestra idioma",
       `${fmtNumber(sumLanguageCount("posts"))} posts + ${fmtNumber(sumLanguageCount("comments"))} comentarios`,
     ],
-    ["Muestra transmision", `${fmtNumber(tx.pool.length)} docs (de ${fmtNumber(tx.totals.raw)} raw)`],
-    ["Politica transmision activa", tx.policy],
-    ["Version criterios", "v1.1 (co-ocurrencia sin variantes + transmision canonica)"],
+    ["Muestra transmisión", `${fmtNumber(tx.pool.length)} docs (de ${fmtNumber(tx.totals.raw)} raw)`],
+    ["Política transmisión activa", tx.policy],
+    ["Versión criterios", "v1.1 (co-ocurrencia sin variantes + transmisión canónica)"],
   ];
   body.innerHTML = rows
     .map(
@@ -521,7 +521,7 @@ function mountCoherenceCheck() {
       `${fmtNumber(cooccRows.length)} filas; variantes en top=${hasVariantInTop ? "si" : "no"}`,
     ],
     [
-      "Pool de transmision canonico",
+      "Pool de transmisión canónico",
       txPolicyMatch,
       `${fmtNumber(tx.pool.length)} filas; policy=${tx.policy}`,
     ],
@@ -530,8 +530,8 @@ function mountCoherenceCheck() {
       languageShareOk,
       `posts=${postShare.toFixed(3)} / comments=${commentShare.toFixed(3)}`,
     ],
-    ["Rangos temporales validos", rangesOk, `posts=${postsRangeOk ? "ok" : "fail"}, comments=${commentsRangeOk ? "ok" : "fail"}`],
-    ["Volumen base no vacio", totalsOk, `${fmtNumber((state.submolt || []).length)} submolts activos`],
+    ["Rangos temporales válidos", rangesOk, `posts=${postsRangeOk ? "ok" : "fail"}, comments=${commentsRangeOk ? "ok" : "fail"}`],
+    ["Volumen base no vacío", totalsOk, `${fmtNumber((state.submolt || []).length)} submolts activos`],
   ];
 
   body.innerHTML = checks
@@ -621,9 +621,9 @@ function mountExecutiveDashboard() {
       "exec-submolt-meta",
       `${fmtNumber(topSub.posts)} posts · ${fmtNumber(topSub.comments)} comentarios · ${fmtPercent(topShare)} del total`
     );
-    if (topShare >= 0.08) setChip("exec-submolt-chip", "concentracion alta", "danger");
-    else if (topShare >= 0.04) setChip("exec-submolt-chip", "concentracion media", "warn");
-    else setChip("exec-submolt-chip", "concentracion baja", "good");
+    if (topShare >= 0.08) setChip("exec-submolt-chip", "concentración alta", "danger");
+    else if (topShare >= 0.04) setChip("exec-submolt-chip", "concentración media", "warn");
+    else setChip("exec-submolt-chip", "concentración baja", "good");
   }
 
   const interAll = (state.interferenceSummary || []).find((r) => r.scope === "all");
@@ -641,9 +641,9 @@ function mountExecutiveDashboard() {
   const crossText = Number.isFinite(crossRate) ? fmtPercent(crossRate) : "–";
   const actText = topAct ? humanizeFeature(topAct.feature) : "n/d";
   const memeText = topMeme ? `${topMeme.meme} (${fmtFloat(topMeme.lifetime_hours, 1)} hrs)` : "n/d";
-  setText("exec-surprise", `La difusion cross-submolt es ${crossText} y el acto dominante es "${actText}".`);
-  setText("exec-implication", `Hay estilo discursivo estable con propagacion transversal; meme mas persistente: ${memeText}.`);
-  setText("exec-noinfer", "No prueba causalidad ni manipulacion automatica; marca donde conviene revisar evidencia cualitativa.");
+  setText("exec-surprise", `La difusión cross-submolt es ${crossText} y el acto dominante es "${actText}".`);
+  setText("exec-implication", `Hay estilo discursivo estable con propagación transversal; meme más persistente: ${memeText}.`);
+  setText("exec-noinfer", "No prueba causalidad ni manipulacion automática; marca donde conviene revisar evidencia cualitativa.");
 }
 
 function mountStrategicTLDR() {
@@ -657,14 +657,14 @@ function mountStrategicTLDR() {
 
   setText(
     "tldr-1",
-    `Concentracion alta: top 5 submolts acumulan ${fmtPercent(concentration.top5Share)} del volumen y el top 2% llega a ${fmtPercent(concentration.top2Share)}.`
+    `Concentración alta: top 5 submolts acumulan ${fmtPercent(concentration.top5Share)} del volumen y el top 2% llega a ${fmtPercent(concentration.top2Share)}.`
   );
 
   const topInfra = [...split.technicalRows].sort((a, b) => (b.count || 0) - (a.count || 0))[0];
   const topCulture = [...split.culturalRows].sort((a, b) => (b.count || 0) - (a.count || 0))[0];
   setText(
     "tldr-2",
-    `Memetica en capas: infraestructura=${fmtPercent(split.technicalShare)} vs narrativa=${fmtPercent(split.culturalShare)}. Ejemplos: "${topInfra ? topInfra.meme : "n/d"}" y "${topCulture ? topCulture.meme : "n/d"}".`
+    `Memética en capas: infraestructura=${fmtPercent(split.technicalShare)} vs narrativa=${fmtPercent(split.culturalShare)}. Ejemplos: "${topInfra ? topInfra.meme : "n/d"}" y "${topCulture ? topCulture.meme : "n/d"}".`
   );
 
   const actLabel = topAct ? humanizeFeature(topAct.feature) : "n/d";
@@ -675,7 +675,7 @@ function mountStrategicTLDR() {
 
   setText(
     "tldr-4",
-    `Transmision transversal: ${fmtPercent(embPc.cross_submolt_rate)} de matches post→comentario cruzan submolts (similaridad media ${fmtFloat(embPc.mean_score, 3)}).`
+    `Transmisión transversal: ${fmtPercent(embPc.cross_submolt_rate)} de matches post→comentario cruzan submolts (similaridad media ${fmtFloat(embPc.mean_score, 3)}).`
   );
 
   const coverage = state.coverage || {};
@@ -706,7 +706,7 @@ function mountCoverageConcentration() {
   );
   setText(
     "concentration-lorenz-note",
-    `Gini=${fmtFloat(gini, 2)}; a mayor valor, mas desigual es la distribucion de actividad entre submolts.`
+    `Gini=${fmtFloat(gini, 2)}; a mayor valor, más desigual es la distribución de actividad entre submolts.`
   );
 
   if (concentrationTop5Chart) {
@@ -817,11 +817,11 @@ function mountNarrativeLayers() {
   );
   setText(
     "coverage-layer-2",
-    "Patron descriptivo: la relacion comentarios/post resume cuanta actividad aparece como respuesta frente a publicacion original."
+    "Patrón descriptivo: la relación comentarios/post resume cuánta actividad aparece como respuesta frente a publicación original."
   );
   setText(
     "coverage-layer-3",
-    "No implica representatividad poblacional completa; es un snapshot operativo con limites de crawl."
+    "No implica representatividad poblacional completa; es un snapshot operativo con límites de crawl."
   );
 
   const topSub = topSubmoltByActivity();
@@ -835,11 +835,11 @@ function mountNarrativeLayers() {
     );
     setText(
       "submolts-layer-2",
-      "Patron descriptivo: compara este share con el resto para medir concentracion relativa entre comunidades."
+      "Patrón descriptivo: compara este share con el resto para medir concentración relativa entre comunidades."
     );
     setText(
       "submolts-layer-3",
-      "Concentracion de volumen no equivale automaticamente a centralidad de influencia ni calidad de conversacion."
+      "Concentración de volumen no equivale automáticamente a centralidad de influencia ni calidad de conversación."
     );
   }
 
@@ -848,11 +848,11 @@ function mountNarrativeLayers() {
   if (topMeme) {
     setText(
       "memetics-layer-1",
-      `El meme mas longevo es "${topMeme.meme}" con ${fmtFloat(topMeme.lifetime_hours, 1)} horas de vida.`
+      `El meme más longevo es "${topMeme.meme}" con ${fmtFloat(topMeme.lifetime_hours, 1)} horas de vida.`
     );
     setText(
       "memetics-layer-2",
-      `Patron descriptivo: en candidatos top, infraestructura=${fmtPercent(split.technicalShare)} y narrativa=${fmtPercent(split.culturalShare)}.`
+      `Patrón descriptivo: en candidatos top, infraestructura=${fmtPercent(split.technicalShare)} y narrativa=${fmtPercent(split.culturalShare)}.`
     );
     setText(
       "memetics-layer-3",
@@ -868,26 +868,26 @@ function mountNarrativeLayers() {
     );
     setText(
       "ontology-layer-2",
-      "Patron descriptivo: usa este rate/doc para comparar distribucion de actos y marcadores epistemicos por submolt."
+      "Patrón descriptivo: usa este rate/doc para comparar distribución de actos y marcadores epistémicos por submolt."
     );
     setText(
       "ontology-layer-3",
-      "El mapa PCA no es causal ni tematico; es una proyeccion estructural de estilo discursivo."
+      "El mapa PCA no es causal ni temático; es una proyección estructural de estilo discursivo."
     );
   }
 
   const emb = state.embeddingsPostCommentSummary || state.embeddingsSummary || {};
   setText(
     "transmission-layer-1",
-    `La transmision post→comentario cruza submolts en ${fmtPercent(emb.cross_submolt_rate)} con similaridad media ${fmtFloat(emb.mean_score, 3)}.`
+    `La transmisión post→comentario cruza submolts en ${fmtPercent(emb.cross_submolt_rate)} con similaridad media ${fmtFloat(emb.mean_score, 3)}.`
   );
   setText(
     "transmission-layer-2",
-    "Patron descriptivo: esta tasa indica que fraccion de pares similares cae en submolts distintos."
+    "Patrón descriptivo: esta tasa indica que fracción de pares similares cae en submolts distintos."
   );
   setText(
     "transmission-layer-3",
-    "Similaridad alta no prueba copia directa ni coordinacion intencional; exige contraste temporal y ejemplos cualitativos."
+    "Similaridad alta no prueba copia directa ni coordinación intencional; exige contraste temporal y ejemplos cualitativos."
   );
 }
 
@@ -974,7 +974,7 @@ function mountTransmissionTranslation() {
       : null;
 
   leadEl.textContent =
-    `La narrativa se replica mas alla de comunidades locales: ${fmtPercent(cross)} de matches post→comentario cruza submolts.`;
+    `La narrativa se replica más alla de comunidades locales: ${fmtPercent(cross)} de matches post→comentario cruza submolts.`;
   if (subEl) {
     subEl.textContent =
       `Lectura ejecutiva: post-post=${fmtFloat(postPostMean, 3)} vs post→comentario=${fmtFloat(postCommentMean, 3)} ` +
@@ -1385,9 +1385,9 @@ function mountOntologyInterpretation() {
   const readout = document.getElementById("onto-rate-readout");
   if (readout) {
     if ([assertionRate, hedgeRate, evidenceRate, certaintyRate].some((v) => v === null || Number.isNaN(v))) {
-      readout.textContent = "No hay suficientes datos para leer la tension afirmacion/hedge/evidencia/certeza.";
+      readout.textContent = "No hay suficientes datos para leer la tension afirmación/hedge/evidencia/certeza.";
     } else {
-      readout.textContent = `Lectura cuantitativa global: afirmacion=${fmtFloat(assertionRate, 3)}, hedge=${fmtFloat(hedgeRate, 3)}, evidencia=${fmtFloat(evidenceRate, 3)}, certeza=${fmtFloat(certaintyRate, 3)}.`;
+      readout.textContent = `Lectura cuantitativa global: afirmación=${fmtFloat(assertionRate, 3)}, hedge=${fmtFloat(hedgeRate, 3)}, evidencia=${fmtFloat(evidenceRate, 3)}, certeza=${fmtFloat(certaintyRate, 3)}.`;
     }
   }
 
@@ -1431,7 +1431,7 @@ function mountOntologyInterpretation() {
 
   let diagnostic = "nube continua con gradientes";
   if (ratio !== null && ratio >= 2.2) diagnostic = "nube central con colas/outliers (clusters potenciales)";
-  if (ratio !== null && ratio >= 2.8) diagnostic = "separacion fuerte: clusters mas diferenciados";
+  if (ratio !== null && ratio >= 2.8) diagnostic = "separación fuerte: clusters más diferenciados";
 
   shape.textContent = `Forma del mapa (top ${rows.length} submolts): mediana_dist=${fmtFloat(p50, 2)}, p90_dist=${fmtFloat(p90, 2)}, razon p90/p50=${fmtFloat(ratio, 2)} -> ${diagnostic}.`;
 }
@@ -1467,7 +1467,7 @@ function mountOntologyCompare() {
   }
 
   const features = [
-    { key: "act_assertion", label: "Afirmacion" },
+    { key: "act_assertion", label: "Afirmación" },
     { key: "epistemic_evidence", label: "Evidencia" },
     { key: "epistemic_hedge", label: "Hedge" },
     { key: "act_judgment", label: "Juicio" },
@@ -1515,7 +1515,7 @@ function mountOntologyCompare() {
 
   if (noteEl) {
     noteEl.textContent =
-      `agents: afirmacion ${fmtFloat(agentsRates[0], 3)} y evidencia ${fmtFloat(agentsRates[1], 3)}; ` +
+      `agents: afirmación ${fmtFloat(agentsRates[0], 3)} y evidencia ${fmtFloat(agentsRates[1], 3)}; ` +
       `philosophy: hedge ${fmtFloat(philosophyRates[2], 3)} y juicio ${fmtFloat(philosophyRates[3], 3)}.`;
   }
 }
@@ -1763,8 +1763,8 @@ function buildSociologyFallback() {
     generated_at: new Date().toISOString(),
     summary: {
       thesis:
-        `Lectura automatica: red con concentracion alta (${top5} en top 5), ` +
-        `estilo dominante "${actLabel}" y difusion transversal (${cross} cross-submolt en post→coment).`,
+        `Lectura automática: red con concentración alta (${top5} en top 5), ` +
+        `estilo dominante "${actLabel}" y difusión transversal (${cross} cross-submolt en post→coment).`,
       snapshot: {
         posts_total: Number(coverage.posts_total || 0),
         comments_total: Number(coverage.comments_total || 0),
@@ -1786,24 +1786,24 @@ function buildSociologyFallback() {
         id: "1.1",
         title: "Actividad y cobertura",
         interpretation:
-          "El volumen y la ventana temporal delimitan que tan estructural o episodica puede ser la lectura.",
+          "El volumen y la ventana temporal delimitan qué tan estructural o episódica puede ser la lectura.",
         how_to_read: [
-          "Ventanas cortas capturan eventos; ventanas largas capturan habitos.",
+          "Ventanas cortas capturan eventos; ventanas largas capturan hábitos.",
           "Comparar runs evita confundir cambios de ingesta con cambios culturales.",
         ],
         not_meaning: ["No es censo total de plataforma; es snapshot operativo."],
-        auditable_questions: ["Si repites el pipeline, se conservan estos agregados?"],
+        auditable_questions: ["¿Si repites el pipeline, se conservan estos agregados?"],
       },
       {
         id: "1.2",
-        title: "Concentracion de atencion",
+        title: "Concentración de atención",
         interpretation: `Top 5 submolts concentran ${top5}; la red no distribuye volumen de forma uniforme.`,
         how_to_read: [
-          "Curva acumulada empinada implica oligopolio de atencion.",
-          "Gini creciente entre snapshots indica centralizacion creciente.",
+          "Curva acumulada empinada implica oligopolio de atención.",
+          "Gini creciente entre snapshots indica centralización creciente.",
         ],
         not_meaning: ["Volumen alto no equivale a calidad."],
-        auditable_questions: ["Se mantiene la concentracion al mirar solo comentarios?"],
+        auditable_questions: ["¿Se mantiene la concentración al mirar solo comentarios?"],
       },
       {
         id: "2.1",
@@ -1812,46 +1812,46 @@ function buildSociologyFallback() {
           `Infraestructura=${fmtPercent(split.technicalShare)} vs narrativa=${fmtPercent(split.culturalShare)}.`,
         how_to_read: [
           "Suba de infraestructura sugiere modo operativo.",
-          "Suba de narrativa sugiere modo de significacion identitaria.",
+          "Suba de narrativa sugiere modo de significación identitaria.",
         ],
-        not_meaning: ["Infraestructura no es ruido; define gramatica de participacion."],
-        auditable_questions: ["La narrativa cruza submolts o queda localizada?"],
+        not_meaning: ["Infraestructura no es ruido; define gramática de participación."],
+        auditable_questions: ["¿La narrativa cruza submolts o queda localizada?"],
       },
       {
         id: "4.1",
-        title: "Transmision semantica",
+        title: "Transmisión semántica",
         interpretation:
           `Cross-submolt post→comentario: ${cross}. Similaridad media: ${fmtFloat(embPc.mean_score, 3)}.`,
         how_to_read: [
           "Cross alto sugiere marcos que viajan entre comunidades.",
-          "Comparar con threshold sensitivity para separar ruido de senal robusta.",
+          "Comparar con threshold sensitivity para separar ruido de señal robusta.",
         ],
-        not_meaning: ["Similaridad no implica coordinacion intencional."],
-        auditable_questions: ["Donde cae el codo natural al subir threshold?"],
+        not_meaning: ["Similaridad no implica coordinación intencional."],
+        auditable_questions: ["¿Dónde cae el codo natural al subir threshold?"],
       },
       {
         id: "5.1",
         title: "Centralidad de red",
         interpretation:
-          "Centralidad mide estructura de circulacion (hubs y brokers), no calidad deliberativa.",
+          "Centralidad mide estructura de circulación (hubs y brokers), no calidad deliberativa.",
         how_to_read: [
           "PageRank alto = hub; betweenness alto = puente entre tribus.",
           "Reciprocidad baja sugiere broadcasting.",
         ],
         not_meaning: ["Centralidad no es moralidad."],
-        auditable_questions: ["Los brokers son pocos o distribuidos?"],
+        auditable_questions: ["¿Los brokers son pocos o distribuidos?"],
       },
       {
         id: "6.1",
-        title: "Auditoria y contrato",
+        title: "Auditoría y contrato",
         interpretation:
-          "La lectura sociologica solo es defendible si cada claim traza a artefactos reproducibles.",
+          "La lectura sociológica solo es defendible si cada claim traza a artefactos reproducibles.",
         how_to_read: [
-          "Todo grafico debe enlazar a su derivado.",
-          "Separar observacion de inferencia y de limites.",
+          "Todo gráfico debe enlazar a su derivado.",
+          "Separar observación de inferencia y de límites.",
         ],
         not_meaning: ["Trazabilidad no elimina sesgo; lo vuelve visible."],
-        auditable_questions: ["Cada claim tiene fuente, filtro, transformacion y limite explicitado?"],
+        auditable_questions: ["¿Cada claim tiene fuente, filtro, transformación y límite explicitado?"],
       },
     ],
   };
@@ -1874,7 +1874,7 @@ function mountSociologyPanel() {
   const key = summary.key_metrics || {};
   const generated = payload.generated_at ? fmtDate(parseDate(payload.generated_at) || null) : "n/d";
 
-  setText("sociology-thesis", summary.thesis || "Sin tesis automatica disponible.");
+  setText("sociology-thesis", summary.thesis || "Sin tesis automática disponible.");
   setText(
     "sociology-meta",
     `Generado: ${generated} · Snapshot posts ${snap.posts_min || "n/d"} -> ${snap.posts_max || "n/d"}`
@@ -1886,15 +1886,15 @@ function mountSociologyPanel() {
 
   const modules = Array.isArray(payload.modules) ? payload.modules : [];
   if (!modules.length) {
-    modulesRoot.innerHTML = `<div class="card">No hay modulos sociologicos generados. Ejecuta \`scripts/build_sociology_interpretation.py\`.</div>`;
+    modulesRoot.innerHTML = `<div class="card">No hay módulos sociológicos generados. Ejecuta \`scripts/build_sociology_interpretation.py\`.</div>`;
     return;
   }
 
   modulesRoot.innerHTML = modules
     .map((mod, idx) => {
       const id = escapeHtml(mod.id || "");
-      const title = escapeHtml(mod.title || "Modulo");
-      const interpretation = escapeHtml(mod.interpretation || "Sin interpretacion");
+      const title = escapeHtml(mod.title || "Módulo");
+      const interpretation = escapeHtml(mod.interpretation || "Sin interpretación");
       const how = renderSociologyList(mod.how_to_read);
       const notMeaning = renderSociologyList(mod.not_meaning);
       const audit = renderSociologyList(mod.auditable_questions);
@@ -1903,11 +1903,11 @@ function mountSociologyPanel() {
         <summary>${id ? `${id} · ` : ""}${title}</summary>
         <div class="sociology-item-body">
           <div class="sociology-item-block">
-            <div class="sociology-item-label">Interpretacion</div>
+            <div class="sociology-item-label">Interpretación</div>
             <p>${interpretation}</p>
           </div>
           <div class="sociology-item-block">
-            <div class="sociology-item-label">Como leerlo</div>
+            <div class="sociology-item-label">Cómo leerlo</div>
             ${how}
           </div>
           <div class="sociology-item-block">
@@ -1967,7 +1967,7 @@ function mountNetworkConcentration() {
             pointRadius: 0,
           },
           {
-            label: "Distribucion uniforme",
+            label: "Distribución uniforme",
             data: equality,
             parsing: false,
             borderColor: "rgba(94, 90, 85, 0.55)",
@@ -2298,6 +2298,6 @@ init().catch((err) => {
   console.error(err);
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raiz del repo para que ../data/derived sea accesible.</div>`
+    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raíz del repo para que ../data/derived sea accesible.</div>`
   );
 });

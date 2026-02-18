@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Moltbook Observatory - Exploracion</title>
+    <title>Moltbook Observatory - Exploración</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +19,7 @@
     <nav class="nav">
       <div class="brand">
         <span class="brand-mark">◎</span>
-        <span>Observatory - Laboratorio de exploracion</span>
+        <span>Observatory - Laboratorio de exploración</span>
       </div>
       <div class="nav-links nav-actions">
         <a href="index.html">Inicio</a>
@@ -35,11 +35,11 @@
               <a href="#submolts">Submolts</a>
             </div>
             <div class="nav-menu-group">
-              <div class="nav-menu-title">Exploracion</div>
-              <a href="#memetics">Memetica</a>
-              <a href="#ontology">Ontologia</a>
-              <a href="#transmission">Transmision</a>
-              <a href="#sociology">Interpretacion sociologica</a>
+              <div class="nav-menu-title">Exploración</div>
+              <a href="#memetics">Memética</a>
+              <a href="#ontology">Ontología</a>
+              <a href="#transmission">Transmisión</a>
+              <a href="#sociology">Interpretacion sociológica</a>
             </div>
             <div class="nav-menu-group">
               <div class="nav-menu-title">Red y Datos</div>
@@ -50,11 +50,11 @@
             </div>
           </div>
         </details>
-        <a href="audit.html">Auditoria</a>
+        <a href="audit.html">Auditoría</a>
         <div class="mode-switch" aria-label="Modo de vista">
           <a class="mode-chip" href="index.html">Observatorio</a>
-          <a class="mode-chip active" href="analysis.html">Exploracion</a>
-          <a class="mode-chip" href="audit.html">Auditoria</a>
+          <a class="mode-chip active" href="analysis.html">Exploración</a>
+          <a class="mode-chip" href="audit.html">Auditoría</a>
           <a class="mode-chip" href="/about">About</a>
         </div>
       </div>
@@ -62,11 +62,11 @@
 
     <header class="hero">
       <div class="hero-inner">
-        <div class="pill">Capa 2 · Exploracion (modo laboratorio)</div>
-        <h1>Inspeccion interactiva del dataset completo</h1>
+        <div class="pill">Capa 2 · Exploración (modo laboratorio)</div>
+        <h1>Inspección interactiva del dataset completo</h1>
         <p>
           Esta capa no interpreta ni concluye por ti: permite filtrar, comparar y bajar al detalle.
-          La lectura publica esta en Observatorio y la validacion tecnica formal en Auditoria.
+          La lectura pública está en Observatorio y la validación técnica formal en Auditoría.
         </p>
         <div class="hero-meta">
           <div class="meta-item">
@@ -75,7 +75,7 @@
           </div>
           <div class="meta-item">
             <strong>Nota</strong>
-            <span>Idiomas y transmision usan muestra estadistica.</span>
+            <span>Idiomas y transmisión usan muestra estadística.</span>
           </div>
         </div>
       </div>
@@ -85,49 +85,49 @@
       <section id="lab-note" class="section section-priority">
         <div class="section-head section-head-strong">
           <h2>Protocolo de uso</h2>
-          <p>Explora con filtros, compara modulos y valida patrones en tablas/series. Evita inferencias causales desde una sola metrica.</p>
+          <p>Explora con filtros, compara módulos y valida patrones en tablas/series. Evita inferencias causales desde una sola métrica.</p>
         </div>
         <div class="callout">
-          Si buscas lectura narrativa, usa <a href="index.html">Observatorio</a>. Si necesitas reproducibilidad y validacion,
-          usa <a href="audit.html">Auditoria</a>.
+          Si buscas lectura narrativa, usa <a href="index.html">Observatorio</a>. Si necesitas reproducibilidad y validación,
+          usa <a href="audit.html">Auditoría</a>.
         </div>
       </section>
 
       <section id="coverage" class="section">
         <div class="section-head">
           <h2>Resumen de Cobertura</h2>
-          <p>Metricas globales para entender el tamano real del dataset.</p>
+          <p>Métricas globales para entender el tamaño real del dataset.</p>
         </div>
         <div class="layer-stack">
           <article class="layer-card layer-level-1">
             <div class="layer-kicker">Nivel 1</div>
-            <h3>Senal</h3>
+            <h3>Señal</h3>
             <p id="coverage-layer-1">–</p>
           </article>
           <article class="layer-card layer-level-2">
             <div class="layer-kicker">Nivel 2</div>
-            <h3>Patron</h3>
+            <h3>Patrón</h3>
             <p id="coverage-layer-2">–</p>
           </article>
           <article class="layer-card layer-level-3">
             <div class="layer-kicker">Nivel 3</div>
-            <h3>Limite de inferencia</h3>
+            <h3>Límite de inferencia</h3>
             <p id="coverage-layer-3">–</p>
           </article>
         </div>
         <div class="grid-2 concentration-grid">
           <div class="card">
             <div class="table-header">
-              Concentracion Top 5 vs Resto
-              <span class="info-tip" data-tip="Distribucion del volumen total (posts + comentarios).">i</span>
+              Concentración Top 5 vs Resto
+              <span class="info-tip" data-tip="Distribución del volumen total (posts + comentarios).">i</span>
             </div>
             <canvas id="concentration-top5-chart" height="190"></canvas>
             <div class="micro-note" id="concentration-top5-note">–</div>
           </div>
           <div class="card">
             <div class="table-header">
-              Curva acumulada de concentracion
-              <span class="info-tip" data-tip="Lectura tipo Lorenz: cuanto volumen acumula cada percentil de submolts.">i</span>
+              Curva acumulada de concentración
+              <span class="info-tip" data-tip="Lectura tipo Lorenz: cuánto volumen acumula cada percentil de submolts.">i</span>
             </div>
             <canvas id="concentration-lorenz-chart" height="190"></canvas>
             <div class="micro-note" id="concentration-lorenz-note">–</div>
@@ -192,24 +192,24 @@
           </div>
         </div>
         <div class="explain">
-          <div>Que mide: volumen total y cobertura del scrapeo.</div>
-          <div>Como se calcula: sumas de `submolt_stats.csv`, conteo de `author_stats.csv` y `diffusion_runs.csv`.</div>
-          <div>Como leerlo: sirve como baseline para interpretar todo lo demas.</div>
+          <div>Qué mide: volumen total y cobertura del scrapeo.</div>
+          <div>Cómo se calcula: sumas de `submolt_stats.csv`, conteo de `author_stats.csv` y `diffusion_runs.csv`.</div>
+          <div>Cómo leerlo: sirve como baseline para interpretar todo lo demás.</div>
         </div>
       </section>
 
       <section id="glossary" class="section">
         <div class="section-head">
-          <h2>Glosario rapido</h2>
+          <h2>Glosario rápido</h2>
           <p>Definiciones cortas para que nada quede ambiguo.</p>
         </div>
         <div class="glossary-grid">
           <div class="glossary-item"><strong>Submolt:</strong> comunidad o canal tematico dentro de la red.</div>
-          <div class="glossary-item"><strong>Run:</strong> una ejecucion de crawl con su timestamp.</div>
-          <div class="glossary-item"><strong>Meme:</strong> n-grama o patron recurrente en el texto.</div>
+          <div class="glossary-item"><strong>Run:</strong> una ejecución de crawl con su timestamp.</div>
+          <div class="glossary-item"><strong>Meme:</strong> n-grama o patrón recurrente en el texto.</div>
           <div class="glossary-item"><strong>Burst:</strong> pico de frecuencia detectado por modelo de bursts.</div>
           <div class="glossary-item"><strong>Centralidad:</strong> medida de importancia dentro de un grafo.</div>
-          <div class="glossary-item"><strong>Entropia submolt:</strong> cuan distribuido esta un meme entre comunidades.</div>
+          <div class="glossary-item"><strong>Entropía submolt:</strong> cuán distribuido está un meme entre comunidades.</div>
           <div class="glossary-item"><strong>Upvote:</strong> voto positivo/like. En esta UI, <code>mean_upvotes</code> es el promedio de upvotes por post (no incluye comentarios).</div>
         </div>
       </section>
@@ -217,24 +217,24 @@
       <section id="language" class="section">
         <div class="section-head">
           <h2>Mezcla de Idiomas</h2>
-          <p>Distribucion estimada por idioma en posts vs comentarios.</p>
+          <p>Distribución estimada por idioma en posts vs comentarios.</p>
         </div>
         <div class="card wide">
           <div class="table-header">
-            Distribucion de Idiomas
+            Distribución de Idiomas
             <span class="info-tip" data-tip="Deteccion por muestra (no censo completo).">i</span>
           </div>
           <div class="toolbar">
             <div class="toolbar-group">
-              <button class="toggle" id="language-hide-en">Ocultar ingles (en)</button>
+              <button class="toggle" id="language-hide-en">Ocultar inglés (en)</button>
             </div>
           </div>
           <canvas id="language-chart" height="140"></canvas>
         </div>
         <div class="explain">
-          <div>Que mide: proporciones relativas de idioma en posts y comentarios.</div>
-          <div>Como se calcula: deteccion de idioma por muestra estadistica.</div>
-          <div>Como leerlo: compara lenguaje de publicacion vs respuesta.</div>
+          <div>Qué mide: proporciones relativas de idioma en posts y comentarios.</div>
+          <div>Cómo se calcula: detección de idioma por muestra estadística.</div>
+          <div>Cómo leerlo: compara lenguaje de publicación vs respuesta.</div>
         </div>
       </section>
 
@@ -246,17 +246,17 @@
         <div class="layer-stack">
           <article class="layer-card layer-level-1">
             <div class="layer-kicker">Nivel 1</div>
-            <h3>Senal</h3>
+            <h3>Señal</h3>
             <p id="submolts-layer-1">–</p>
           </article>
           <article class="layer-card layer-level-2">
             <div class="layer-kicker">Nivel 2</div>
-            <h3>Patron</h3>
+            <h3>Patrón</h3>
             <p id="submolts-layer-2">–</p>
           </article>
           <article class="layer-card layer-level-3">
             <div class="layer-kicker">Nivel 3</div>
-            <h3>Limite de inferencia</h3>
+            <h3>Límite de inferencia</h3>
             <p id="submolts-layer-3">–</p>
           </article>
         </div>
@@ -269,7 +269,7 @@
             </div>
             <div class="toolbar-group">
               <button class="toggle" id="submolt-hide-general">Ocultar general</button>
-              <span class="info-tip" data-tip="Top 15 submolts por la metrica seleccionada.">i</span>
+              <span class="info-tip" data-tip="Top 15 submolts por la métrica seleccionada.">i</span>
             </div>
           </div>
           <canvas id="submolt-chart" height="150"></canvas>
@@ -299,40 +299,40 @@
           </div>
         </details>
         <div class="explain">
-          <div>Que mide: volumen y engagement por comunidad.</div>
-          <div>Como se calcula: `submolt_stats.csv` + `diffusion_submolts.csv`.</div>
-          <div>Como leerlo: detecta donde se concentra la conversacion y la traccion.</div>
-          <div>Vista: el grafico muestra top 15 para legibilidad.</div>
+          <div>Qué mide: volumen y engagement por comunidad.</div>
+          <div>Cómo se calcula: `submolt_stats.csv` + `diffusion_submolts.csv`.</div>
+          <div>Cómo leerlo: detecta donde se concentra la conversación y la tracción.</div>
+          <div>Vista: el gráfico muestra top 15 para legibilidad.</div>
           <div>Tabla: top 50 por volumen (posts + comentarios).</div>
         </div>
       </section>
 
       <section id="memetics" class="section">
         <div class="section-head">
-          <h2>Senales Memeticas</h2>
+          <h2>Señales Memeticas</h2>
           <p>Frecuencia, bursts y dispersion de ideas.</p>
         </div>
         <div class="layer-stack">
           <article class="layer-card layer-level-1">
             <div class="layer-kicker">Nivel 1</div>
-            <h3>Senal</h3>
+            <h3>Señal</h3>
             <p id="memetics-layer-1">–</p>
           </article>
           <article class="layer-card layer-level-2">
             <div class="layer-kicker">Nivel 2</div>
-            <h3>Patron</h3>
+            <h3>Patrón</h3>
             <p id="memetics-layer-2">–</p>
           </article>
           <article class="layer-card layer-level-3">
             <div class="layer-kicker">Nivel 3</div>
-            <h3>Limite de inferencia</h3>
+            <h3>Límite de inferencia</h3>
             <p id="memetics-layer-3">–</p>
           </article>
         </div>
         <div class="card wide memetic-split-card">
           <div class="table-header">
-            Infraestructura memetica vs narrativa cultural
-            <span class="info-tip" data-tip="Separacion operativa entre plantillas tecnicas y narrativas culturales.">i</span>
+            Infraestructura memética vs narrativa cultural
+            <span class="info-tip" data-tip="Separación operativa entre plantillas tecnicas y narrativas culturales.">i</span>
           </div>
           <div class="split-metrics">
             <div class="split-metric">
@@ -366,7 +366,7 @@
           <div class="card">
             <div class="table-header">
               Top Candidatos N-gram
-              <span class="info-tip" data-tip="N-gramas mas frecuentes en todo el corpus.">i</span>
+              <span class="info-tip" data-tip="N-gramas más frecuentes en todo el corpus.">i</span>
             </div>
             <canvas id="meme-candidates-chart" height="200"></canvas>
           </div>
@@ -379,7 +379,7 @@
           </div>
         </div>
         <details class="details layer-details">
-          <summary>Nivel 3 · Ver tablas detalladas de memetica</summary>
+          <summary>Nivel 3 · Ver tablas detalladas de memética</summary>
           <div class="grid-2" style="margin-top: 8px;">
             <div class="table-card">
               <div class="table-header">Memes de Mayor Vida</div>
@@ -418,32 +418,32 @@
           </div>
         </details>
         <div class="explain">
-          <div>Que mide: frecuencia, vida util y dispersion de memes.</div>
-          <div>Como se calcula: n-gramas + bursts + entropia por submolt.</div>
-          <div>Como leerlo: vida larga + dispersion alta = meme con alcance transversal.</div>
-          <div>Vista: top 12 en grafico, top 25 en vida, top 20 en bursts.</div>
+          <div>Qué mide: frecuencia, vida útil y dispersion de memes.</div>
+          <div>Cómo se calcula: n-gramas + bursts + entropia por submolt.</div>
+          <div>Cómo leerlo: vida larga + dispersion alta = meme con alcance transversal.</div>
+          <div>Vista: top 12 en gráfico, top 25 en vida, top 20 en bursts.</div>
         </div>
       </section>
 
       <section id="ontology" class="section">
         <div class="section-head">
-          <h2>Ontologia del Lenguaje</h2>
-          <p>Actos de habla, moods, epistemica y co-ocurrencia de conceptos.</p>
+          <h2>Ontología del Lenguaje</h2>
+          <p>Actos de habla, moods, epistémica y co-ocurrencia de conceptos.</p>
         </div>
         <div class="layer-stack">
           <article class="layer-card layer-level-1">
             <div class="layer-kicker">Nivel 1</div>
-            <h3>Senal</h3>
+            <h3>Señal</h3>
             <p id="ontology-layer-1">–</p>
           </article>
           <article class="layer-card layer-level-2">
             <div class="layer-kicker">Nivel 2</div>
-            <h3>Patron</h3>
+            <h3>Patrón</h3>
             <p id="ontology-layer-2">–</p>
           </article>
           <article class="layer-card layer-level-3">
             <div class="layer-kicker">Nivel 3</div>
-            <h3>Limite de inferencia</h3>
+            <h3>Límite de inferencia</h3>
             <p id="ontology-layer-3">–</p>
           </article>
         </div>
@@ -458,15 +458,15 @@
           <div class="card">
             <div class="table-header">
               Moods (Top)
-              <span class="info-tip" data-tip="Estados de animo detectados por patrones.">i</span>
+              <span class="info-tip" data-tip="Estados de ánimo detectados por patrones.">i</span>
             </div>
             <canvas id="ontology-moods-chart" height="200"></canvas>
           </div>
         </div>
         <div class="card wide" style="margin-top: 16px;">
           <div class="table-header">
-            Comparativa no tecnica: agents vs philosophy
-            <span class="info-tip" data-tip="Comparacion de estilos discursivos por tasas relativas.">i</span>
+            Comparativa no técnica: agents vs philosophy
+            <span class="info-tip" data-tip="Comparación de estilos discursivos por tasas relativas.">i</span>
           </div>
           <canvas id="ontology-compare-chart" height="180"></canvas>
           <div class="micro-note" id="ontology-compare-note">–</div>
@@ -474,7 +474,7 @@
         <div class="grid-2" style="margin-top: 16px;">
           <div class="card">
             <div class="table-header">
-              Marcadores Epistemicos
+              Marcadores Epistémicos
               <span class="info-tip" data-tip="Hedge, certeza y evidencia.">i</span>
             </div>
             <canvas id="ontology-epistemic-chart" height="200"></canvas>
@@ -497,20 +497,20 @@
         </div>
         <div class="card wide" style="margin-top: 16px;">
           <div class="table-header">
-            Mapa Ontologico por Submolt
-            <span class="info-tip" data-tip="PCA 2D sobre tasas de actos/moods/epistemica.">i</span>
+            Mapa Ontológico por Submolt
+            <span class="info-tip" data-tip="PCA 2D sobre tasas de actos/moods/epistémica.">i</span>
           </div>
           <canvas id="ontology-map-chart" height="220"></canvas>
         </div>
         <div class="explain">
-          <div>Que es: proyeccion 2D (PCA) de perfiles ontologicos por submolt.</div>
-          <div>Cada punto: un submolt; tamano proporcional a doc_count.</div>
-          <div>Distancia: submolts cercanos tienen perfiles similares (actos/moods/epistemicos).</div>
-          <div>Ejes X/Y: no tienen significado semantico directo, solo combinaciones de variables.</div>
+          <div>Qué es: proyección 2D (PCA) de perfiles ontológicos por submolt.</div>
+          <div>Cada punto: un submolt; tamaño proporcional a doc_count.</div>
+          <div>Distancia: submolts cercanos tienen perfiles similares (actos/moods/epistémicos).</div>
+          <div>Ejes X/Y: no tienen significado semántico directo, solo combinaciones de variables.</div>
           <div>Se muestran top 250 submolts por volumen para legibilidad.</div>
         </div>
         <details class="details layer-details">
-          <summary>Nivel 3 · Ver tablas detalladas de ontologia</summary>
+          <summary>Nivel 3 · Ver tablas detalladas de ontología</summary>
           <div class="table-card">
             <div class="table-header">Actos del Habla (Detalle)</div>
             <div class="table-scroll">
@@ -543,42 +543,42 @@
           </div>
         </details>
         <div class="explain">
-          <div>Que mide: patrones de habla, estados de animo y evidencias.</div>
-          <div>Como se calcula: conteo de patrones linguisticos por documento.</div>
+          <div>Qué mide: patrones de habla, estados de ánimo y evidencias.</div>
+          <div>Cómo se calcula: conteo de patrones lingüísticos por documento.</div>
           <div>Co-ocurrencia: conteo de docs donde aparecen ambos conceptos (vocabulario base: AI, agent, human, etc.).</div>
-          <div>Interpretacion: pares altos indican asociacion de menciones, no causalidad; conceptos muy frecuentes tienden a dominar el ranking.</div>
+          <div>Interpretación: pares altos indican asociación de menciones, no causalidad; conceptos muy frecuentes tienden a dominar el ranking.</div>
           <div>Clusters: aproximados via co-ocurrencias (clustering formal pendiente).</div>
           <div>Mapa: PCA 2D por submolt (se muestra top 250 por volumen).</div>
-          <div>Como leerlo: revela el tono y la epistemologia dominante.</div>
+          <div>Cómo leerlo: revela el tono y la epistemología dominante.</div>
         </div>
       </section>
 
       <section id="transmission" class="section">
         <div class="section-head">
-          <h2>Transmision de ideas (IA y humano)</h2>
-          <p>Como se propagan narrativas entre espacios de conversacion IA y humana.</p>
+          <h2>Transmisión de ideas (IA y humano)</h2>
+          <p>Cómo se propagan narrativas entre espacios de conversación IA y humana.</p>
         </div>
         <div class="layer-stack">
           <article class="layer-card layer-level-1">
             <div class="layer-kicker">Nivel 1</div>
-            <h3>Senal</h3>
+            <h3>Señal</h3>
             <p id="transmission-layer-1">–</p>
           </article>
           <article class="layer-card layer-level-2">
             <div class="layer-kicker">Nivel 2</div>
-            <h3>Patron</h3>
+            <h3>Patrón</h3>
             <p id="transmission-layer-2">–</p>
           </article>
           <article class="layer-card layer-level-3">
             <div class="layer-kicker">Nivel 3</div>
-            <h3>Limite de inferencia</h3>
+            <h3>Límite de inferencia</h3>
             <p id="transmission-layer-3">–</p>
           </article>
         </div>
         <div class="card wide">
           <div class="table-header">
             Embeddings semanticos (resumen cuantitativo)
-            <span class="info-tip" data-tip="Similitud semantica calculada con embeddings multilingues + FAISS same-lang.">i</span>
+            <span class="info-tip" data-tip="Similitud semántica calculada con embeddings multilingües + FAISS same-lang.">i</span>
           </div>
           <div class="card-grid" style="margin-top: 12px;">
             <div class="card">
@@ -630,11 +630,11 @@
           </div>
         </div>
         <details class="details layer-details">
-          <summary>Nivel 3 · Ver muestras narrativas de transmision</summary>
+          <summary>Nivel 3 · Ver muestras narrativas de transmisión</summary>
           <div class="table-card">
             <div class="table-header">
-              Muestras de Transmision
-              <span class="info-tip" data-tip="Co-ocurrencias IA/agente + humano + transmision.">i</span>
+              Muestras de Transmisión
+              <span class="info-tip" data-tip="Co-ocurrencias IA/agente + humano + transmisión.">i</span>
             </div>
             <div class="toolbar">
               <div class="toolbar-group">
@@ -661,10 +661,10 @@
           </div>
         </details>
         <div class="explain">
-          <div>Que mide: como se habla sobre transmision entre IA y humanos.</div>
-          <div>Como se calcula: regex de co-ocurrencias en posts y comentarios.</div>
-          <div>Como leerlo: muestra narrativa, no estadistica representativa completa.</div>
-          <div>Metodo objetivo: VSM + embeddings (post-post y post→comentario completados).</div>
+          <div>Qué mide: cómo se habla sobre transmisión entre IA y humanos.</div>
+          <div>Cómo se calcula: regex de co-ocurrencias en posts y comentarios.</div>
+          <div>Cómo leerlo: muestra narrativa, no estadística representativa completa.</div>
+          <div>Método objetivo: VSM + embeddings (post-post y post→comentario completados).</div>
           <div>Extra: embeddings post→comentario para medir eco narrativo (same-lang).</div>
           <div>Nota: total_matches puede ser menor a posts*5 si un idioma no tiene suficientes comentarios para indexar.</div>
         </div>
@@ -672,12 +672,12 @@
 
       <section id="sociology" class="section">
         <div class="section-head">
-          <h2>Interpretacion sociologica</h2>
-          <p>Traduccion automatica de metricas a lectura social, regenerada desde derivados por snapshot.</p>
+          <h2>Interpretación sociológica</h2>
+          <p>Traducción automática de métricas a lectura social, regenerada desde derivados por snapshot.</p>
         </div>
         <div class="card wide transmission-translation">
           <div class="table-header">
-            Lectura automatica (de datos a palabras)
+            Lectura automática (de datos a palabras)
             <span class="info-tip" data-tip="Generado desde data/derived/public_sociology_interpretation.json">i</span>
           </div>
           <p class="translation-lead" id="sociology-thesis">–</p>
@@ -696,16 +696,16 @@
               <div class="card-value" id="sociology-kpi-cross">–</div>
             </div>
             <div class="card">
-              <div class="card-label">Infraestructura memetica</div>
+              <div class="card-label">Infraestructura memética</div>
               <div class="card-value" id="sociology-kpi-infra">–</div>
             </div>
           </div>
         </div>
         <div class="sociology-grid" id="sociology-modules"></div>
         <div class="explain">
-          <div>Que es: una capa interpretativa auditable construida desde metricas derivadas.</div>
-          <div>Como se calcula: script `scripts/build_sociology_interpretation.py` + artefacto `public_sociology_interpretation.json`.</div>
-          <div>Como leerlo: usar como marco sociologico; validar siempre con tablas y muestras cualitativas.</div>
+          <div>Qué es: una capa interpretativa auditable construida desde métricas derivadas.</div>
+          <div>Cómo se calcula: script `scripts/build_sociology_interpretation.py` + artefacto `public_sociology_interpretation.json`.</div>
+          <div>Cómo leerlo: usar como marco sociológico; validar siempre con tablas y muestras cualitativas.</div>
         </div>
       </section>
 
@@ -716,8 +716,8 @@
         </div>
         <div class="card wide">
           <div class="table-header">
-            Concentracion estructural de replies
-            <span class="info-tip" data-tip="Cuanto del flujo acumulado cae en una minoria de nodos.">i</span>
+            Concentración estructural de replies
+            <span class="info-tip" data-tip="Cuánto del flujo acumulado cae en una minoría de nodos.">i</span>
           </div>
           <div class="card-grid network-kpis">
             <div class="card">
@@ -782,7 +782,7 @@
           </div>
           <div class="grid-2" style="margin-top: 8px;">
             <div class="table-card">
-              <div class="table-header">Comunidades de Replies (Tamano)</div>
+              <div class="table-header">Comunidades de Replies (Tamaño)</div>
               <div class="table-scroll">
                 <table id="reply-community-table">
                   <thead>
@@ -796,7 +796,7 @@
               </div>
             </div>
             <div class="table-card">
-              <div class="table-header">Comunidades de Mentions (Tamano)</div>
+              <div class="table-header">Comunidades de Mentions (Tamaño)</div>
               <div class="table-scroll">
                 <table id="mention-community-table">
                   <thead>
@@ -812,9 +812,9 @@
           </div>
         </details>
         <div class="explain">
-          <div>Que mide: actores centrales segun replies y menciones.</div>
-          <div>Como se calcula: grafos dirigidos y centralidades standard.</div>
-          <div>Como leerlo: PageRank alto indica hubs; betweenness alto indica brokers.</div>
+          <div>Qué mide: actores centrales segun replies y menciones.</div>
+          <div>Cómo se calcula: grafos dirigidos y centralidades standard.</div>
+          <div>Cómo leerlo: PageRank alto indica hubs; betweenness alto indica brokers.</div>
           <div>Vista: top 50 para mantener la tabla legible.</div>
         </div>
       </section>
@@ -848,17 +848,17 @@
           </div>
         </details>
         <div class="explain">
-          <div>Que mide: volumen de produccion y diversidad de participacion.</div>
-          <div>Como se calcula: conteo por author_id en `author_stats.csv`.</div>
-          <div>Como leerlo: identifica productores intensivos y multi-comunidad.</div>
-          <div>Vista: top 50 con busqueda por ID.</div>
+          <div>Qué mide: volumen de producción y diversidad de participación.</div>
+          <div>Cómo se calcula: conteo por author_id en `author_stats.csv`.</div>
+          <div>Cómo leerlo: identifica productores intensivos y multi-comunidad.</div>
+          <div>Vista: top 50 con búsqueda por ID.</div>
         </div>
       </section>
 
       <section id="audit-link" class="section">
         <div class="callout">
-          La metodologia formal, filtros activos, trazabilidad y chequeos de coherencia fueron movidos a
-          <a href="audit.html">Capa 3 · Auditoria</a> para separar inspeccion de validacion tecnica.
+          La metodología formal, filtros activos, trazabilidad y chequeos de coherencia fueron movidos a
+          <a href="audit.html">Capa 3 · Auditoría</a> para separar inspección de validación técnica.
         </div>
       </section>
 
