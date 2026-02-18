@@ -1863,65 +1863,164 @@ function renderSociologyList(items) {
   return `<ul class="sociology-list">${clean.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
-function mountSociologyPanel() {
-  const modulesRoot = document.getElementById("sociology-modules");
-  const thesisEl = document.getElementById("sociology-thesis");
-  if (!modulesRoot || !thesisEl) return;
+function renderSociologyModule(mod, { open = false } = {}) {
+  const id = escapeHtml(mod.id || "");
+  const title = escapeHtml(mod.title || "Módulo");
+  const interpretation = escapeHtml(mod.interpretation || "Sin interpretación");
+  const how = renderSociologyList(mod.how_to_read);
+  const notMeaning = renderSociologyList(mod.not_meaning);
+  const audit = renderSociologyList(mod.auditable_questions);
+  const openAttr = open ? " open" : "";
+  return `<details class="details sociology-item"${openAttr}>
+    <summary>${id ? `${id} · ` : ""}${title}</summary>
+    <div class="sociology-item-body">
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Interpretación</div>
+        <p>${interpretation}</p>
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Cómo leerlo</div>
+        ${how}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Lo que no significa</div>
+        ${notMeaning}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Preguntas auditables</div>
+        ${audit}
+      </div>
+    </div>
+  </details>`;
+}
 
-  const payload = state.sociology || buildSociologyFallback();
+function fmtSociologyDate(rawValue) {
+  if (!rawValue) return "n/d";
+  const parsed = parseDate(rawValue);
+  return parsed ? fmtDate(parsed) : String(rawValue);
+}
+
+function renderSociologySummary(payload) {
   const summary = payload.summary || {};
-  const snap = summary.snapshot || {};
   const key = summary.key_metrics || {};
-  const generated = payload.generated_at ? fmtDate(parseDate(payload.generated_at) || null) : "n/d";
+  const snap = summary.snapshot || {};
+  const generated = payload.generated_at ? fmtSociologyDate(payload.generated_at) : "n/d";
+  const postsMin = fmtSociologyDate(snap.posts_min);
+  const postsMax = fmtSociologyDate(snap.posts_max);
+  return `<article class="card transmission-translation sociology-summary-card">
+    <div class="table-header">
+      Lectura sociológica automática
+      <span class="info-tip" data-tip="Generado desde data/derived/public_sociology_interpretation.json">i</span>
+    </div>
+    <p class="translation-lead">${escapeHtml(summary.thesis || "Sin tesis automática disponible.")}</p>
+    <p class="translation-sub">Generado: ${escapeHtml(generated)} · Snapshot posts ${escapeHtml(postsMin)} -> ${escapeHtml(postsMax)}</p>
+    <div class="card-grid" style="margin-top: 12px;">
+      <div class="card">
+        <div class="card-label">Top 5 (volumen)</div>
+        <div class="card-value">${fmtPercent(key.top5_share)}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Top 2% (volumen)</div>
+        <div class="card-value">${fmtPercent(key.top2_share)}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Cross-submolt post→coment</div>
+        <div class="card-value">${fmtPercent(key.cross_submolt_post_comment)}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Infraestructura memética</div>
+        <div class="card-value">${fmtPercent(key.infra_share)}</div>
+      </div>
+    </div>
+  </article>`;
+}
 
-  setText("sociology-thesis", summary.thesis || "Sin tesis automática disponible.");
-  setText(
-    "sociology-meta",
-    `Generado: ${generated} · Snapshot posts ${snap.posts_min || "n/d"} -> ${snap.posts_max || "n/d"}`
-  );
-  setText("sociology-kpi-top5", fmtPercent(key.top5_share));
-  setText("sociology-kpi-top2", fmtPercent(key.top2_share));
-  setText("sociology-kpi-cross", fmtPercent(key.cross_submolt_post_comment));
-  setText("sociology-kpi-infra", fmtPercent(key.infra_share));
-
+function mountSociologyPanel() {
+  const payload = state.sociology || buildSociologyFallback();
   const modules = Array.isArray(payload.modules) ? payload.modules : [];
-  if (!modules.length) {
-    modulesRoot.innerHTML = `<div class="card">No hay módulos sociológicos generados. Ejecuta \`scripts/build_sociology_interpretation.py\`.</div>`;
-    return;
-  }
+  const byId = new Map(modules.map((mod) => [String(mod.id || "").trim(), mod]));
+  const used = new Set();
 
-  modulesRoot.innerHTML = modules
-    .map((mod, idx) => {
-      const id = escapeHtml(mod.id || "");
-      const title = escapeHtml(mod.title || "Módulo");
-      const interpretation = escapeHtml(mod.interpretation || "Sin interpretación");
-      const how = renderSociologyList(mod.how_to_read);
-      const notMeaning = renderSociologyList(mod.not_meaning);
-      const audit = renderSociologyList(mod.auditable_questions);
-      const open = idx < 2 ? " open" : "";
-      return `<details class="details sociology-item"${open}>
-        <summary>${id ? `${id} · ` : ""}${title}</summary>
-        <div class="sociology-item-body">
-          <div class="sociology-item-block">
-            <div class="sociology-item-label">Interpretación</div>
-            <p>${interpretation}</p>
-          </div>
-          <div class="sociology-item-block">
-            <div class="sociology-item-label">Cómo leerlo</div>
-            ${how}
-          </div>
-          <div class="sociology-item-block">
-            <div class="sociology-item-label">Lo que no significa</div>
-            ${notMeaning}
-          </div>
-          <div class="sociology-item-block">
-            <div class="sociology-item-label">Preguntas auditables</div>
-            ${audit}
-          </div>
-        </div>
-      </details>`;
-    })
-    .join("");
+  const sections = [
+    {
+      rootId: "sociology-inline-coverage",
+      title: "Interpretación sociológica de cobertura y concentración",
+      moduleIds: ["1.1", "1.2"],
+      includeSummary: true,
+    },
+    {
+      rootId: "sociology-inline-language",
+      title: "Interpretación sociológica de idioma",
+      moduleIds: ["1.3"],
+    },
+    {
+      rootId: "sociology-inline-memetics",
+      title: "Interpretación sociológica de memética",
+      moduleIds: ["2.1", "2.2"],
+    },
+    {
+      rootId: "sociology-inline-ontology",
+      title: "Interpretación sociológica de ontología",
+      moduleIds: ["3.1", "3.2", "3.3", "3.4"],
+    },
+    {
+      rootId: "sociology-inline-transmission",
+      title: "Interpretación sociológica de transmisión",
+      moduleIds: ["4.1", "4.2", "4.3", "4.4"],
+    },
+    {
+      rootId: "sociology-inline-network",
+      title: "Interpretación sociológica de red",
+      moduleIds: ["5.1"],
+    },
+    {
+      rootId: "sociology-inline-authors",
+      title: "Interpretación sociológica de autores",
+      moduleIds: ["5.2"],
+    },
+    {
+      rootId: "sociology-inline-method",
+      title: "Interpretación sociológica de trazabilidad",
+      moduleIds: ["6.1", "6.2"],
+    },
+  ];
+
+  sections.forEach((section) => {
+    const root = document.getElementById(section.rootId);
+    if (!root) return;
+
+    const selected = section.moduleIds
+      .map((id) => {
+        const mod = byId.get(id);
+        if (mod) used.add(id);
+        return mod;
+      })
+      .filter(Boolean);
+
+    const blocks = [];
+    if (section.includeSummary) {
+      blocks.push(renderSociologySummary(payload));
+    }
+    if (selected.length) {
+      blocks.push(`<div class="sociology-inline-title">${escapeHtml(section.title)}</div>`);
+      blocks.push(selected.map((mod, idx) => renderSociologyModule(mod, { open: idx === 0 })).join(""));
+    }
+
+    root.innerHTML = blocks.join("");
+    root.style.display = blocks.length ? "" : "none";
+  });
+
+  const leftovers = modules.filter((mod) => !used.has(String(mod.id || "").trim()));
+  if (!leftovers.length) return;
+  const extraRoot = document.getElementById("sociology-inline-method");
+  if (!extraRoot) return;
+  extraRoot.style.display = "";
+  extraRoot.insertAdjacentHTML(
+    "beforeend",
+    `<div class="sociology-inline-title">Interpretaciones sin mapeo explícito</div>${leftovers
+      .map((mod, idx) => renderSociologyModule(mod, { open: idx === 0 }))
+      .join("")}`
+  );
 }
 
 function mountNetworkConcentration() {

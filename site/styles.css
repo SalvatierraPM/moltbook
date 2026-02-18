@@ -1160,6 +1160,24 @@ select:focus-visible {
   color: var(--muted);
 }
 
+.sociology-inline {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.sociology-inline-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-3);
+  font-weight: 700;
+}
+
+.sociology-summary-card {
+  margin-top: 0;
+}
+
 .sociology-grid {
   margin-top: 14px;
   display: grid;

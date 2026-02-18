@@ -39,7 +39,6 @@
               <a href="#memetics">Memética</a>
               <a href="#ontology">Ontología</a>
               <a href="#transmission">Transmisión</a>
-              <a href="#sociology">Interpretación sociológica</a>
             </div>
             <div class="nav-menu-group">
               <div class="nav-menu-title">Red y Datos</div>
@@ -191,6 +190,7 @@
             <div class="card-value" id="range-comments">–</div>
           </div>
         </div>
+        <div class="sociology-inline" id="sociology-inline-coverage"></div>
         <div class="explain">
           <div>Qué mide: volumen total y cobertura del scrapeo.</div>
           <div>Cómo se calcula: sumas de `submolt_stats.csv`, conteo de `author_stats.csv` y `diffusion_runs.csv`.</div>
@@ -231,6 +231,7 @@
           </div>
           <canvas id="language-chart" height="140"></canvas>
         </div>
+        <div class="sociology-inline" id="sociology-inline-language"></div>
         <div class="explain">
           <div>Qué mide: proporciones relativas de idioma en posts y comentarios.</div>
           <div>Cómo se calcula: detección de idioma por muestra estadística.</div>
@@ -378,6 +379,7 @@
             <canvas id="meme-scatter-chart" height="200"></canvas>
           </div>
         </div>
+        <div class="sociology-inline" id="sociology-inline-memetics"></div>
         <details class="details layer-details">
           <summary>Nivel 3 · Ver tablas detalladas de memética</summary>
           <div class="grid-2" style="margin-top: 8px;">
@@ -502,6 +504,7 @@
           </div>
           <canvas id="ontology-map-chart" height="220"></canvas>
         </div>
+        <div class="sociology-inline" id="sociology-inline-ontology"></div>
         <div class="explain">
           <div>Qué es: proyección 2D (PCA) de perfiles ontológicos por submolt.</div>
           <div>Cada punto: un submolt; tamaño proporcional a doc_count.</div>
@@ -660,6 +663,7 @@
             </div>
           </div>
         </details>
+        <div class="sociology-inline" id="sociology-inline-transmission"></div>
         <div class="explain">
           <div>Qué mide: cómo se habla sobre transmisión entre IA y humanos.</div>
           <div>Cómo se calcula: regex de co-ocurrencias en posts y comentarios.</div>
@@ -667,45 +671,6 @@
           <div>Método objetivo: VSM + embeddings (post-post y post→comentario completados).</div>
           <div>Extra: embeddings post→comentario para medir eco narrativo (same-lang).</div>
           <div>Nota: total_matches puede ser menor a posts*5 si un idioma no tiene suficientes comentarios para indexar.</div>
-        </div>
-      </section>
-
-      <section id="sociology" class="section">
-        <div class="section-head">
-          <h2>Interpretación sociológica</h2>
-          <p>Traducción automática de métricas a lectura social, regenerada desde derivados por snapshot.</p>
-        </div>
-        <div class="card wide transmission-translation">
-          <div class="table-header">
-            Lectura automática (de datos a palabras)
-            <span class="info-tip" data-tip="Generado desde data/derived/public_sociology_interpretation.json">i</span>
-          </div>
-          <p class="translation-lead" id="sociology-thesis">–</p>
-          <p class="translation-sub" id="sociology-meta">–</p>
-          <div class="card-grid" style="margin-top: 12px;">
-            <div class="card">
-              <div class="card-label">Top 5 (volumen)</div>
-              <div class="card-value" id="sociology-kpi-top5">–</div>
-            </div>
-            <div class="card">
-              <div class="card-label">Top 2% (volumen)</div>
-              <div class="card-value" id="sociology-kpi-top2">–</div>
-            </div>
-            <div class="card">
-              <div class="card-label">Cross-submolt post→coment</div>
-              <div class="card-value" id="sociology-kpi-cross">–</div>
-            </div>
-            <div class="card">
-              <div class="card-label">Infraestructura memética</div>
-              <div class="card-value" id="sociology-kpi-infra">–</div>
-            </div>
-          </div>
-        </div>
-        <div class="sociology-grid" id="sociology-modules"></div>
-        <div class="explain">
-          <div>Qué es: una capa interpretativa auditable construida desde métricas derivadas.</div>
-          <div>Cómo se calcula: script `scripts/build_sociology_interpretation.py` + artefacto `public_sociology_interpretation.json`.</div>
-          <div>Cómo leerlo: usar como marco sociológico; validar siempre con tablas y muestras cualitativas.</div>
         </div>
       </section>
 
@@ -811,6 +776,7 @@
             </div>
           </div>
         </details>
+        <div class="sociology-inline" id="sociology-inline-network"></div>
         <div class="explain">
           <div>Qué mide: actores centrales según replies y menciones.</div>
           <div>Cómo se calcula: grafos dirigidos y centralidades estándar.</div>
@@ -847,6 +813,7 @@
             </div>
           </div>
         </details>
+        <div class="sociology-inline" id="sociology-inline-authors"></div>
         <div class="explain">
           <div>Qué mide: volumen de producción y diversidad de participación.</div>
           <div>Cómo se calcula: conteo por author_id en `author_stats.csv`.</div>
@@ -860,6 +827,7 @@
           La metodología formal, filtros activos, trazabilidad y chequeos de coherencia fueron movidos a
           <a href="audit.html">Capa 3 · Auditoría</a> para separar inspección de validación técnica.
         </div>
+        <div class="sociology-inline" id="sociology-inline-method"></div>
       </section>
 
       <section id="downloads" class="section">
