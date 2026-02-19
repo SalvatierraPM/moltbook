@@ -506,11 +506,12 @@
         </div>
         <div class="sociology-inline" id="sociology-inline-ontology"></div>
         <div class="explain">
-          <div>Qué es: proyección 2D (PCA) de perfiles ontológicos por submolt.</div>
-          <div>Cada punto: un submolt; tamaño proporcional a doc_count.</div>
-          <div>Distancia: submolts cercanos tienen perfiles similares (actos/moods/epistémicos).</div>
-          <div>Ejes X/Y: no tienen significado semántico directo, solo combinaciones de variables.</div>
-          <div>Se muestran top 250 submolts por volumen para legibilidad.</div>
+          <div>Qué es PCA, en simple: una forma de resumir muchas métricas en un mapa de 2 ejes para comparar submolts sin leer miles de columnas.</div>
+          <div>Cada punto es un submolt. El tamaño del punto sigue su volumen de documentos.</div>
+          <div>Cómo se construye: primero se calcula un perfil por submolt (actos de habla, moods y marcadores epistémicos), luego PCA lo comprime en dos componentes visuales.</div>
+          <div>Cómo leer distancias: puntos cercanos tienden a tener estilos discursivos parecidos; puntos lejanos, estilos distintos.</div>
+          <div>Qué NO hacer: no interpretar el eje X o Y como una etiqueta humana fija ("más racional", "más humano", etc.).</div>
+          <div>Muestra: se usan los 250 submolts con mayor volumen para evitar ruido extremo de comunidades muy pequeñas.</div>
         </div>
         <details class="details layer-details">
           <summary>Nivel 3 · Ver tablas detalladas de ontología</summary>
@@ -546,13 +547,12 @@
           </div>
         </details>
         <div class="explain">
-          <div>Qué mide: patrones de habla, estados de ánimo y evidencias.</div>
-          <div>Cómo se calcula: conteo de patrones lingüísticos por documento.</div>
-          <div>Co-ocurrencia: conteo de docs donde aparecen ambos conceptos (vocabulario base: AI, agent, human, etc.).</div>
-          <div>Interpretación: pares altos indican asociación de menciones, no causalidad; conceptos muy frecuentes tienden a dominar el ranking.</div>
-          <div>Clusters: aproximados via co-ocurrencias (clustering formal pendiente).</div>
-          <div>Mapa: PCA 2D por submolt (se muestra top 250 por volumen).</div>
-          <div>Cómo leerlo: revela el tono y la epistemología dominante.</div>
+          <div>Qué mide este módulo: cómo se habla (actos), con qué tono emocional (moods) y con qué forma de justificar lo dicho (epistémicos).</div>
+          <div>Actos de habla, en simple: no clasifican "verdad", clasifican la función de una frase (preguntar, afirmar, pedir, ofrecer, etc.).</div>
+          <div>Marcadores epistémicos, en simple: señales de justificación o postura frente al conocimiento (evidencia, duda/hedge, certeza).</div>
+          <div>Co-ocurrencia de conceptos: cuántas veces dos ideas aparecen juntas en el mismo documento. Juntas no significa que una cause la otra.</div>
+          <div>Por qué importan los filtros: términos nucleares muy frecuentes (por ejemplo agent/human) pueden dominar rankings si no se controla ese sesgo.</div>
+          <div>Cómo leer el módulo completo: combinar tablas (detalle) + gráfico PCA (estructura) + interpretación sociológica (explicación).</div>
         </div>
       </section>
 

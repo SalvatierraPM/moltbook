@@ -246,6 +246,24 @@ Nota: el top global refleja el nucleo del tema (agent/human) y ademas mezcla sin
 - memory + model: count=4,857
 - Embeddings ontologicos: vectores por submolt + PCA 2D (ontology_submolt_embedding_2d.csv).
 
+#### Analisis descriptivo del PCA (mapa ontologico)
+- Que es PCA, en simple: una tecnica que toma muchas variables y las resume en dos ejes para poder ver patrones en un plano.
+- Que entra al PCA de este proyecto: tasas por submolt de actos de habla, moods y marcadores epistemicos (no texto crudo directo).
+- Que representa cada punto: un submolt. Puntos cercanos suelen compartir estilo discursivo; puntos lejanos suelen divergir en ese estilo.
+- Que NO representa: no es un mapa geografico ni un eje de "calidad". Los ejes X/Y son combinaciones matematicas y no tienen etiqueta humana fija.
+- Como leer clusters: zonas compactas sugieren gramatica conversacional parecida entre submolts.
+- Como leer outliers: pueden ser microculturas reales o artefactos por bajo volumen; siempre validar con doc_count y tablas del modulo.
+- Que control usamos para legibilidad: se visualiza top 250 submolts por volumen para reducir ruido extremo de comunidades pequenas.
+- Regla de rigor: nunca cerrar interpretacion solo con el mapa; cruzar con tablas de actos, conceptos, co-ocurrencias y ejemplos textuales.
+
+#### Plantilla descriptiva para los otros modulos (usar este mismo enfoque)
+- 1) Que mide exactamente el modulo (definicion operativa).
+- 2) Como se calcula (fuente + transformacion + filtros).
+- 3) Que significa una subida o bajada de la metrica.
+- 4) Que NO significa (limites para evitar sobrelectura).
+- 5) Que pregunta auditable permite responder.
+- 6) Con que otro modulo se debe contrastar antes de concluir.
+
 ### Sociologia cuantitativa
 #### Top Autores por Actividad (posts+comentarios)
 - 787429c5-3029-45ae-b93f-6ca1fb52249b: posts=111, comments=54,094, total=54,205

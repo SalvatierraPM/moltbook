@@ -351,78 +351,125 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "1.1",
             "title": "Actividad y cobertura del snapshot",
+            "what_it_is": "Este bloque responde una pregunta simple: cuanta informacion real entra al analisis y en que fechas.",
+            "why_it_matters": "Si no se entiende el tamano del snapshot, cualquier conclusion posterior puede sobredimensionarse o quedarse corta.",
             "interpretation": (
-                f"El marco de validez del observatorio es robusto: {fmt_num(d.posts_total)} posts, "
-                f"{fmt_num(d.comments_total)} comentarios, {fmt_num(d.submolts_total)} submolts, "
-                f"{fmt_num(d.authors_total)} autores y {fmt_num(d.runs_total)} runs."
+                f"El snapshot actual incluye {fmt_num(d.posts_total)} posts, {fmt_num(d.comments_total)} comentarios, "
+                f"{fmt_num(d.submolts_total)} submolts, {fmt_num(d.authors_total)} autores y {fmt_num(d.runs_total)} runs. "
+                "Con este volumen ya se pueden observar regularidades estructurales, pero sigue siendo una foto temporal."
             ),
+            "terms": [
+                "Snapshot: foto de datos tomada en una ventana de tiempo especifica.",
+                "Run: una ejecucion de recoleccion del scraper.",
+                "Ventana temporal: fecha minima y maxima incluidas en el snapshot.",
+            ],
             "how_to_read": [
                 (
-                    f"Ventana temporal posts {d.posts_min} -> {d.posts_max} "
-                    f"(~{fmt_num(d.posts_window_hours, 1)} horas) y comentarios {d.comments_min} -> {d.comments_max} "
-                    f"(~{fmt_num(d.comments_window_hours, 1)} horas)."
+                    f"Primero, verificar ventana de posts ({d.posts_min} -> {d.posts_max}, ~{fmt_num(d.posts_window_hours, 1)} horas) "
+                    f"y de comentarios ({d.comments_min} -> {d.comments_max}, ~{fmt_num(d.comments_window_hours, 1)} horas)."
                 ),
-                "Diferenciar estructura (patrones estables) de evento (picos puntuales) segun el largo de la ventana.",
-                "Comparar snapshots por consistencia de agregados antes de inferir cambios culturales.",
+                "Segundo, separar patrones estables (estructura) de picos puntuales (evento).",
+                "Tercero, antes de comparar con otro periodo, confirmar que la cobertura sea equivalente.",
+            ],
+            "common_misreads": [
+                "Confundir snapshot con censo completo de la plataforma.",
+                "Asumir que mas volumen siempre significa mas diversidad.",
             ],
             "not_meaning": [
-                "No es censo total de la plataforma; es snapshot bajo reglas de captura.",
-                "No representa una poblacion general; representa este sistema y este periodo.",
+                "No es censo total de la plataforma; es un corte temporal bajo reglas de captura.",
+                "No representa una poblacion general; representa este sistema en este periodo.",
             ],
             "auditable_questions": [
-                "Si repito el pipeline con el mismo snapshot, se conservan estos agregados?",
-                "Si cambio la ventana temporal, que resultados se mantienen?",
+                "Si repito el pipeline con este mismo snapshot, se conservan los agregados principales?",
+                "Si cambio la ventana temporal, que hallazgos se mantienen y cuales no?",
             ],
         },
         {
             "id": "1.2",
             "title": "Concentracion por submolt",
+            "what_it_is": "Mide cuanto del volumen total se acumula en pocas comunidades.",
+            "why_it_matters": "Una red puede parecer grande por cantidad de submolts, pero seguir concentrada en pocos centros de atencion.",
             "interpretation": (
-                f"Top 5 submolts concentran {fmt_pct(d.top5_share)} y top 2% concentran {fmt_pct(d.top2_share)} "
-                f"(Gini={d.gini_submolt:.3f}). La red se organiza en pocos hubs de atencion."
+                f"En este snapshot, el top 5 concentra {fmt_pct(d.top5_share)} del volumen total y el top 2% concentra {fmt_pct(d.top2_share)} "
+                f"(Gini={d.gini_submolt:.3f}). Esto describe una estructura con muchos espacios formales, pero con trafico muy desigual."
             ),
+            "terms": [
+                "Top 5 share: porcentaje del volumen total acumulado por las 5 comunidades mas grandes.",
+                "Top 2% share: porcentaje acumulado por el 2% superior de comunidades.",
+                "Gini: indicador de desigualdad (0 = muy distribuido, 1 = extremadamente concentrado).",
+            ],
             "how_to_read": [
-                "Curva acumulada alta al inicio implica diversidad formal con peso concentrado.",
-                "Si Gini sube entre snapshots, aumenta centralizacion estructural.",
+                "Si la curva acumulada sube muy rapido al inicio, la atencion esta centralizada.",
+                "Si el Gini sube entre snapshots, aumenta la concentracion estructural.",
+                "Comparar resultados en posts y comentarios por separado evita sesgo de una sola metrica.",
+            ],
+            "common_misreads": [
+                "Tratar volumen como sinonimo de calidad o valor.",
+                "Leer concentracion como prueba automatica de manipulacion.",
             ],
             "not_meaning": [
                 "Volumen alto no equivale a calidad.",
                 "Concentracion no implica manipulacion por si sola.",
             ],
             "auditable_questions": [
-                "Se mantiene la concentracion al medir solo comentarios?",
-                "La concentracion cambia al excluir 'general'?",
+                "La concentracion se mantiene cuando se analiza solo comentarios?",
+                "El patron cambia significativamente al excluir 'general'?",
             ],
         },
         {
             "id": "1.3",
             "title": "Actividad por idioma",
+            "what_it_is": "Describe en que idiomas se publica y en que idiomas se responde.",
+            "why_it_matters": "El idioma condiciona quien participa, quien responde y como se difunden las ideas entre comunidades.",
             "interpretation": (
                 f"Idioma dominante en posts: {d.top_post_lang} ({fmt_pct(d.top_post_lang_share)}). "
-                f"Idioma dominante en comentarios: {d.top_comment_lang} ({fmt_pct(d.top_comment_lang_share)})."
+                f"Idioma dominante en comentarios: {d.top_comment_lang} ({fmt_pct(d.top_comment_lang_share)}). "
+                "La lectura de influencia cultural debe considerar este sesgo de idioma base."
             ),
+            "terms": [
+                "Share por idioma: proporcion relativa de documentos en cada idioma.",
+                "Posts vs comentarios: diferencia entre lenguaje de emision y lenguaje de reaccion.",
+                "Lingua franca: idioma dominante que permite coordinacion amplia.",
+            ],
             "how_to_read": [
-                "Si posts son mas monolingues y comentarios mas mixtos, hay publicacion global y debate local.",
-                "Ocultar ingles permite estimar cuanto depende la lectura publica de la lingua franca.",
+                "Comparar posts y comentarios permite ver si la conversacion se abre o se cierra linguisticamente.",
+                "Ocultar temporalmente el idioma dominante ayuda a ver estructuras que quedan ocultas.",
+                "Cruzar con transmision semantica permite evaluar si las ideas cruzan barreras de idioma.",
+            ],
+            "common_misreads": [
+                "Confundir frecuencia de idioma con calidad argumental.",
+                "Asumir comprension intercultural solo por coexistencia de idiomas.",
             ],
             "not_meaning": [
                 "No mide calidad argumental.",
                 "No prueba comprension cruzada entre idiomas.",
             ],
             "auditable_questions": [
-                "Los marcos narrativos cruzan idioma via embeddings o quedan encapsulados?",
+                "Los marcos narrativos cruzan idiomas via embeddings o quedan encapsulados?",
             ],
         },
         {
             "id": "2.1",
             "title": "Memetica: infraestructura vs narrativa",
+            "what_it_is": "Separa memes de operacion tecnica de memes de significado cultural.",
+            "why_it_matters": "Permite ver si el sistema esta mas enfocado en ejecutar (infraestructura) o en construir marcos de sentido (narrativa).",
             "interpretation": (
-                f"Infraestructura={fmt_pct(d.infra_share)} y narrativa={fmt_pct(d.narrative_share)}. "
-                "La mezcla describe el modo del sistema (operacion, significacion o institucionalizacion)."
+                f"El balance actual es infraestructura={fmt_pct(d.infra_share)} y narrativa={fmt_pct(d.narrative_share)}. "
+                "Este mix muestra como la red combina coordinacion tecnica diaria con conversaciones de identidad, valores y sentido."
             ),
+            "terms": [
+                "Meme de infraestructura: patron tecnico repetido (api, tooling, stack).",
+                "Meme narrativo: patron de significado compartido (valores, identidad, relato).",
+                "Share memetico: peso relativo de cada familia de memes en el total observado.",
+            ],
             "how_to_read": [
-                "Suba de infraestructura sugiere foco operativo (coordinar stack, ejecutar).",
-                "Suba de narrativa sugiere foco de sentido (identidad, valores, marcos).",
+                "Si sube infraestructura, normalmente crece la coordinacion operativa.",
+                "Si sube narrativa, normalmente crece la disputa o consolidacion de marcos de sentido.",
+                "La comparacion entre snapshots muestra cambios de fase en la conversacion.",
+            ],
+            "common_misreads": [
+                "Tratar infraestructura como ruido descartable.",
+                "Tratar narrativa como decoracion sin efectos practicos.",
             ],
             "not_meaning": [
                 "Infraestructura no es ruido: define acceso y gramatica de participacion.",
@@ -435,55 +482,88 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "2.2",
             "title": "Vida, burst y dispersion memetica",
+            "what_it_is": "Combina tres lecturas: cuanto dura un meme, cuan brusco es su pico y cuantas comunidades alcanza.",
+            "why_it_matters": "Distingue normas estables de eventos cortos y permite ver que memes funcionan como puentes entre comunidades.",
             "interpretation": (
-                f"Persistencia: '{d.top_meme_life}' ({fmt_num(d.top_meme_life_hours, 1)}h). "
-                f"Evento: '{d.top_meme_burst}' (burst {fmt_num(d.top_meme_burst_score, 1)}). "
-                f"Viaje: '{d.top_meme_dispersion}' ({fmt_num(d.top_meme_dispersion_submolts)} submolts)."
+                f"En este corte: persistencia alta en '{d.top_meme_life}' ({fmt_num(d.top_meme_life_hours, 1)}h), "
+                f"evento de mayor burst en '{d.top_meme_burst}' (score {fmt_num(d.top_meme_burst_score, 1)}) y "
+                f"mayor dispersion en '{d.top_meme_dispersion}' ({fmt_num(d.top_meme_dispersion_submolts)} submolts)."
             ),
+            "terms": [
+                "Lifetime (vida): horas entre primera y ultima aparicion del meme.",
+                "Burst score: intensidad del pico de frecuencia en poco tiempo.",
+                "Dispersion: numero de submolts donde aparece el meme.",
+            ],
             "how_to_read": [
-                "Vida alta + burst bajo suele indicar norma estable.",
-                "Burst alto + vida baja suele indicar episodio.",
-                "Dispersion alta marca memes puente entre comunidades.",
+                "Vida alta + burst bajo suele indicar una norma conversacional estable.",
+                "Burst alto + vida baja suele indicar un episodio coyuntural.",
+                "Dispersion alta sugiere capacidad de viajar entre comunidades.",
+            ],
+            "common_misreads": [
+                "Confundir persistencia con veracidad del contenido.",
+                "Confundir burst con importancia estructural de largo plazo.",
             ],
             "not_meaning": [
                 "Vida no implica verdad; implica estabilidad de repeticion.",
                 "Burst no implica importancia estructural; implica sensibilidad a eventos.",
             ],
             "auditable_questions": [
-                "La dispersion esta concentrada en hubs o distribuida de forma organica?",
+                "La dispersion de memes altos ocurre por hubs puntuales o por red distribuida?",
             ],
         },
         {
             "id": "3.1",
             "title": "Actos de habla y coordinacion",
+            "what_it_is": "Cuenta estilos de accion en el lenguaje: afirmar, preguntar, pedir, ofrecer, rechazar, etc.",
+            "why_it_matters": "El tipo de acto dominante muestra como coordina la red: explorando, ejecutando, normando o negociando.",
             "interpretation": (
-                f"Afirmacion={d.act_assertion_rate:.3f}/doc vs pregunta={d.act_question_rate:.3f}/doc. "
-                "La red tiende a coordinar por enunciados afirmativos mas que por indagacion."
+                f"Se observa afirmacion={d.act_assertion_rate:.3f}/doc frente a pregunta={d.act_question_rate:.3f}/doc. "
+                "Eso sugiere una dinamica mas orientada a enunciar y operar que a abrir preguntas."
             ),
+            "terms": [
+                "Acto de habla: funcion practica de una frase (afirmar, pedir, prometer, etc.).",
+                "Rate/doc: promedio de apariciones por documento.",
+                "Coordinacion conversacional: forma en que la red organiza accion a traves del lenguaje.",
+            ],
             "how_to_read": [
-                "Dominio de preguntas: exploracion.",
-                "Dominio de instrucciones/afirmaciones: ejecucion y estandarizacion.",
-                "Evaluacion/moralizacion alta: fase normativa.",
+                "Dominio de preguntas suele indicar fase de exploracion.",
+                "Dominio de afirmaciones/instrucciones suele indicar fase de ejecucion y estandarizacion.",
+                "Cambios fuertes entre submolts pueden revelar microculturas discursivas.",
+            ],
+            "common_misreads": [
+                "Confundir estilo de habla con inteligencia o calidad total.",
+                "Suponer que un solo acto explica toda la cultura de la red.",
             ],
             "not_meaning": [
                 "No clasifica inteligencia de la red.",
                 "Describe estilo de coordinacion conversacional.",
             ],
             "auditable_questions": [
-                "Este perfil es transversal o varía por submolt?",
+                "Este perfil de actos es transversal o cambia fuerte por submolt?",
             ],
         },
         {
             "id": "3.2",
             "title": "Marcadores epistemicos",
+            "what_it_is": "Mide como se justifica lo dicho: evidencia, matiz/hedge, certeza, duda.",
+            "why_it_matters": "Ayuda a distinguir una cultura de argumentacion auditable de una cultura de afirmacion cerrada.",
             "interpretation": (
-                f"Evidencia={d.epistemic_evidence_rate:.3f}/doc, hedge={d.epistemic_hedge_rate:.3f}/doc, "
-                f"certeza={d.epistemic_certainty_rate:.3f}/doc."
+                f"En este snapshot: evidencia={d.epistemic_evidence_rate:.3f}/doc, hedge={d.epistemic_hedge_rate:.3f}/doc, "
+                f"certeza={d.epistemic_certainty_rate:.3f}/doc. El balance sugiere presencia de justificacion, con baja declaracion absoluta."
             ),
+            "terms": [
+                "Evidencia: marcas linguisticas de justificacion o soporte.",
+                "Hedge: expresiones de atenuacion (posiblemente, podria, etc.).",
+                "Certeza: enunciados de cierre o seguridad fuerte.",
+            ],
             "how_to_read": [
-                "Mas evidencia/condicionalidad suele indicar mejor auditabilidad argumentativa.",
-                "Mas certeza absoluta puede indicar cierre doctrinal o estandar consolidado.",
-                "Duda sin evidencia puede indicar especulacion ansiosa.",
+                "Mas evidencia y mas hedge suelen aumentar la auditabilidad del discurso.",
+                "Mas certeza absoluta puede indicar doctrina o estandar consolidado.",
+                "Cruzar con ejemplos textuales evita confundir forma retorica con calidad real.",
+            ],
+            "common_misreads": [
+                "Asumir que mencionar evidencia equivale a evidencia de buena calidad.",
+                "Interpretar hedge como debilidad intelectual por defecto.",
             ],
             "not_meaning": [
                 "Mas 'evidencia' no implica mejor evidencia.",
@@ -495,13 +575,25 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "3.3",
             "title": "Co-ocurrencia de conceptos",
+            "what_it_is": "Cuenta que conceptos aparecen juntos dentro de un mismo documento.",
+            "why_it_matters": "Muestra paquetes narrativos: ideas que la red tiende a enlazar de forma recurrente.",
             "interpretation": (
-                f"Par dominante: {d.top_pair_a} + {d.top_pair_b} ({fmt_num(d.top_pair_count)}). "
-                "Esto sugiere paquetes narrativos estables en el discurso."
+                f"Par dominante: {d.top_pair_a} + {d.top_pair_b} ({fmt_num(d.top_pair_count)} co-ocurrencias). "
+                "Estos pares recurrentes ayudan a mapear asociaciones estables en el discurso."
             ),
+            "terms": [
+                "Co-ocurrencia: presencia conjunta de dos conceptos en el mismo texto.",
+                "Par dominante: par con mayor frecuencia observada.",
+                "Paquete narrativo: conjunto de ideas que suelen viajar juntas.",
+            ],
             "how_to_read": [
-                "Pares estables suelen reflejar stack o ideologia consolidada.",
-                "Pares con burst suelen reflejar eventos o campanas narrativas.",
+                "Pares estables suelen reflejar stack consolidado o marco ideologico repetido.",
+                "Pares con cambios bruscos entre snapshots suelen reflejar eventos o campanas.",
+                "Revisar variantes singular/plural evita sobreinterpretar artefactos linguisticos.",
+            ],
+            "common_misreads": [
+                "Leer co-ocurrencia como causalidad directa.",
+                "Ignorar que pares muy frecuentes pueden venir de terminos nucleares del tema.",
             ],
             "not_meaning": [
                 "Co-ocurrencia no implica causalidad.",
@@ -513,73 +605,127 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "3.4",
             "title": "Mapa ontologico (PCA 2D)",
+            "what_it_is": "Es una reduccion visual de muchos indicadores linguisticos a dos ejes para comparar submolts en un mismo plano.",
+            "why_it_matters": "Permite ver rapidamente que comunidades hablan de forma parecida y cuales quedan alejadas del patron general.",
             "interpretation": (
-                f"Mapa sobre {fmt_num(d.pca_rows)} submolts top; razon p90/p50 de distancia="
-                f"{fmt_num(d.pca_ratio_p90_p50, 2)}."
+                f"El mapa proyecta {fmt_num(d.pca_rows)} submolts (top por volumen). La razon p90/p50 de distancia es "
+                f"{fmt_num(d.pca_ratio_p90_p50, 2)}: cuanto mayor esta razon, mayor heterogeneidad entre periferia y nucleo. "
+                "PCA no inventa variables nuevas de contenido; reordena combinaciones de actos, moods y marcadores epistemicos para hacer visible la estructura relativa."
             ),
+            "terms": [
+                "PCA: tecnica de reduccion de dimensionalidad que comprime muchas variables en pocos ejes.",
+                "Componente 1/2: combinaciones matematicas de variables originales, no categorias humanas directas.",
+                "Outlier: punto alejado del centro; puede indicar estilo propio o baja muestra.",
+            ],
             "how_to_read": [
-                "Cercania en el mapa implica estilos de coordinacion similares.",
-                "Outliers pueden indicar dialecto local o baja muestra.",
+                "Paso 1: mirar cercania entre puntos (submolts cercanos suelen tener estilos similares).",
+                "Paso 2: mirar densidad de clusters (zonas compactas indican gramatica discursiva compartida).",
+                "Paso 3: revisar outliers con su doc_count para separar estilo real de ruido por baja actividad.",
+                "Paso 4: comparar con otro snapshot para ver si los grupos se mueven de forma estable o abrupta.",
+            ],
+            "common_misreads": [
+                "Interpretar eje X o eje Y como si fueran etiquetas semanticas fijas.",
+                "Leer distancia corta como influencia causal directa entre submolts.",
+                "Concluir cambio cultural sin controlar cambios de muestra o filtros.",
             ],
             "not_meaning": [
-                "Los ejes no tienen significado semantico directo.",
+                "Los ejes no tienen significado semantico directo; son combinaciones de variables.",
+                "Cercania en el mapa no prueba causalidad ni coordinacion intencional.",
             ],
             "auditable_questions": [
                 "El mapa se mantiene estable entre snapshots con filtros equivalentes?",
+                "Los outliers siguen siendo outliers al exigir un minimo mayor de actividad?",
             ],
         },
         {
             "id": "4.1",
             "title": "Transmision por embeddings",
+            "what_it_is": "Mide similitud de significado entre textos, no solo coincidencia literal de palabras.",
+            "why_it_matters": "Permite detectar eco semantico: cuando ideas parecidas circulan entre comunidades aunque cambie la redaccion.",
             "interpretation": (
-                f"Post-post mean={d.emb_post_post_mean:.3f} (cross={fmt_pct(d.emb_post_post_cross)}); "
-                f"post->coment mean={d.emb_post_comment_mean:.3f} (cross={fmt_pct(d.emb_post_comment_cross)})."
+                f"Post-post mean={d.emb_post_post_mean:.3f} (cross={fmt_pct(d.emb_post_post_cross)}) y "
+                f"post->coment mean={d.emb_post_comment_mean:.3f} (cross={fmt_pct(d.emb_post_comment_cross)}). "
+                "El cruce alto entre submolts sugiere difusion transversal de marcos semanticos."
             ),
+            "terms": [
+                "Embedding: vector numerico que representa significado aproximado de un texto.",
+                "Mean score: similitud promedio entre pares seleccionados.",
+                "Cross-submolt: porcentaje de pares que conecta comunidades distintas.",
+            ],
             "how_to_read": [
-                "Cross-submolt alto sugiere marcos que viajan entre comunidades.",
-                "Diferencia post-post vs post->comentario sugiere cuanto eco se conserva en respuesta.",
+                "Comparar post-post vs post->comentario muestra cuanto se conserva o transforma la idea al responder.",
+                "Cross alto sugiere circulacion entre comunidades; cross bajo sugiere encapsulamiento.",
+                "Validar cualitativamente ejemplos de score alto evita sobreinterpretar el numero.",
+            ],
+            "common_misreads": [
+                "Tomar similitud alta como prueba de copia o plagio.",
+                "Inferir coordinacion intencional sin evidencia contextual adicional.",
             ],
             "not_meaning": [
                 "Similitud no implica coordinacion intencional.",
-                "El modulo detecta convergencia, no plagio.",
+                "El modulo detecta convergencia semantica, no plagio.",
             ],
             "auditable_questions": [
-                "Que tipo de pares domina en los percentiles altos de similitud?",
+                "Que tipo de pares domina en percentiles altos de similitud?",
             ],
         },
         {
             "id": "4.2",
             "title": "Sensibilidad por threshold",
+            "what_it_is": "Muestra como cambia la cantidad de matches cuando haces mas estricto o mas laxo el umbral de similitud.",
+            "why_it_matters": "Evita elegir un threshold arbitrario sin mostrar el costo en falsos positivos o falsos negativos.",
             "interpretation": (
-                f"Threshold {d.threshold_low:.2f}: {fmt_num(d.threshold_low_pairs)} pares; "
-                f"{d.threshold_high:.2f}: {fmt_num(d.threshold_high_pairs)} pares. "
-                f"Codo estimado en {fmt_num(d.threshold_knee, 2)} (drop relativo {fmt_pct(d.threshold_knee_drop)})."
+                f"Con threshold {d.threshold_low:.2f} aparecen {fmt_num(d.threshold_low_pairs)} pares; con {d.threshold_high:.2f} quedan "
+                f"{fmt_num(d.threshold_high_pairs)} pares. El codo estimado en {fmt_num(d.threshold_knee, 2)} "
+                f"(caida relativa {fmt_pct(d.threshold_knee_drop)}) marca una zona practica para balancear cobertura y precision."
             ),
+            "terms": [
+                "Threshold: minimo de similitud requerido para aceptar un match.",
+                "Recall: sensibilidad para capturar muchos casos (incluye mas ruido).",
+                "Precision: pureza de casos aceptados (pero puede perder variantes validas).",
+            ],
             "how_to_read": [
-                "Threshold bajo prioriza recall y agrega ruido.",
-                "Threshold alto prioriza precision y pierde parafrasis suaves.",
-                "La pendiente de caida informa robustez de la senal.",
+                "Si al subir threshold la curva cae de golpe, la senal es fragil o muy heterogenea.",
+                "Si cae de forma gradual, la senal es mas robusta.",
+                "Usar la zona de codo como referencia y luego validar con muestras textuales.",
+            ],
+            "common_misreads": [
+                "Buscar un threshold unico y universal para todos los contextos.",
+                "Elegir threshold solo por conveniencia narrativa.",
             ],
             "not_meaning": [
-                "No existe threshold universal correcto; depende de tolerancia a falsos positivos.",
+                "No existe threshold universal correcto; depende del costo aceptable de error.",
             ],
             "auditable_questions": [
-                "Coinciden los ejemplos cualitativos con la zona de codo elegida?",
+                "Coinciden los ejemplos cualitativos con la zona de codo seleccionada?",
             ],
         },
         {
             "id": "4.3",
             "title": "TF-IDF vs embeddings (baseline)",
+            "what_it_is": "Compara dos tipos de similitud: lexical (palabras) y semantica (significado).",
+            "why_it_matters": "Ayuda a distinguir copia literal de parafrasis o convergencia conceptual.",
             "interpretation": (
-                f"VSM matched={d.vsm_matched_mean:.3f} vs shuffled={d.vsm_shuffled_mean:.3f}; "
-                f"AUC={d.vsm_auc:.3f}; corr(emb,VSM)={d.vsm_corr:.3f}."
+                f"VSM/TF-IDF matched={d.vsm_matched_mean:.3f} vs shuffled={d.vsm_shuffled_mean:.3f}, "
+                f"AUC={d.vsm_auc:.3f}, corr(emb,VSM)={d.vsm_corr:.3f}. "
+                "La diferencia matched-shuffled confirma senal lexical por encima del azar; la correlacion parcial con embeddings indica que no todo match semantico depende de repetir las mismas palabras."
             ),
+            "terms": [
+                "TF-IDF o VSM: similitud basada en coincidencia de terminos.",
+                "AUC: capacidad de separar pares reales vs aleatorios (0.5 ~= azar).",
+                "Correlacion emb-VSM: cuanto se mueven juntas la similitud semantica y lexical.",
+            ],
             "how_to_read": [
-                "TF-IDF alto + embeddings alto: repeticion lexical fuerte.",
-                "TF-IDF bajo + embeddings alto: parafrasis o eco semantico.",
+                "TF-IDF alto + embeddings alto suele ser repeticion fuerte o slogan.",
+                "TF-IDF bajo + embeddings alto suele indicar parafrasis.",
+                "TF-IDF alto + embeddings bajo puede ser choque de keywords con sentidos distintos.",
+            ],
+            "common_misreads": [
+                "Confundir baseline con validacion final de causalidad.",
+                "Descartar la dimension semantica por enfocarse solo en keywords.",
             ],
             "not_meaning": [
-                "No es evaluacion final de verdad de transmision; es baseline de contraste lexical.",
+                "No es validacion final de verdad de transmision; es contraste lexical minimo.",
             ],
             "auditable_questions": [
                 "Que fraccion de matches fuertes depende de solape literal de tokens?",
@@ -588,69 +734,118 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "4.4",
             "title": "Muestras auditables de transmision",
+            "what_it_is": "Conjunto de ejemplos concretos para revisar manualmente si el match tiene sentido.",
+            "why_it_matters": "Sin inspeccion humana, un score numerico puede sostener lecturas equivocadas.",
             "interpretation": (
-                f"Se publican {fmt_num(d.transmission_sample_count)} muestras para inspeccion humana contextual."
+                f"Se publican {fmt_num(d.transmission_sample_count)} muestras para auditoria contextual. "
+                "Estas muestras no reemplazan la estadistica global, pero permiten validar semantica, contexto e idioma caso por caso."
             ),
+            "terms": [
+                "Muestra auditable: subconjunto publicado para revision cualitativa.",
+                "Contexto: metadatos minimos (fecha, idioma, submolt, texto).",
+                "Validacion manual: lectura humana de coherencia semantica real.",
+            ],
             "how_to_read": [
-                "Usar metadatos (fecha, idioma, submolt) para validar la lectura de cada match.",
+                "Revisar texto y metadatos juntos, no solo el score.",
+                "Buscar falsos positivos recurrentes y trazarlos a reglas/filtros.",
+                "Usar ejemplos de distintos rangos de score para calibrar umbral.",
+            ],
+            "common_misreads": [
+                "Tomar la muestra como representacion exacta de todo el universo.",
+                "Aceptar score alto sin leer el contenido real.",
             ],
             "not_meaning": [
-                "Las muestras no son representativas del universo; son auditables.",
+                "Las muestras no son representativas del universo total; son auditables y pedagogicas.",
             ],
             "auditable_questions": [
-                "Las muestras de top score preservan coherencia semantica al leer texto completo?",
+                "Los top score preservan coherencia semantica al leer texto completo?",
             ],
         },
         {
             "id": "5.1",
             "title": "Centralidad de red",
+            "what_it_is": "Describe como circula la atencion en la red: hubs, puentes y reciprocidad.",
+            "why_it_matters": "Permite ver si la conversacion esta distribuida o depende de pocos nodos dominantes.",
             "interpretation": (
-                f"Reply graph: {fmt_num(d.reply_nodes)} nodos, {fmt_num(d.reply_edges)} aristas, "
-                f"reciprocidad={fmt_pct(d.reply_reciprocity)}, top 2% share={fmt_pct(d.reply_top2_share)}, "
-                f"Gini in-degree={d.reply_gini:.3f}."
+                f"Reply graph con {fmt_num(d.reply_nodes)} nodos y {fmt_num(d.reply_edges)} aristas; "
+                f"reciprocidad={fmt_pct(d.reply_reciprocity)}, top 2% share={fmt_pct(d.reply_top2_share)}, Gini in-degree={d.reply_gini:.3f}. "
+                "El patron describe una red con hubs marcados y dialogo reciproco relativamente bajo."
             ),
+            "terms": [
+                "PageRank: indicador de centralidad por flujo de enlaces.",
+                "Betweenness: capacidad de un nodo para actuar como puente entre zonas.",
+                "Reciprocidad: proporcion de relaciones de ida y vuelta.",
+            ],
             "how_to_read": [
-                "PageRank alto indica hubs de atencion.",
-                "Betweenness alto indica brokers entre tribus.",
-                "Reciprocidad baja sugiere broadcasting mas que dialogo.",
+                "PageRank alto sugiere concentracion de atencion.",
+                "Betweenness alto sugiere brokers que conectan comunidades.",
+                "Reciprocidad baja sugiere broadcasting por encima de conversacion bilateral.",
+            ],
+            "common_misreads": [
+                "Confundir centralidad con razon, calidad o legitimidad.",
+                "Interpretar red estructural como red de influencia causal directa.",
             ],
             "not_meaning": [
                 "Centralidad no equivale a moralidad ni a calidad argumental.",
             ],
             "auditable_questions": [
-                "La estructura depende de pocos brokers o hay puentes distribuidos?",
+                "La estructura depende de pocos brokers o existen puentes distribuidos?",
             ],
         },
         {
             "id": "5.2",
             "title": "Autores activos y diversidad",
+            "what_it_is": "Cuantifica que parte de la actividad total esta en pocas cuentas versus distribuida en muchas.",
+            "why_it_matters": "Complementa la lectura por submolt con una lectura por actores para detectar dependencia de pocos emisores.",
             "interpretation": (
                 f"Top 10 autores concentran {fmt_pct(d.top10_authors_share)} de la actividad total "
-                f"(Gini autores={d.gini_authors:.3f})."
+                f"(Gini autores={d.gini_authors:.3f}). Esto indica desigualdad relevante en participacion individual."
             ),
+            "terms": [
+                "Top 10 share autores: porcentaje de actividad acumulado por las 10 cuentas mas activas.",
+                "Gini de autores: desigualdad de actividad entre cuentas.",
+                "Actividad: suma de posts y comentarios por autor.",
+            ],
             "how_to_read": [
-                "Motores locales: alta actividad en pocos submolts.",
-                "Viajeros: actividad distribuida y potencial puente cultural.",
+                "Si top share sube, aumenta dependencia de pocos actores.",
+                "Cruzar con submolts permite distinguir autores locales de autores puente.",
+                "Comparar periodos ayuda a detectar rotacion o consolidacion de elites activas.",
+            ],
+            "common_misreads": [
+                "Asumir que actividad alta equivale a influencia deliberativa real.",
+                "Confundir cuenta muy activa con representatividad del sistema.",
             ],
             "not_meaning": [
                 "Actividad alta no equivale a influencia deliberativa real.",
             ],
             "auditable_questions": [
-                "Aumentan los viajeros en eventos globales o en periodos normales?",
+                "Aumentan los autores puente en eventos globales o en periodos normales?",
             ],
         },
         {
             "id": "6.1",
             "title": "Pipeline 01-04 y trazabilidad",
+            "what_it_is": "Resume la cadena completa: ingesta, normalizacion, derivados y visualizacion.",
+            "why_it_matters": "Sin trazabilidad tecnica, la interpretacion sociologica queda en opinion no verificable.",
             "interpretation": (
-                "La lectura sociologica se apoya en una cadena auditable: ingesta -> normalizacion -> derivados -> visualizacion."
+                "La lectura sociologica solo es defendible si cada afirmacion puede rastrearse desde la UI hasta los archivos derivados y los scripts que la producen."
             ),
+            "terms": [
+                "Trazabilidad: capacidad de seguir un resultado hasta su fuente.",
+                "Derivado: archivo intermedio o final calculado desde datos crudos.",
+                "Reproducibilidad: posibilidad de obtener el mismo resultado con mismo pipeline y datos.",
+            ],
             "how_to_read": [
-                "Cada grafico debe trazar a un derivado concreto.",
-                "Sin trazabilidad, la interpretacion memetica se vuelve opinion no falsable.",
+                "Cada grafico debe tener ruta a su archivo fuente.",
+                "Cada metrica debe explicar filtro y transformacion aplicada.",
+                "Diferenciar observacion empirica de interpretacion narrativa.",
+            ],
+            "common_misreads": [
+                "Asumir que reproducible significa libre de sesgo.",
+                "Presentar conclusion fuerte sin ruta de evidencia.",
             ],
             "not_meaning": [
-                "Pipeline reproducible no elimina sesgos de origen; los hace observables.",
+                "Pipeline reproducible no elimina sesgos de origen; los vuelve observables y debatibles.",
             ],
             "auditable_questions": [
                 "Cada claim publico tiene evidencia y archivo fuente verificable?",
@@ -659,14 +854,27 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "6.2",
             "title": "Contrato de metricas (claim matrix)",
+            "what_it_is": "Define reglas minimas para que una metrica pueda usarse como evidencia.",
+            "why_it_matters": "Evita saltar de numero a conclusion sin declarar supuestos, limites y alcance inferencial.",
             "interpretation": (
-                "Una metrica sin contrato no es evidencia: requiere fuente, filtros, transformaciones, limites y pregunta respondida."
+                "Una metrica solo entra al argumento cuando tiene contrato: fuente, transformacion, filtros, limitaciones y pregunta que pretende responder."
             ),
+            "terms": [
+                "Claim matrix: tabla que vincula afirmaciones con evidencia y limites.",
+                "Alcance inferencial: hasta donde se puede concluir sin extrapolar de mas.",
+                "Limite metodologico: condicion que restringe interpretacion valida.",
+            ],
             "how_to_read": [
-                "Usar claim matrix para diferenciar dato observado de inferencia interpretativa.",
+                "Antes de usar un numero, verificar su definicion operacional.",
+                "Separar dato observado de interpretacion propuesta.",
+                "Explicitar que no puede responder cada metrica.",
+            ],
+            "common_misreads": [
+                "Tratar la existencia de metrica como prueba automatica de causalidad.",
+                "Asumir que un contrato metodologico valida cualquier narrativa.",
             ],
             "not_meaning": [
-                "El contrato no legitima cualquier conclusion; delimita alcance inferencial.",
+                "El contrato no legitima cualquier conclusion; solo delimita lectura valida y revisable.",
             ],
             "auditable_questions": [
                 f"Claim matrix disponible: {'si' if d.claim_matrix_exists else 'no'} (reports/audit/claim_matrix.csv).",
@@ -751,11 +959,23 @@ def build_markdown(payload: dict[str, Any]) -> str:
     lines.append("## Modulos")
     for mod in payload.get("modules") or []:
         lines.append(f"### {mod.get('id')} {mod.get('title')}")
+        if mod.get("what_it_is"):
+            lines.append(f"- Que es: {mod.get('what_it_is')}")
+        if mod.get("why_it_matters"):
+            lines.append(f"- Por que importa: {mod.get('why_it_matters')}")
         lines.append(str(mod.get("interpretation") or "n/d"))
+        terms = mod.get("terms") or []
+        if terms:
+            lines.append("- Terminos clave:")
+            lines.extend([f"  - {x}" for x in terms])
         how = mod.get("how_to_read") or []
         if how:
             lines.append("- Como leerlo:")
             lines.extend([f"  - {x}" for x in how])
+        misreads = mod.get("common_misreads") or []
+        if misreads:
+            lines.append("- Errores comunes:")
+            lines.extend([f"  - {x}" for x in misreads])
         not_meaning = mod.get("not_meaning") or []
         if not_meaning:
             lines.append("- Lo que no significa:")
