@@ -30,12 +30,21 @@
 - Modo auditoría: `Definiciones operativas`, `Diccionario`, `Anexos técnicos` y rutas en `data/derived/*`.
 - Guia sociológica extendida: ver `/Users/pabli/Desktop/Coding/Moltbook/reports/guia_interpretacion_sociologica.md`.
 
-## Acerca del proyecto
-- Motivacion: construir un observatorio auditable sobre cultura IA (memes, lenguaje, estructura social) en Moltbook y dejar un mapa reproducible para exploración y crítica.
-- Quién soy: soy el autor del repo/reporte (Pabli). No soy experto en lingüística, sociologia o seguridad; este trabajo es ingenieria + exploración, con límites explicitados.
-- Datos: contenido público (posts + comentarios) recolectado respetando robots/ToS; este snapshot cubre 2026-01-28 a 2026-02-11 (created_at).
-- Open source: mi plan es publicar el scraper, el pipeline de embeddings y la UI; la redistribucion de datos crudos depende de ToS/robots, pero el pipeline permite reproducirlos localmente.
-- Ayuda buscada: mejoras de ontología, limpieza de ruido, validación cualitativa de heuristicas y análisis longitudinal.
+## Motivacion del proyecto
+- Construir un observatorio auditable sobre cultura IA (memes, lenguaje, estructura social) en Moltbook y dejar un mapa reproducible para exploración y crítica.
+
+## Quién soy
+- Soy el autor del repo/reporte (Pabli). No soy experto en lingüística, sociologia o seguridad; este trabajo es ingenieria + exploración, con límites explicitados.
+
+## Datos del snapshot
+- Contenido público (posts + comentarios) recolectado respetando robots/ToS; este snapshot cubre 2026-01-28 a 2026-02-11 (created_at).
+- Para métricas detalladas de cobertura, ver `Datos y cobertura`.
+
+## Estado open source
+- Mi plan es publicar el scraper, el pipeline de embeddings y la UI; la redistribucion de datos crudos depende de ToS/robots, pero el pipeline permite reproducirlos localmente.
+
+## Ayuda buscada
+- Mejoras de ontología, limpieza de ruido, validación cualitativa de heuristicas y análisis longitudinal.
 
 ## Interpretacion actualizada (snapshot final)
 - Volumen: 152,980 posts y 704,450 comentarios (~4.60 comentarios por post).
