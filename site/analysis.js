@@ -1863,70 +1863,111 @@ function renderSociologyList(items) {
   return `<ul class="sociology-list">${clean.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
-function renderSociologyModule(mod, { open = false } = {}) {
+function renderSociologyParagraphs(items) {
+  const clean = (items || []).filter(Boolean);
+  if (!clean.length) return "";
+  return clean.map((item) => `<p>${escapeHtml(item)}</p>`).join("");
+}
+
+function renderSociologyPcaModule(mod, { open = false } = {}) {
   const id = escapeHtml(mod.id || "");
   const title = escapeHtml(mod.title || "Módulo");
-  const whatItIs = mod.what_it_is ? escapeHtml(mod.what_it_is) : "";
-  const whyItMatters = mod.why_it_matters ? escapeHtml(mod.why_it_matters) : "";
-  const interpretation = escapeHtml(mod.interpretation || "Sin interpretación");
-  const terms = (mod.terms || []).filter(Boolean);
+  const openAttr = open ? " open" : "";
+
+  const introText = mod.pca_case_intro || mod.what_it_is || mod.interpretation || "Sin interpretación.";
+  const intro = `<p>${escapeHtml(introText)}</p>${mod.interpretation ? `<p>${escapeHtml(mod.interpretation)}</p>` : ""}`;
+
+  const structuralBlocks = (mod.pca_structural || [])
+    .filter(Boolean)
+    .map((block) => {
+      const label = escapeHtml(block.label || "Bloque");
+      const body = escapeHtml(block.body || "");
+      const implications = renderSociologyList(block.implications || []);
+      return `<div class="sociology-item-subblock">
+        <div class="sociology-item-sublabel">${label}</div>
+        <p>${body}</p>
+        ${implications}
+      </div>`;
+    })
+    .join("");
+
+  const deepReading = renderSociologyParagraphs(mod.pca_deep_reading || []);
+  const systemReading = mod.pca_system_reading ? `<p>${escapeHtml(mod.pca_system_reading)}</p>` : "";
+  const limits = renderSociologyList([
+    ...(mod.pca_not_conclusions || []),
+    ...(mod.not_meaning || []),
+  ]);
+  const whyThisMatters = mod.pca_why_this_matters ? `<p>${escapeHtml(mod.pca_why_this_matters)}</p>` : "";
+  const audit = renderSociologyList(mod.auditable_questions || []);
+
+  return `<details class="details sociology-item"${openAttr}>
+    <summary>${id ? `${id} · ` : ""}${title}</summary>
+    <div class="sociology-item-body">
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">1) Primero: qué es este PCA en este caso</div>
+        ${intro}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Qué está mostrando estructuralmente</div>
+        ${structuralBlocks || "<div class=\"sociology-empty\">Sin lectura estructural.</div>"}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Lectura sociológica profunda</div>
+        ${deepReading || "<div class=\"sociology-empty\">Sin lectura profunda.</div>"}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Lo que dice del sistema como organismo</div>
+        ${systemReading || "<div class=\"sociology-empty\">Sin lectura de sistema.</div>"}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Lo que NO puedes concluir</div>
+        ${limits}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Lo realmente interesante</div>
+        ${whyThisMatters || "<div class=\"sociology-empty\">Sin cierre interpretativo.</div>"}
+      </div>
+      <div class="sociology-item-block">
+        <div class="sociology-item-label">Preguntas auditables</div>
+        ${audit}
+      </div>
+    </div>
+  </details>`;
+}
+
+function renderSociologyModule(mod, { open = false } = {}) {
+  if (String(mod.id || "") === "3.4") {
+    return renderSociologyPcaModule(mod, { open });
+  }
+
+  const id = escapeHtml(mod.id || "");
+  const title = escapeHtml(mod.title || "Módulo");
+  const narrative = [mod.what_it_is, mod.why_it_matters, mod.interpretation].filter(Boolean);
   const howItems = (mod.how_to_read || []).filter(Boolean);
   const misreadsItems = (mod.common_misreads || []).filter(Boolean);
   const notMeaningItems = (mod.not_meaning || []).filter(Boolean);
   const auditItems = (mod.auditable_questions || []).filter(Boolean);
-  const how = howItems.length ? renderSociologyList(howItems) : "";
-  const termsList = terms.length ? renderSociologyList(terms) : "";
-  const misreads = misreadsItems.length ? renderSociologyList(misreadsItems) : "";
-  const notMeaning = notMeaningItems.length ? renderSociologyList(notMeaningItems) : "";
-  const audit = auditItems.length ? renderSociologyList(auditItems) : "";
+  const how = renderSociologyList(howItems);
+  const limits = renderSociologyList([...misreadsItems, ...notMeaningItems]);
+  const audit = renderSociologyList(auditItems);
   const openAttr = open ? " open" : "";
   const blocks = [];
-  if (whatItIs) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Qué es</div>
-      <p>${whatItIs}</p>
-    </div>`);
-  }
-  if (whyItMatters) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Por qué importa</div>
-      <p>${whyItMatters}</p>
-    </div>`);
-  }
   blocks.push(`<div class="sociology-item-block">
-    <div class="sociology-item-label">Interpretación completa</div>
-    <p>${interpretation}</p>
+    <div class="sociology-item-label">Lectura interpretativa</div>
+    ${renderSociologyParagraphs(narrative) || "<div class=\"sociology-empty\">Sin interpretación.</div>"}
   </div>`);
-  if (termsList) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Términos clave</div>
-      ${termsList}
-    </div>`);
-  }
-  if (how) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Cómo leerlo paso a paso</div>
-      ${how}
-    </div>`);
-  }
-  if (misreads) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Errores comunes de lectura</div>
-      ${misreads}
-    </div>`);
-  }
-  if (notMeaning) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Lo que no significa</div>
-      ${notMeaning}
-    </div>`);
-  }
-  if (audit) {
-    blocks.push(`<div class="sociology-item-block">
-      <div class="sociology-item-label">Preguntas auditables</div>
-      ${audit}
-    </div>`);
-  }
+  blocks.push(`<div class="sociology-item-block">
+    <div class="sociology-item-label">Qué está mostrando estructuralmente</div>
+    ${how}
+  </div>`);
+  blocks.push(`<div class="sociology-item-block">
+    <div class="sociology-item-label">Riesgos de sobrelectura</div>
+    ${limits}
+  </div>`);
+  blocks.push(`<div class="sociology-item-block">
+    <div class="sociology-item-label">Preguntas auditables</div>
+    ${audit}
+  </div>`);
   return `<details class="details sociology-item"${openAttr}>
     <summary>${id ? `${id} · ` : ""}${title}</summary>
     <div class="sociology-item-body">

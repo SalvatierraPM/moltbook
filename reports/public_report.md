@@ -247,14 +247,31 @@ Nota: el top global refleja el nucleo del tema (agent/human) y ademas mezcla sin
 - Embeddings ontologicos: vectores por submolt + PCA 2D (ontology_submolt_embedding_2d.csv).
 
 #### Analisis descriptivo del PCA (mapa ontologico)
-- Que es PCA, en simple: una tecnica que toma muchas variables y las resume en dos ejes para poder ver patrones en un plano.
-- Que entra al PCA de este proyecto: tasas por submolt de actos de habla, moods y marcadores epistemicos (no texto crudo directo).
-- Que representa cada punto: un submolt. Puntos cercanos suelen compartir estilo discursivo; puntos lejanos suelen divergir en ese estilo.
-- Que NO representa: no es un mapa geografico ni un eje de "calidad". Los ejes X/Y son combinaciones matematicas y no tienen etiqueta humana fija.
-- Como leer clusters: zonas compactas sugieren gramatica conversacional parecida entre submolts.
-- Como leer outliers: pueden ser microculturas reales o artefactos por bajo volumen; siempre validar con doc_count y tablas del modulo.
-- Que control usamos para legibilidad: se visualiza top 250 submolts por volumen para reducir ruido extremo de comunidades pequenas.
-- Regla de rigor: nunca cerrar interpretacion solo con el mapa; cruzar con tablas de actos, conceptos, co-ocurrencias y ejemplos textuales.
+- 1) Que es este PCA en este caso: no es un grafico de temas; es una proyeccion comprimida del estilo discursivo por submolt.
+- Cada punto representa un submolt y lo comprimido son actos de habla + moods + marcadores epistemicos.
+- Traduccion practica: no estas viendo "temas", estas viendo gramatica cultural.
+
+##### Que esta mostrando estructuralmente
+- A) Densidad central: un nucleo compacto sugiere que muchas comunidades comparten forma de coordinacion discursiva, aunque hablen de temas distintos.
+- B) Ratio p90/p50=3.03: la periferia (p90) esta bastante mas lejos del centro que la distancia mediana (p50), lo que indica heterogeneidad real en los extremos sin romper la cohesion del nucleo.
+- C) Outliers: pueden ser microculturas reales o artefactos por bajo volumen. Hay que validar con doc_count y tablas de actos/moods/epistemica.
+
+##### Lectura sociologica profunda
+- Con afirmacion alta (0.615/doc), pregunta secundaria pero relevante (0.303/doc), evidencia moderada (0.122/doc) y certeza baja (0.009/doc), el mapa tiende a separar zonas mas operativas/ejecutivas de zonas mas exploratorias/reflexivas.
+- No es un eje "racional vs emocional"; es mas util leerlo como "ejecucion vs exploracion" en terminos de gramatica conversacional.
+
+##### Lo que dice del sistema como organismo
+- El sistema aparece cohesionado en el nucleo y diverso en periferia: no hay monocultura total, pero tampoco fragmentacion caotica.
+- En clave de coordinacion cultural, es una red con centro estable y borde de experimentacion.
+
+##### Lo que NO puedes concluir
+- No puedes etiquetar un cluster como "mas racional" solo por su posicion.
+- No puedes inferir influencia causal directa entre submolts cercanos.
+- No puedes asignar significado semantico fijo a eje X o Y.
+- PCA no crea conceptos: reordena correlaciones.
+
+##### Regla de rigor
+- Nunca cerrar interpretacion solo con el mapa: cruzar con tablas de actos, conceptos, co-ocurrencias y ejemplos textuales.
 
 #### Plantilla descriptiva para los otros modulos (usar este mismo enfoque)
 - 1) Que mide exactamente el modulo (definicion operativa).

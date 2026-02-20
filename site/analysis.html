@@ -506,12 +506,12 @@
         </div>
         <div class="sociology-inline" id="sociology-inline-ontology"></div>
         <div class="explain">
-          <div>Qué es PCA, en simple: una forma de resumir muchas métricas en un mapa de 2 ejes para comparar submolts sin leer miles de columnas.</div>
-          <div>Cada punto es un submolt. El tamaño del punto sigue su volumen de documentos.</div>
-          <div>Cómo se construye: primero se calcula un perfil por submolt (actos de habla, moods y marcadores epistémicos), luego PCA lo comprime en dos componentes visuales.</div>
-          <div>Cómo leer distancias: puntos cercanos tienden a tener estilos discursivos parecidos; puntos lejanos, estilos distintos.</div>
-          <div>Qué NO hacer: no interpretar el eje X o Y como una etiqueta humana fija ("más racional", "más humano", etc.).</div>
-          <div>Muestra: se usan los 250 submolts con mayor volumen para evitar ruido extremo de comunidades muy pequeñas.</div>
+          <div>1) En este caso, el PCA no muestra temas: muestra estilo discursivo comprimido por submolt (actos + moods + epistémica).</div>
+          <div>A) Densidad central: un núcleo compacto indica gramática conversacional compartida entre muchas comunidades.</div>
+          <div>B) Distancia p90/p50: cuando es alta, hay periferia heterogénea aunque exista centro coordinado.</div>
+          <div>C) Outliers: pueden ser microculturas reales o ruido por bajo volumen; validar siempre con doc_count.</div>
+          <div>Lectura útil: ejecución/coordinación versus exploración/reflexión (no "racional" versus "emocional").</div>
+          <div>Límite clave: PCA no prueba causalidad ni influencia entre submolts, solo reordena correlaciones.</div>
         </div>
         <details class="details layer-details">
           <summary>Nivel 3 · Ver tablas detalladas de ontología</summary>

@@ -1216,6 +1216,24 @@ select:focus-visible {
   font-weight: 700;
 }
 
+.sociology-item-subblock {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.sociology-item-subblock:first-child {
+  margin-top: 6px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.sociology-item-sublabel {
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
 .sociology-list {
   margin: 6px 0 0;
   padding: 0 0 0 18px;

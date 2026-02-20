@@ -605,36 +605,93 @@ def build_modules(d: SociologyData) -> list[dict[str, Any]]:
         {
             "id": "3.4",
             "title": "Mapa ontologico (PCA 2D)",
-            "what_it_is": "Es una reduccion visual de muchos indicadores linguisticos a dos ejes para comparar submolts en un mismo plano.",
-            "why_it_matters": "Permite ver rapidamente que comunidades hablan de forma parecida y cuales quedan alejadas del patron general.",
-            "interpretation": (
-                f"El mapa proyecta {fmt_num(d.pca_rows)} submolts (top por volumen). La razon p90/p50 de distancia es "
-                f"{fmt_num(d.pca_ratio_p90_p50, 2)}: cuanto mayor esta razon, mayor heterogeneidad entre periferia y nucleo. "
-                "PCA no inventa variables nuevas de contenido; reordena combinaciones de actos, moods y marcadores epistemicos para hacer visible la estructura relativa."
+            "what_it_is": (
+                "No es un grafico de temas ni un mapa geografico. Es una proyeccion comprimida del estilo discursivo por submolt: "
+                "cada punto representa una comunidad y lo que se comprimio fueron actos de habla, moods y marcadores epistemicos."
             ),
-            "terms": [
-                "PCA: tecnica de reduccion de dimensionalidad que comprime muchas variables en pocos ejes.",
-                "Componente 1/2: combinaciones matematicas de variables originales, no categorias humanas directas.",
-                "Outlier: punto alejado del centro; puede indicar estilo propio o baja muestra.",
+            "interpretation": (
+                f"En este snapshot se proyectan {fmt_num(d.pca_rows)} submolts (top por volumen). "
+                f"La razon p90/p50 es {fmt_num(d.pca_ratio_p90_p50, 2)}, lo que indica nucleo relativamente compacto con periferia bastante mas lejana. "
+                "La lectura de fondo es: cohesion gramatical en el centro, heterogeneidad estilistica en los extremos."
+            ),
+            "pca_case_intro": (
+                "No estas viendo temas de conversacion, estas viendo gramatica cultural. "
+                "Si dos submolts quedan cerca, significa que coordinan el lenguaje de forma parecida; "
+                "si quedan lejos, significa que su patron conversacional difiere."
+            ),
+            "pca_structural": [
+                {
+                    "label": "A) Densidad central",
+                    "body": (
+                        "Cuando el nucleo del PCA aparece compacto, muchas comunidades comparten una forma similar de hablar, "
+                        "aunque no traten exactamente los mismos temas."
+                    ),
+                    "implications": [
+                        "Cultura discursiva compartida.",
+                        "Estandares de coordinacion parecidos entre submolts.",
+                        "Gramatica dominante transversal (mas cohesion que fragmentacion).",
+                    ],
+                },
+                {
+                    "label": f"B) Ratio p90/p50 = {fmt_num(d.pca_ratio_p90_p50, 2)}",
+                    "body": (
+                        "Este ratio compara distancia mediana al centro (p50) contra distancia de la periferia extrema (p90). "
+                        "Un valor alto indica que los extremos se alejan bastante mas que el nucleo."
+                    ),
+                    "implications": [
+                        "Hay heterogeneidad real en la periferia.",
+                        "No es monocultura total.",
+                        "Tampoco es caos distribuido: hay centro estable y borde experimental/especializado.",
+                    ],
+                },
+                {
+                    "label": "C) Outliers",
+                    "body": (
+                        "Los puntos muy alejados pueden ser microculturas reales, pero tambien artefactos por bajo volumen o por una combinacion extrema de rasgos lingüisticos."
+                    ),
+                    "implications": [
+                        "Validar siempre con doc_count y tablas del modulo.",
+                        "Preguntar si la distancia viene de ideologia o de gramatica conversacional.",
+                        "PCA muestra patron, no intencion.",
+                    ],
+                },
             ],
+            "pca_deep_reading": [
+                (
+                    f"Con afirmacion={d.act_assertion_rate:.3f}/doc, pregunta={d.act_question_rate:.3f}/doc, "
+                    f"evidencia={d.epistemic_evidence_rate:.3f}/doc y certeza={d.epistemic_certainty_rate:.3f}/doc, "
+                    "la red se ve mas ejecutiva-operativa que puramente especulativa."
+                ),
+                (
+                    "Eso sugiere un eje cultural util para leer el mapa: zonas mas orientadas a ejecucion/coordinacion versus zonas mas orientadas a exploracion/reflexion."
+                ),
+            ],
+            "pca_system_reading": (
+                "Como organismo, el sistema luce menos tribal de lo que aparenta: mantiene nucleo coordinador y deja periferias estilisticas sin ruptura total del tejido conversacional."
+            ),
+            "pca_not_conclusions": [
+                "No puedes decir que un cluster es 'mas racional' solo por posicion en el plano.",
+                "No puedes inferir influencia causal directa entre submolts cercanos.",
+                "No puedes asignar significado semantico fijo al eje X o Y.",
+                "PCA no crea conceptos: reordena correlaciones.",
+            ],
+            "pca_why_this_matters": (
+                "Si tu pregunta es coordinacion cultural, este PCA responde algo clave: la red aparece cohesionada en el nucleo y diversa en periferia, "
+                "patron tipico de sistema estable con borde de experimentacion."
+            ),
             "how_to_read": [
-                "Paso 1: mirar cercania entre puntos (submolts cercanos suelen tener estilos similares).",
-                "Paso 2: mirar densidad de clusters (zonas compactas indican gramatica discursiva compartida).",
-                "Paso 3: revisar outliers con su doc_count para separar estilo real de ruido por baja actividad.",
-                "Paso 4: comparar con otro snapshot para ver si los grupos se mueven de forma estable o abrupta.",
-            ],
-            "common_misreads": [
-                "Interpretar eje X o eje Y como si fueran etiquetas semanticas fijas.",
-                "Leer distancia corta como influencia causal directa entre submolts.",
-                "Concluir cambio cultural sin controlar cambios de muestra o filtros.",
+                "Leer primero la forma global (nucleo vs periferia), no puntos aislados.",
+                "Cruzar outliers con volumen y con tablas de actos/moods/epistemica.",
+                "Comparar snapshots equivalentes para distinguir cambio real de ruido de muestreo.",
             ],
             "not_meaning": [
                 "Los ejes no tienen significado semantico directo; son combinaciones de variables.",
                 "Cercania en el mapa no prueba causalidad ni coordinacion intencional.",
             ],
             "auditable_questions": [
-                "El mapa se mantiene estable entre snapshots con filtros equivalentes?",
-                "Los outliers siguen siendo outliers al exigir un minimo mayor de actividad?",
+                "El nucleo se mantiene estable entre snapshots equivalentes?",
+                "Los outliers se sostienen al exigir mayor minimo de actividad?",
+                "Los cambios de forma del mapa coinciden con cambios en transmision y memetica?",
             ],
         },
         {
@@ -959,27 +1016,55 @@ def build_markdown(payload: dict[str, Any]) -> str:
     lines.append("## Modulos")
     for mod in payload.get("modules") or []:
         lines.append(f"### {mod.get('id')} {mod.get('title')}")
-        if mod.get("what_it_is"):
-            lines.append(f"- Que es: {mod.get('what_it_is')}")
-        if mod.get("why_it_matters"):
-            lines.append(f"- Por que importa: {mod.get('why_it_matters')}")
-        lines.append(str(mod.get("interpretation") or "n/d"))
-        terms = mod.get("terms") or []
-        if terms:
-            lines.append("- Terminos clave:")
-            lines.extend([f"  - {x}" for x in terms])
-        how = mod.get("how_to_read") or []
-        if how:
-            lines.append("- Como leerlo:")
-            lines.extend([f"  - {x}" for x in how])
-        misreads = mod.get("common_misreads") or []
-        if misreads:
-            lines.append("- Errores comunes:")
-            lines.extend([f"  - {x}" for x in misreads])
-        not_meaning = mod.get("not_meaning") or []
-        if not_meaning:
-            lines.append("- Lo que no significa:")
-            lines.extend([f"  - {x}" for x in not_meaning])
+        intro_parts = [mod.get("what_it_is"), mod.get("why_it_matters"), mod.get("interpretation")]
+        intro_parts = [p for p in intro_parts if p]
+        if intro_parts:
+            lines.append("- Lectura interpretativa:")
+            lines.extend([f"  - {x}" for x in intro_parts])
+
+        if str(mod.get("id") or "") == "3.4":
+            case_intro = mod.get("pca_case_intro")
+            if case_intro:
+                lines.append("- 1) Primero: que es este PCA en este caso")
+                lines.append(f"  - {case_intro}")
+
+            structural = mod.get("pca_structural") or []
+            if structural:
+                lines.append("- Que esta mostrando estructuralmente:")
+                for block in structural:
+                    lines.append(f"  - {block.get('label', 'Bloque')}: {block.get('body', '')}")
+                    for imp in block.get("implications") or []:
+                        lines.append(f"    - {imp}")
+
+            deep = mod.get("pca_deep_reading") or []
+            if deep:
+                lines.append("- Lectura sociologica profunda:")
+                lines.extend([f"  - {x}" for x in deep])
+
+            system_reading = mod.get("pca_system_reading")
+            if system_reading:
+                lines.append("- Lo que dice del sistema como organismo:")
+                lines.append(f"  - {system_reading}")
+
+            not_conclusions = mod.get("pca_not_conclusions") or []
+            if not_conclusions:
+                lines.append("- Lo que NO puedes concluir:")
+                lines.extend([f"  - {x}" for x in not_conclusions])
+
+            why_matters = mod.get("pca_why_this_matters")
+            if why_matters:
+                lines.append("- Lo realmente interesante:")
+                lines.append(f"  - {why_matters}")
+        else:
+            how = mod.get("how_to_read") or []
+            if how:
+                lines.append("- Que esta mostrando estructuralmente:")
+                lines.extend([f"  - {x}" for x in how])
+            overread_risks = [*(mod.get("common_misreads") or []), *(mod.get("not_meaning") or [])]
+            if overread_risks:
+                lines.append("- Riesgos de sobrelectura:")
+                lines.extend([f"  - {x}" for x in overread_risks])
+
         auditable = mod.get("auditable_questions") or []
         if auditable:
             lines.append("- Preguntas auditables:")
