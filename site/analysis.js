@@ -1869,11 +1869,7 @@ function renderSociologyParagraphs(items) {
   return clean.map((item) => `<p>${escapeHtml(item)}</p>`).join("");
 }
 
-function renderSociologyPcaModule(mod, { open = false } = {}) {
-  const id = escapeHtml(mod.id || "");
-  const title = escapeHtml(mod.title || "Módulo");
-  const openAttr = open ? " open" : "";
-
+function renderSociologyPcaBody(mod) {
   const introText = mod.pca_case_intro || mod.what_it_is || mod.interpretation || "Sin interpretación.";
   const intro = `<p>${escapeHtml(introText)}</p>${mod.interpretation ? `<p>${escapeHtml(mod.interpretation)}</p>` : ""}`;
 
@@ -1900,80 +1896,107 @@ function renderSociologyPcaModule(mod, { open = false } = {}) {
   const whyThisMatters = mod.pca_why_this_matters ? `<p>${escapeHtml(mod.pca_why_this_matters)}</p>` : "";
   const audit = renderSociologyList(mod.auditable_questions || []);
 
-  return `<details class="details sociology-item"${openAttr}>
-    <summary>${id ? `${id} · ` : ""}${title}</summary>
-    <div class="sociology-item-body">
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">1) Primero: qué es este PCA en este caso</div>
-        ${intro}
-      </div>
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">Qué está mostrando estructuralmente</div>
-        ${structuralBlocks || "<div class=\"sociology-empty\">Sin lectura estructural.</div>"}
-      </div>
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">Lectura sociológica profunda</div>
-        ${deepReading || "<div class=\"sociology-empty\">Sin lectura profunda.</div>"}
-      </div>
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">Lo que dice del sistema como organismo</div>
-        ${systemReading || "<div class=\"sociology-empty\">Sin lectura de sistema.</div>"}
-      </div>
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">Lo que NO puedes concluir</div>
-        ${limits}
-      </div>
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">Lo realmente interesante</div>
-        ${whyThisMatters || "<div class=\"sociology-empty\">Sin cierre interpretativo.</div>"}
-      </div>
-      <div class="sociology-item-block">
-        <div class="sociology-item-label">Preguntas auditables</div>
-        ${audit}
-      </div>
-    </div>
-  </details>`;
+  return `<div class="sociology-item-block">
+    <div class="sociology-item-label">1) Primero: qué es este PCA en este caso</div>
+    ${intro}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Qué está mostrando estructuralmente</div>
+    ${structuralBlocks || "<div class=\"sociology-empty\">Sin lectura estructural.</div>"}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Lectura sociológica profunda</div>
+    ${deepReading || "<div class=\"sociology-empty\">Sin lectura profunda.</div>"}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Lo que dice del sistema como organismo</div>
+    ${systemReading || "<div class=\"sociology-empty\">Sin lectura de sistema.</div>"}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Lo que NO puedes concluir</div>
+    ${limits}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Lo realmente interesante</div>
+    ${whyThisMatters || "<div class=\"sociology-empty\">Sin cierre interpretativo.</div>"}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Preguntas auditables</div>
+    ${audit}
+  </div>`;
 }
 
-function renderSociologyModule(mod, { open = false } = {}) {
+function renderSociologyModuleBody(mod) {
   if (String(mod.id || "") === "3.4") {
-    return renderSociologyPcaModule(mod, { open });
+    return renderSociologyPcaBody(mod);
   }
 
-  const id = escapeHtml(mod.id || "");
-  const title = escapeHtml(mod.title || "Módulo");
-  const narrative = [mod.what_it_is, mod.why_it_matters, mod.interpretation].filter(Boolean);
+  const what = mod.what_it_is ? `<p>${escapeHtml(mod.what_it_is)}</p>` : "<div class=\"sociology-empty\">Sin definición.</div>";
+  const why = mod.why_it_matters
+    ? `<p>${escapeHtml(mod.why_it_matters)}</p>`
+    : "<div class=\"sociology-empty\">Sin justificación explícita.</div>";
+  const interpretation = mod.interpretation
+    ? `<p>${escapeHtml(mod.interpretation)}</p>`
+    : "<div class=\"sociology-empty\">Sin interpretación.</div>";
+  const termsItems = (mod.terms || []).filter(Boolean);
   const howItems = (mod.how_to_read || []).filter(Boolean);
   const misreadsItems = (mod.common_misreads || []).filter(Boolean);
   const notMeaningItems = (mod.not_meaning || []).filter(Boolean);
   const auditItems = (mod.auditable_questions || []).filter(Boolean);
+  const terms = termsItems.length ? renderSociologyList(termsItems) : "";
   const how = renderSociologyList(howItems);
   const limits = renderSociologyList([...misreadsItems, ...notMeaningItems]);
   const audit = renderSociologyList(auditItems);
-  const openAttr = open ? " open" : "";
-  const blocks = [];
-  blocks.push(`<div class="sociology-item-block">
-    <div class="sociology-item-label">Lectura interpretativa</div>
-    ${renderSociologyParagraphs(narrative) || "<div class=\"sociology-empty\">Sin interpretación.</div>"}
-  </div>`);
-  blocks.push(`<div class="sociology-item-block">
-    <div class="sociology-item-label">Qué está mostrando estructuralmente</div>
+  return `<div class="sociology-item-block">
+    <div class="sociology-item-label">Qué es en este caso</div>
+    ${what}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Por qué importa</div>
+    ${why}
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Interpretación completa</div>
+    ${interpretation}
+  </div>
+  ${
+    terms
+      ? `<div class="sociology-item-block">
+    <div class="sociology-item-label">Términos clave en simple</div>
+    ${terms}
+  </div>`
+      : ""
+  }
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Cómo leerlo paso a paso</div>
     ${how}
-  </div>`);
-  blocks.push(`<div class="sociology-item-block">
-    <div class="sociology-item-label">Riesgos de sobrelectura</div>
+  </div>
+  <div class="sociology-item-block">
+    <div class="sociology-item-label">Qué NO significa (para no sobreleer)</div>
     ${limits}
-  </div>`);
-  blocks.push(`<div class="sociology-item-block">
+  </div>
+  <div class="sociology-item-block">
     <div class="sociology-item-label">Preguntas auditables</div>
     ${audit}
-  </div>`);
-  return `<details class="details sociology-item"${openAttr}>
-    <summary>${id ? `${id} · ` : ""}${title}</summary>
+  </div>`;
+}
+
+function renderSociologyModulePanel(mod) {
+  const id = escapeHtml(mod.id || "");
+  const title = escapeHtml(mod.title || "Módulo");
+  const heading = id ? `${id} · ${title}` : title;
+  return `<article class="card sociology-panel">
+    <h4 class="sociology-panel-title">${heading}</h4>
     <div class="sociology-item-body">
-      ${blocks.join("")}
+      ${renderSociologyModuleBody(mod)}
     </div>
-  </details>`;
+  </article>`;
+}
+
+function renderSociologyModuleStack(modules) {
+  const clean = (modules || []).filter(Boolean);
+  if (!clean.length) return "";
+  return `<div class="sociology-module-stack">${clean.map((mod) => renderSociologyModulePanel(mod)).join("")}</div>`;
 }
 
 function fmtSociologyDate(rawValue) {
@@ -2085,7 +2108,7 @@ function mountSociologyPanel() {
     }
     if (selected.length) {
       blocks.push(`<div class="sociology-inline-title">${escapeHtml(section.title)}</div>`);
-      blocks.push(selected.map((mod, idx) => renderSociologyModule(mod, { open: idx === 0 })).join(""));
+      blocks.push(renderSociologyModuleStack(selected));
     }
 
     root.innerHTML = blocks.join("");
@@ -2099,9 +2122,7 @@ function mountSociologyPanel() {
   extraRoot.style.display = "";
   extraRoot.insertAdjacentHTML(
     "beforeend",
-    `<div class="sociology-inline-title">Interpretaciones sin mapeo explícito</div>${leftovers
-      .map((mod, idx) => renderSociologyModule(mod, { open: idx === 0 }))
-      .join("")}`
+    `<div class="sociology-inline-title">Interpretaciones sin mapeo explícito</div>${renderSociologyModuleStack(leftovers)}`
   );
 }
 
