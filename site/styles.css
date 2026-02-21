@@ -467,6 +467,39 @@ main {
   padding: 8px 10px;
 }
 
+.analysis-inline {
+  margin-top: 10px;
+}
+
+.analysis-inline-card {
+  margin-top: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 138, 112, 0.28);
+  background: rgba(31, 138, 112, 0.07);
+  display: grid;
+  gap: 8px;
+}
+
+.analysis-inline-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.analysis-inline-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.analysis-inline-card strong {
+  color: var(--ink);
+}
+
 .status-chip {
   margin-top: 4px;
   display: inline-flex;

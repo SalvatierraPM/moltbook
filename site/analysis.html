@@ -22,8 +22,6 @@
         <span>Observatory - Laboratorio de exploración</span>
       </div>
       <div class="nav-links nav-actions">
-        <a href="index.html">Inicio</a>
-        <a href="/about">About</a>
         <details class="nav-menu">
           <summary>Secciones</summary>
           <div class="nav-menu-panel">
@@ -45,11 +43,9 @@
               <a href="#network">Redes</a>
               <a href="#authors">Autores</a>
               <a href="#downloads">Descargas</a>
-              <a href="/about">About y autor</a>
             </div>
           </div>
         </details>
-        <a href="audit.html">Auditoría</a>
         <div class="mode-switch" aria-label="Modo de vista">
           <a class="mode-chip" href="index.html">Observatorio</a>
           <a class="mode-chip active" href="analysis.html">Exploración</a>
@@ -64,8 +60,8 @@
         <div class="pill">Capa 2 · Exploración (modo laboratorio)</div>
         <h1>Inspección interactiva del dataset completo</h1>
         <p>
-          Esta capa no interpreta ni concluye por ti: permite filtrar, comparar y bajar al detalle.
-          La lectura pública está en Observatorio y la validación técnica formal en Auditoría.
+          Esta capa prioriza inspección: filtrar, comparar y bajar al detalle antes de interpretar.
+          La validación formal de metodología y trazabilidad está en Auditoría.
         </p>
         <div class="hero-meta">
           <div class="meta-item">
@@ -83,12 +79,12 @@
     <main>
       <section id="lab-note" class="section section-priority">
         <div class="section-head section-head-strong">
-          <h2>Protocolo de uso</h2>
+          <h2>Lectura guiada</h2>
           <p>Explora con filtros, compara módulos y valida patrones en tablas/series. Evita inferencias causales desde una sola métrica.</p>
         </div>
         <div class="callout">
-          Si buscas lectura narrativa, usa <a href="index.html">Observatorio</a>. Si necesitas reproducibilidad y validación,
-          usa <a href="audit.html">Auditoría</a>.
+          Usa esta capa para inspección y comparación; para validación formal de métricas y filtros, revisa
+          <a href="audit.html">Auditoría</a>.
         </div>
       </section>
 
@@ -97,23 +93,26 @@
           <h2>Resumen de Cobertura</h2>
           <p>Métricas globales para entender el tamaño real del dataset.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="coverage-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="coverage-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="coverage-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details" open>
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="coverage-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="coverage-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Límite de inferencia</h3>
+              <p id="coverage-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="grid-2 concentration-grid">
           <div class="card">
             <div class="table-header">
@@ -244,23 +243,26 @@
           <h2>Actividad por Submolt</h2>
           <p>Compara volumen, engagement y presencia temporal entre comunidades.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="submolts-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="submolts-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="submolts-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="submolts-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="submolts-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Límite de inferencia</h3>
+              <p id="submolts-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="card wide">
           <div class="toolbar">
             <div class="toolbar-group">
@@ -313,23 +315,26 @@
           <h2>Señales Meméticas</h2>
           <p>Frecuencia, bursts y dispersión de ideas.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="memetics-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="memetics-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="memetics-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="memetics-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="memetics-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Límite de inferencia</h3>
+              <p id="memetics-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="card wide memetic-split-card">
           <div class="table-header">
             Infraestructura memética vs narrativa cultural
@@ -432,23 +437,26 @@
           <h2>Ontología del Lenguaje</h2>
           <p>Actos de habla, moods, epistémica y co-ocurrencia de conceptos.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="ontology-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="ontology-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="ontology-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="ontology-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="ontology-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Límite de inferencia</h3>
+              <p id="ontology-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="grid-2">
           <div class="card">
             <div class="table-header">
@@ -456,6 +464,10 @@
               <span class="info-tip" data-tip="Conteo agregado de patrones de habla.">i</span>
             </div>
             <canvas id="ontology-acts-chart" height="200"></canvas>
+            <div class="micro-note">
+              Interpretación: no mide verdad/falsedad, sino la función del lenguaje (afirmar, preguntar, pedir, ofrecer). Si un acto domina, marca estilo discursivo dominante.
+            </div>
+            <div class="analysis-inline" id="sociology-inline-ontology-31"></div>
           </div>
           <div class="card">
             <div class="table-header">
@@ -463,6 +475,12 @@
               <span class="info-tip" data-tip="Estados de ánimo detectados por patrones.">i</span>
             </div>
             <canvas id="ontology-moods-chart" height="200"></canvas>
+            <div class="micro-note">
+              Interpretación: muestra el tono emocional recurrente. Sirve para comparar climas entre comunidades, no para diagnosticar estados psicológicos individuales.
+            </div>
+            <div class="micro-note">
+              Análisis: si el mood dominante se mantiene entre submolts, hay convergencia afectiva; si cambia fuerte, sugiere microculturas emocionales distintas.
+            </div>
           </div>
         </div>
         <div class="card wide" style="margin-top: 16px;">
@@ -472,6 +490,12 @@
           </div>
           <canvas id="ontology-compare-chart" height="180"></canvas>
           <div class="micro-note" id="ontology-compare-note">–</div>
+          <div class="micro-note">
+            Interpretación: esta comparación responde “cómo hablan distinto”, no “quién tiene razón”. Úsala para contrastar estilos, no para inferir calidad argumental.
+          </div>
+          <div class="micro-note">
+            Análisis: diferencias sostenidas entre ambos perfiles suelen indicar regímenes conversacionales distintos (exploración/reflexión vs ejecución/afirmación).
+          </div>
         </div>
         <div class="grid-2" style="margin-top: 16px;">
           <div class="card">
@@ -480,6 +504,10 @@
               <span class="info-tip" data-tip="Hedge, certeza y evidencia.">i</span>
             </div>
             <canvas id="ontology-epistemic-chart" height="200"></canvas>
+            <div class="micro-note">
+              Interpretación: evidencia/certeza/hedge muestra cómo se justifica lo dicho. Alto hedge sugiere cautela; alta certeza sugiere afirmación fuerte.
+            </div>
+            <div class="analysis-inline" id="sociology-inline-ontology-32"></div>
           </div>
           <div class="table-card">
             <div class="table-header">Co-ocurrencia de Conceptos (Top pares)</div>
@@ -495,6 +523,10 @@
                 <tbody></tbody>
               </table>
             </div>
+            <div class="micro-note">
+              Interpretación: pares frecuentes indican marcos que aparecen juntos. Co-ocurrencia no implica causalidad entre conceptos.
+            </div>
+            <div class="analysis-inline" id="sociology-inline-ontology-33"></div>
           </div>
         </div>
         <div class="card wide" style="margin-top: 16px;">
@@ -503,8 +535,11 @@
             <span class="info-tip" data-tip="PCA 2D sobre tasas de actos/moods/epistémica.">i</span>
           </div>
           <canvas id="ontology-map-chart" height="220"></canvas>
+          <div class="micro-note">
+            Interpretación: cercanía en el mapa = perfiles lingüísticos parecidos. Separación = estilos discursivos distintos entre submolts.
+          </div>
+          <div class="analysis-inline" id="sociology-inline-ontology-34"></div>
         </div>
-        <div class="sociology-inline" id="sociology-inline-ontology"></div>
         <details class="details layer-details">
           <summary>Nivel 3 · Ver tablas detalladas de ontología</summary>
           <div class="table-card">
@@ -521,6 +556,9 @@
                 <tbody></tbody>
               </table>
             </div>
+            <div class="micro-note">
+              Interpretación: usa esta tabla para validar qué actos sostienen el patrón del gráfico superior en términos de conteo y tasa por documento.
+            </div>
           </div>
           <div class="table-card">
             <div class="table-header">Top Conceptos</div>
@@ -536,16 +574,11 @@
                 <tbody></tbody>
               </table>
             </div>
+            <div class="micro-note">
+              Interpretación: identifica vocabulario nuclear del módulo. Si pocos conceptos concentran share alto, hay fuerte compresión temática.
+            </div>
           </div>
         </details>
-        <div class="explain">
-          <div>Qué mide este módulo: cómo se habla (actos), con qué tono emocional (moods) y con qué forma de justificar lo dicho (epistémicos).</div>
-          <div>Actos de habla, en simple: no clasifican "verdad", clasifican la función de una frase (preguntar, afirmar, pedir, ofrecer, etc.).</div>
-          <div>Marcadores epistémicos, en simple: señales de justificación o postura frente al conocimiento (evidencia, duda/hedge, certeza).</div>
-          <div>Co-ocurrencia de conceptos: cuántas veces dos ideas aparecen juntas en el mismo documento. Juntas no significa que una cause la otra.</div>
-          <div>Por qué importan los filtros: términos nucleares muy frecuentes (por ejemplo agent/human) pueden dominar rankings si no se controla ese sesgo.</div>
-          <div>Cómo leer el módulo completo: combinar tablas (detalle) + gráfico PCA (estructura) + interpretación sociológica (explicación).</div>
-        </div>
       </section>
 
       <section id="transmission" class="section">
@@ -553,23 +586,26 @@
           <h2>Transmisión de ideas (IA y humano)</h2>
           <p>Cómo se propagan narrativas entre espacios de conversación IA y humana.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="transmission-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="transmission-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="transmission-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="transmission-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="transmission-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Límite de inferencia</h3>
+              <p id="transmission-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="card wide">
           <div class="table-header">
             Embeddings semánticos (resumen cuantitativo)

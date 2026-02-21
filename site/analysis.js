@@ -2040,6 +2040,29 @@ function renderSociologySummary(payload) {
   </article>`;
 }
 
+function renderSociologyCompact(mod) {
+  const title = escapeHtml(mod.title || "Análisis");
+  const what =
+    mod.what_it_is ||
+    mod.pca_case_intro ||
+    "Sin descripción disponible para este bloque.";
+  const interpretation = mod.interpretation || "Sin interpretación disponible.";
+  const analysis =
+    mod.why_it_matters ||
+    mod.pca_why_this_matters ||
+    mod.pca_system_reading ||
+    "Sin análisis disponible.";
+  const how = Array.isArray(mod.how_to_read) && mod.how_to_read.length ? mod.how_to_read[0] : "";
+
+  return `<article class="analysis-inline-card">
+    <div class="analysis-inline-title">${title}</div>
+    <p><strong>Qué muestra:</strong> ${escapeHtml(what)}</p>
+    <p><strong>Interpretación:</strong> ${escapeHtml(interpretation)}</p>
+    <p><strong>Análisis:</strong> ${escapeHtml(analysis)}</p>
+    ${how ? `<p><strong>Cómo leer:</strong> ${escapeHtml(how)}</p>` : ""}
+  </article>`;
+}
+
 function mountSociologyPanel() {
   const payload = state.sociology || buildSociologyFallback();
   const modules = Array.isArray(payload.modules) ? payload.modules : [];
@@ -2064,9 +2087,24 @@ function mountSociologyPanel() {
       moduleIds: ["2.1", "2.2"],
     },
     {
-      rootId: "sociology-inline-ontology",
-      title: "Interpretación sociológica de ontología",
-      moduleIds: ["3.1", "3.2", "3.3", "3.4"],
+      rootId: "sociology-inline-ontology-31",
+      moduleIds: ["3.1"],
+      compact: true,
+    },
+    {
+      rootId: "sociology-inline-ontology-32",
+      moduleIds: ["3.2"],
+      compact: true,
+    },
+    {
+      rootId: "sociology-inline-ontology-33",
+      moduleIds: ["3.3"],
+      compact: true,
+    },
+    {
+      rootId: "sociology-inline-ontology-34",
+      moduleIds: ["3.4"],
+      compact: true,
     },
     {
       rootId: "sociology-inline-transmission",
@@ -2106,7 +2144,9 @@ function mountSociologyPanel() {
     if (section.includeSummary) {
       blocks.push(renderSociologySummary(payload));
     }
-    if (selected.length) {
+    if (selected.length && section.compact) {
+      blocks.push(selected.map((mod) => renderSociologyCompact(mod)).join(""));
+    } else if (selected.length) {
       blocks.push(`<div class="sociology-inline-title">${escapeHtml(section.title)}</div>`);
       blocks.push(renderSociologyModuleStack(selected));
     }
