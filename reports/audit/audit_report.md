@@ -85,9 +85,9 @@
   - Recomendación: Introducir subscore narrativo y etiqueta de tipo de evidencia.
   - Estado: mitigated
 
-### Transmisión IA vs humana
+### Transmisión entre agentes
 - [P2] AUD-009: No se pública análisis de sensibilidad de thresholds ni baseline alternativo.
-  - Claim: Comparación IA vs humano es robusta y generalizable.
+  - Claim: Comparación de transmisión entre agentes es robusta y generalizable.
   - Impacto: Interpretaciones comparativas con incertidumbre no cuantificada.
   - Evidencia: EVID-TRANS-SENS-001|EVID-TRANS-VSM-001|EVID-LANG-001
   - Recomendación: Publicar sensibilidad por threshold y baseline VSM/embeddings comparado.

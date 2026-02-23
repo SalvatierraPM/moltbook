@@ -369,7 +369,7 @@ def build_claim_matrix(m: Metrics) -> list[dict[str, Any]]:
         },
         {
             "claim_id": "CLM-005",
-            "claim": "El mention graph presenta ruido de tokens no-handle en nodos top, afectando centralidad.",
+            "claim": "El mention graph puede presentar ruido de tokens no-handle en nodos top, por lo que la centralidad requiere validacion antes de inferencias fuertes.",
             "evidence_datasets": "mention_graph_centrality.csv",
             "computation_notes": f"Top node={m.mention_top_node} (pagerank={m.mention_top_pagerank:.3f}); ruido top10={m.mention_noise_top10}.",
             "limitations": "La definicion de 'ruido' es regex; se requiere limpieza en extraccion o normalizacion de mentions.",
@@ -377,10 +377,10 @@ def build_claim_matrix(m: Metrics) -> list[dict[str, Any]]:
         },
         {
             "claim_id": "CLM-006",
-            "claim": "El score de interferencia en top documentos se infla por formato/ruido (base64, repeticion), por lo que se debe usar como ranking, no prueba.",
+            "claim": "El score de interferencia combina señal semantica y formato/ruido, por lo que debe usarse como ranking de revision tecnica, no como prueba de intervencion humana directa.",
             "evidence_datasets": "interference_top.csv",
             "computation_notes": f"En top50 por score, {m.interference_noisy_top50}/50 son ruidosos por heuristica.",
-            "limitations": "Heuristica de ruido no capta ironia ni contexto; requiere separar subscore semantico vs tecnico.",
+            "limitations": "Heuristica de ruido no capta ironia ni contexto; requiere separar subscore semantico vs tecnico y evitar inferir autoria humana.",
             "confidence": "alta",
         },
         {
@@ -390,6 +390,14 @@ def build_claim_matrix(m: Metrics) -> list[dict[str, Any]]:
             "computation_notes": "Dependencias declaradas con rangos >=; el proyecto incluye requirements.lock para fijarlas en practica.",
             "limitations": "El riesgo se materializa si el lockfile no se usa o se regenera en otro entorno/fecha.",
             "confidence": "alta",
+        },
+        {
+            "claim_id": "CLM-008",
+            "claim": "La ontologia del observatorio asume red IA-only: referencias a 'human'/'prompt' son señales discursivas de agencia delegada, no interaccion humana directa en el grafo.",
+            "evidence_datasets": "ontology_concepts_top.csv;public_doc_lookup.json;interference_summary.csv",
+            "computation_notes": "Los terminos human/humans aparecen en conceptos top; la lectura cualitativa usa muestras textuales del doc lookup en conversaciones entre agentes.",
+            "limitations": "No hay trazabilidad completa de prompting por agente en este snapshot; no permite atribucion causal de origen humano.",
+            "confidence": "media",
         },
     ]
 
@@ -610,8 +618,8 @@ def build_findings(m: Metrics, claim_rows: int, lineage_rows: int) -> list[dict[
         {
             "finding_id": "AUD-009",
             "severity": "P2",
-            "domain": "Transmision IA vs humana",
-            "claim": "Comparacion IA vs humano es robusta y generalizable.",
+            "domain": "Transmision entre agentes",
+            "claim": "Comparacion de transmision entre agentes es robusta y generalizable.",
             "issue": "No se publica analisis de sensibilidad de thresholds ni baseline alternativo.",
             "evidence_ref": "EVID-TRANS-SENS-001|EVID-TRANS-VSM-001|EVID-LANG-001",
             "impact": "Interpretaciones comparativas con incertidumbre no cuantificada.",
@@ -695,7 +703,7 @@ def build_quality_gates(findings: list[dict[str, str]]) -> dict[str, Any]:
                 "criterion": "Aprobado si no hay P0/P1 abiertos en calidad/linaje/cobertura.",
             },
             "G2_method_validity": {
-                "status": gate_status(findings, {"Claims e inferencia", "Memetica", "Ontologia del lenguaje", "Interferencia", "Incidencia humana", "Transmision IA vs humana"}),
+                "status": gate_status(findings, {"Claims e inferencia", "Memetica", "Ontologia del lenguaje", "Interferencia", "Incidencia humana", "Transmision entre agentes"}),
                 "criterion": "Aprobado si no hay claims fuertes sin evidencia trazable.",
             },
             "G3_reproducibility": {
@@ -716,7 +724,7 @@ def build_backlog(findings: list[dict[str, str]]) -> list[dict[str, str]]:
             "task_id": f"TASK-{f['finding_id']}",
             "severity": f["severity"],
             "component": f["domain"],
-            "fix_type": "metodologico" if f["domain"] in {"Claims e inferencia", "Memetica", "Ontologia del lenguaje", "Transmision IA vs humana"} else "tecnico",
+            "fix_type": "metodologico" if f["domain"] in {"Claims e inferencia", "Memetica", "Ontologia del lenguaje", "Transmision entre agentes"} else "tecnico",
             "effort_estimate": "M" if f["severity"] in {"P0", "P1"} else "S",
             "dependency": f["evidence_ref"].split("|")[0],
             "acceptance_criterion": f["recommendation"],
@@ -799,7 +807,7 @@ def build_report(now: str, m: Metrics, findings: list[dict[str, str]], gates: di
         "Sociologia y redes",
         "Interferencia",
         "Incidencia humana",
-        "Transmision IA vs humana",
+        "Transmision entre agentes",
         "Reproducibilidad",
         "Ingenieria y mantenibilidad",
         "Seguridad y compliance",

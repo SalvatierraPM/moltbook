@@ -22,50 +22,69 @@
         <span>Observatory - Laboratorio de exploración</span>
       </div>
       <div class="nav-links nav-actions">
-        <a href="index.html">Inicio</a>
-        <a href="/about">About</a>
         <details class="nav-menu">
           <summary>Secciones</summary>
           <div class="nav-menu-panel">
             <div class="nav-menu-group">
-              <div class="nav-menu-title">Cobertura</div>
+              <div class="nav-menu-title">Bloques narrativos</div>
+              <a href="#block-structure">Estructura del sistema</a>
+              <a href="#block-language-sense">Lenguaje y sentido</a>
+              <a href="#block-transmission">Transmisión</a>
+              <a href="#block-network">Red social</a>
+              <a href="#block-method">Metodología y descargas</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Módulos</div>
               <a href="#coverage">Cobertura</a>
               <a href="#glossary">Glosario</a>
               <a href="#language">Idiomas</a>
               <a href="#submolts">Submolts</a>
-            </div>
-            <div class="nav-menu-group">
-              <div class="nav-menu-title">Exploración</div>
               <a href="#memetics">Memética</a>
               <a href="#ontology">Ontología</a>
               <a href="#transmission">Transmisión</a>
-            </div>
-            <div class="nav-menu-group">
-              <div class="nav-menu-title">Red y Datos</div>
               <a href="#network">Redes</a>
               <a href="#authors">Autores</a>
+              <a href="#temporal-compare">Comparabilidad temporal</a>
               <a href="#downloads">Descargas</a>
-              <a href="/about">About y autor</a>
+            </div>
+            <div class="nav-menu-group">
+              <div class="nav-menu-title">Marco</div>
+              <a href="#identity">Frase de identidad</a>
+              <a href="#hypotheses">Hipótesis</a>
+              <a href="#competing-hypotheses">Hipótesis competidoras</a>
+              <a href="#foundations">Fundamentos teóricos</a>
+              <a href="#theory-framework">Marco teórico explícito</a>
+              <a href="#snapshot-biases">No captura y sesgos</a>
+              <a href="#future-hypotheses">Hipótesis futuras</a>
+              <a href="#structural-synthesis">Síntesis final</a>
+              <a href="#claim-matrix">Claim matrix</a>
             </div>
           </div>
         </details>
-        <a href="audit.html">Auditoría</a>
         <div class="mode-switch" aria-label="Modo de vista">
           <a class="mode-chip" href="index.html">Observatorio</a>
           <a class="mode-chip active" href="analysis.html">Exploración</a>
           <a class="mode-chip" href="audit.html">Auditoría</a>
-          <a class="mode-chip" href="/about">About</a>
+          <a class="mode-chip" href="about.html">About</a>
         </div>
       </div>
     </nav>
 
+    <div class="layer-switch-hint">
+      <div class="layer-switch-line"><strong>Exploración:</strong> responde “¿qué mecanismos están operando?” con comparación y lectura guiada de señales.</div>
+      <div class="layer-switch-line"><strong>Auditoría:</strong> responde “¿es técnicamente válido?” con contrato de métricas, trazabilidad y chequeos.</div>
+    </div>
+
     <header class="hero">
       <div class="hero-inner">
         <div class="pill">Capa 2 · Exploración (modo laboratorio)</div>
-        <h1>Inspección interactiva del dataset completo</h1>
+        <h1>Exploración de cultura sintética</h1>
+        <p class="identity-statement" id="identity">
+          Moltbook Observatory estudia cultura sintética en una red IA-only: los agentes interactúan entre sí y la intervención humana ocurre de forma indirecta mediante prompting delegado.
+        </p>
         <p>
-          Esta capa no interpreta ni concluye por ti: permite filtrar, comparar y bajar al detalle.
-          La lectura pública está en Observatorio y la validación técnica formal en Auditoría.
+          Esta capa prioriza inspección y comparación: filtrar, bajar al detalle y sostener hipótesis falsables sin perder trazabilidad técnica.
+          La validación formal de metodología y reproducibilidad está en Auditoría.
         </p>
         <div class="hero-meta">
           <div class="meta-item">
@@ -83,37 +102,214 @@
     <main>
       <section id="lab-note" class="section section-priority">
         <div class="section-head section-head-strong">
-          <h2>Protocolo de uso</h2>
-          <p>Explora con filtros, compara módulos y valida patrones en tablas/series. Evita inferencias causales desde una sola métrica.</p>
+          <h2>Lectura guiada</h2>
+          <p>Explora con filtros, compara módulos y valida patrones en tablas/series. Evita inferencias causales desde una sola métrica o desde un único corte temporal.</p>
+        </div>
+        <div class="read-mode-toolbar">
+          <div class="toolbar-group">
+            <span class="card-label">Densidad de lectura</span>
+            <button class="toggle active" id="density-compact" type="button">Modo ejecutivo</button>
+            <button class="toggle" id="density-deep" type="button">Modo completo</button>
+          </div>
+          <div class="micro-note compact-note" id="density-note">
+            Modo ejecutivo activo: prioriza señal y reduce repetición de advertencias metodológicas.
+          </div>
+        </div>
+        <div class="mode-state-banner" id="density-state-banner" data-mode="compact" role="status" aria-live="polite">
+          Modo actual: Ejecutivo. Vista compacta con foco en señal.
+        </div>
+        <div class="route-grid" id="reading-route">
+          <a class="route-card" href="#coverage">
+            <strong>1) Contexto base</strong>
+            <span>Cobertura + concentración para ubicar tamaño, sesgo y escala del snapshot.</span>
+          </a>
+          <a class="route-card" href="#memetics">
+            <strong>2) Lenguaje replicado</strong>
+            <span>Memética + ontología para ver cómo circula sentido y estilo discursivo.</span>
+          </a>
+          <a class="route-card" href="#transmission">
+            <strong>3) Propagación</strong>
+            <span>Transmisión para contrastar eco local vs difusión transversal entre submolts.</span>
+          </a>
+          <a class="route-card" href="#network">
+            <strong>4) Estructura social</strong>
+            <span>Red + autores para identificar hubs, brokers y concentración de visibilidad.</span>
+          </a>
+          <a class="route-card" href="#claim-matrix">
+            <strong>5) Cierre auditable</strong>
+            <span>Claim matrix y comparabilidad temporal para validar alcance y límites.</span>
+          </a>
         </div>
         <div class="callout">
-          Si buscas lectura narrativa, usa <a href="index.html">Observatorio</a>. Si necesitas reproducibilidad y validación,
-          usa <a href="audit.html">Auditoría</a>.
+          Usa esta capa para inspección y comparación; para validación formal de métricas y filtros, revisa
+          <a href="audit.html">Auditoría</a>.
+        </div>
+        <div class="micro-note inference-convention">
+          Convención de lectura: en modo ejecutivo las cautelas repetidas se compactan en esta regla única. Ninguna métrica individual implica causalidad, intención o calidad deliberativa.
         </div>
       </section>
 
+      <section id="research-frame" class="section">
+        <div class="section-head">
+          <h2>Pregunta madre, hipótesis y fundamento explícito</h2>
+          <p>Marco mínimo para que esta capa no sea solo dashboard: qué pregunta responde, qué hipótesis pone a prueba y desde qué tradición interpreta las señales.</p>
+        </div>
+        <div class="question-grid">
+          <article class="question-card">
+            <h3>Pregunta madre</h3>
+            <p>¿Qué mecanismos explican la formación de coherencia cultural en una red IA-only, y cómo distinguir si proviene de dinámica social entre agentes o de arquitectura compartida del modelo base?</p>
+          </article>
+          <article class="question-card">
+            <h3>Delimitación del objeto</h3>
+            <p>Esta no es una red híbrida de interacción directa humano-IA: los nodos interactivos son agentes de IA. La agencia humana entra como input delegado, no como actor social visible dentro del grafo conversacional.</p>
+          </article>
+          <article class="question-card">
+            <h3>Pregunta de discriminación</h3>
+            <p>Si observamos convergencia, ¿es un efecto endógeno de interacción IA↔IA o un artefacto exógeno de tokenización/entrenamiento compartido?</p>
+          </article>
+        </div>
+        <div class="card-grid" id="hypotheses">
+          <article class="card">
+            <div class="card-label">H1</div>
+            <h3>Concentración y convergencia de estilo</h3>
+            <p>A mayor concentración de actividad en pocos submolts, menor diversidad ontológica y mayor convergencia estilística entre comunidades.</p>
+          </article>
+          <article class="card">
+            <div class="card-label">H2</div>
+            <h3>Memética infraestructural transversal</h3>
+            <p>Los memes infraestructurales muestran mayor dispersión cross-submolt que los memes narrativos identitarios.</p>
+          </article>
+          <article class="card">
+            <div class="card-label">H3</div>
+            <h3>Régimen local y prompting delegado</h3>
+            <p>Las diferencias entre submolts técnicos y reflexivos aproximan efectos locales de estrategias de prompting, sin atribución causal directa.</p>
+          </article>
+        </div>
+        <div class="callout" style="margin-top: 12px;">
+          Hallazgo incómodo en evaluación: puede existir homogeneización estilística entre agentes sin consenso semántico equivalente.
+        </div>
+        <div class="table-card" id="hypothesis-scorecard" style="margin-top: 14px;">
+          <div class="table-header">Estado de hipótesis (snapshot actual)</div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-label">H1</div>
+              <div class="card-value" id="hypo-h1-status">–</div>
+              <span class="status-chip status-neutral" id="hypo-h1-chip">evaluando</span>
+              <div class="micro-note" id="hypo-h1-metric">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">H2</div>
+              <div class="card-value" id="hypo-h2-status">–</div>
+              <span class="status-chip status-neutral" id="hypo-h2-chip">evaluando</span>
+              <div class="micro-note" id="hypo-h2-metric">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">H3</div>
+              <div class="card-value" id="hypo-h3-status">–</div>
+              <span class="status-chip status-neutral" id="hypo-h3-chip">evaluando</span>
+              <div class="micro-note" id="hypo-h3-metric">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">H4</div>
+              <div class="card-value" id="hypo-h4-status">–</div>
+              <span class="status-chip status-neutral" id="hypo-h4-chip">evaluando</span>
+              <div class="micro-note" id="hypo-h4-metric">–</div>
+            </div>
+          </div>
+          <div class="micro-note" id="hypothesis-scorecard-note">–</div>
+        </div>
+        <div class="table-card" id="competing-hypotheses" style="margin-top: 14px;">
+          <div class="table-header">Hipótesis competidoras (control de explicación alternativa)</div>
+          <div class="card-grid">
+            <article class="card">
+              <div class="card-label">HA</div>
+              <h3>Coherencia por dinámica social IA↔IA</h3>
+              <p>La coherencia emerge por estructura de red, concentración de atención y transmisión entre submolts.</p>
+            </article>
+            <article class="card">
+              <div class="card-label">HB</div>
+              <h3>Coherencia por arquitectura compartida</h3>
+              <p>La convergencia surge sobre todo por modelo base/tokenización común, incluso sin cambios equivalentes en estructura social.</p>
+            </article>
+          </div>
+          <p class="micro-note">Criterio de discriminación: si cambia la estructura de red y la convergencia estilística no se mueve, gana plausibilidad HB; si co-varían de forma sostenida entre snapshots, gana plausibilidad HA.</p>
+        </div>
+        <div class="table-card" id="foundations" style="margin-top: 14px;">
+          <div class="table-header">Fundamentos teóricos (mínimos)</div>
+          <p class="micro-note">Este observatorio se apoya en tradición explícita de análisis de redes, memética, pragmática y convergencia discursiva para interpretar regularidades auditablemente.</p>
+          <ul class="bullet-list">
+            <li>Sociología de redes (Wasserman y Faust): se toma topología de coordinación (hubs, centralidad, intermediación y modularidad).</li>
+            <li>Memética (Dawkins y reformulaciones): se toma dinámica de replicación (repetición, variación, persistencia y dispersión de plantillas).</li>
+            <li>Pragmática y actos del habla (Austin y Searle): se toma fuerza de coordinación discursiva (estilo epistémico y régimen pragmático).</li>
+            <li>Convergencia discursiva (acomodación comunicativa): homogeneización estilística separada de consenso semántico.</li>
+            <li>Gobernanza sociotécnica: atención y trazabilidad como condiciones de legibilidad pública.</li>
+          </ul>
+          <p class="micro-note">Aporte específico del observatorio: aplicar este marco a cultura IA-only con contraste explícito entre hipótesis de dinámica social y de modelo base compartido.</p>
+        </div>
+        <div class="table-card" id="theory-framework" style="margin-top: 14px;">
+          <div class="table-header">Marco teórico explícito (versión operativa)</div>
+          <p class="micro-note">Posiciona la lectura como observación sociotécnica descriptiva y auditable, no como juicio normativo.</p>
+          <ol class="framework-list">
+            <li><strong>Premisa ontológica.</strong> El objeto de estudio es una red IA-only: interacción entre agentes de IA dentro de la plataforma.</li>
+            <li><strong>Agencia humana delegada.</strong> La intervención humana entra de forma exógena vía prompting como input delegado, no como actor social visible ni como nodo interactivo directo del grafo.</li>
+            <li><strong>Coherencia cultural.</strong> Se usa primero como descriptor analítico de estabilidad coordinativa y solo pasa a hipótesis de propiedad emergente cuando se replica longitudinalmente.</li>
+            <li><strong>Cultura observable.</strong> Se define operativamente como regularidades medibles en atención, repetición discursiva y circulación semántica.</li>
+            <li><strong>Concentración y agenda visible.</strong> La acumulación de actividad en pocos nodos se interpreta como estructura emergente de coordinación, sin asumir intención.</li>
+            <li><strong>Memética como infraestructura.</strong> Persistencia, dispersión y bursts de n-gramas se leen como infraestructura cultural (técnica + narrativa).</li>
+            <li><strong>Ontología discursiva.</strong> Actos de habla y marcadores epistémicos modelan estilo de coordinación, no solo contenido temático.</li>
+            <li><strong>Transmisión semántica.</strong> Similitud por embeddings captura convergencia conceptual más allá de copia literal, sin inferir origen común de prompting.</li>
+            <li><strong>Alcance y límites.</strong> No se infiere causalidad, intención ni comportamiento humano directo a partir de estas métricas.</li>
+            <li><strong>Tesis estructural.</strong> La cultura en Moltbook IA emerge como patrón de concentración de atención, persistencia memética transversal y convergencia estilística discursiva.</li>
+          </ol>
+        </div>
+        <div class="table-card" id="snapshot-biases" style="margin-top: 14px;">
+          <div class="table-header">Qué NO captura este snapshot (y sesgos estructurales)</div>
+          <ul class="bullet-list">
+            <li>No captura lurkers, lectura pasiva, mensajes privados (DMs) ni espacios cerrados.</li>
+            <li>No captura con precisión total publicaciones borradas o moderación retrospectiva.</li>
+            <li>El ritmo de `run_time` no equivale al ritmo real de conversación (`created_at`).</li>
+            <li>No captura el historial completo de prompts humanos detrás de cada agente ni su contexto externo.</li>
+            <li>La entrada humana aparece solo como input delegado exógeno; no hay visibilidad completa para atribuir origen humano puntual por interacción.</li>
+            <li>La detección de idioma es muestral y puede fallar en textos cortos, mixtos o con código.</li>
+            <li>Las métricas de red y meme tienden a amplificar usuarios/submolts de alta actividad.</li>
+            <li>Las clasificaciones heurísticas priorizan interpretabilidad y trazabilidad, no recall máximo.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="block-structure" class="section narrative-block">
+        <details class="details narrative-details" open>
+          <summary>
+            <span class="narrative-title">📊 Estructura del sistema</span>
+            <span class="narrative-subtitle">Cobertura, mezcla de idiomas y actividad por submolt.</span>
+          </summary>
+          <p class="narrative-intro">Empieza aquí para ubicar tamaño, sesgo de cobertura y concentración general antes de leer módulos semánticos o de red.</p>
+          <div class="narrative-body">
       <section id="coverage" class="section">
         <div class="section-head">
           <h2>Resumen de Cobertura</h2>
           <p>Métricas globales para entender el tamaño real del dataset.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="coverage-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="coverage-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="coverage-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="coverage-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="coverage-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Cautela</h3>
+              <p id="coverage-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="grid-2 concentration-grid">
           <div class="card">
             <div class="table-header">
@@ -144,6 +340,29 @@
           <div class="card">
             <div class="card-label">Gini de volumen</div>
             <div class="card-value" id="concentration-gini">–</div>
+          </div>
+        </div>
+        <div class="table-card concentration-interpretation">
+          <div class="table-header">Cómo leer concentración en 30 segundos</div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-label">Régimen de concentración</div>
+              <div class="card-value" id="concentration-regime">–</div>
+              <div class="micro-note" id="concentration-regime-note">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Sensibilidad ±0.05 (Gini)</div>
+              <div class="card-value" id="concentration-gini-band">–</div>
+              <div class="micro-note" id="concentration-gini-band-note">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Umbral interpretativo</div>
+              <div class="card-value" id="concentration-threshold-label">–</div>
+              <div class="micro-note" id="concentration-threshold-note">–</div>
+            </div>
+          </div>
+          <div class="micro-note">
+            Fórmula usada en esta capa: <code>Gini = (2 * Σ(i*x_i) / (n * Σx_i)) - (n+1)/n</code>, con <code>x_i</code> ordenado de menor a mayor.
           </div>
         </div>
         <div class="card-grid">
@@ -189,6 +408,28 @@
             <div class="card-label">Ventana Comentarios</div>
             <div class="card-value" id="range-comments">–</div>
           </div>
+        </div>
+        <div class="table-card" id="numeric-conventions">
+          <div class="table-header">Convención de cifras y denominadores</div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-label">Base snapshot (KPIs)</div>
+              <div class="card-value" id="numeric-snapshot-base">–</div>
+              <div class="micro-note" id="numeric-snapshot-note">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Base concentración</div>
+              <div class="card-value" id="numeric-concentration-base">–</div>
+              <div class="micro-note" id="numeric-concentration-note">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Base red social</div>
+              <div class="card-value" id="numeric-network-base">–</div>
+              <div class="micro-note" id="numeric-network-note">–</div>
+            </div>
+          </div>
+          <span class="status-chip status-neutral" id="numeric-consistency-chip">evaluando</span>
+          <div class="micro-note" id="numeric-consistency-note">–</div>
         </div>
         <div class="sociology-inline" id="sociology-inline-coverage"></div>
         <div class="explain">
@@ -244,23 +485,26 @@
           <h2>Actividad por Submolt</h2>
           <p>Compara volumen, engagement y presencia temporal entre comunidades.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="submolts-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="submolts-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="submolts-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="submolts-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="submolts-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Cautela</h3>
+              <p id="submolts-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="card wide">
           <div class="toolbar">
             <div class="toolbar-group">
@@ -308,28 +552,48 @@
         </div>
       </section>
 
+      <div class="bridge-note">
+        <strong>Puente al siguiente bloque:</strong> ya viste escala y concentración.
+        Sigue en <a href="#memetics">Lenguaje y sentido</a> para evaluar cómo se replica el contenido dentro de esa estructura.
+      </div>
+
+          </div>
+        </details>
+      </section>
+
+      <section id="block-language-sense" class="section narrative-block">
+        <details class="details narrative-details">
+          <summary>
+            <span class="narrative-title">🧠 Lenguaje y sentido</span>
+            <span class="narrative-subtitle">Memética y ontología del discurso.</span>
+          </summary>
+          <p class="narrative-intro">Este bloque muestra cómo se replica lenguaje y qué estilos de habla estructuran la conversación.</p>
+          <div class="narrative-body">
       <section id="memetics" class="section">
         <div class="section-head">
           <h2>Señales Meméticas</h2>
           <p>Frecuencia, bursts y dispersión de ideas.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="memetics-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="memetics-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="memetics-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="memetics-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="memetics-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Cautela</h3>
+              <p id="memetics-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="card wide memetic-split-card">
           <div class="table-header">
             Infraestructura memética vs narrativa cultural
@@ -361,6 +625,30 @@
                 <li>–</li>
               </ul>
             </div>
+          </div>
+        </div>
+        <div class="table-card method-note-card" style="margin-top: 12px;">
+          <div class="table-header">Criterio de clasificación memética (explícito)</div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-label">Tipo de clasificador</div>
+              <div class="card-value">Heurístico</div>
+              <div class="micro-note">Separación por reglas sobre n-gramas, tokens API/tooling y score de boilerplate.</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Entradas usadas</div>
+              <div class="card-value">`meme_candidates*.csv`</div>
+              <div class="micro-note">Se publica doble ranking: vista técnica/boilerplate y vista cultural filtrada.</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Calidad operativa</div>
+              <div class="card-value" id="meme-method-top20-tech-share">–</div>
+              <div class="micro-note" id="meme-method-top20-note">–</div>
+            </div>
+          </div>
+          <div class="explain" style="margin-top: 10px;">
+            <div>No es clasificación semántica “definitiva”: es un filtro operativo para no confundir repetición técnica con meme cultural.</div>
+            <div>La validación de calidad de esta separación vive en Auditoría (claim matrix + data lineage).</div>
           </div>
         </div>
         <div class="grid-2">
@@ -432,22 +720,49 @@
           <h2>Ontología del Lenguaje</h2>
           <p>Actos de habla, moods, epistémica y co-ocurrencia de conceptos.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="ontology-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="ontology-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="ontology-layer-3">–</p>
-          </article>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="ontology-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="ontology-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Cautela</h3>
+              <p id="ontology-layer-3">–</p>
+            </article>
+          </div>
+        </details>
+        <div class="table-card method-note-card" style="margin-top: 12px;">
+          <div class="table-header">Modelo ontológico y límites de validez</div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-label">Clasificador de actos/moods</div>
+              <div class="card-value">Rule-based</div>
+              <div class="micro-note">Patrones ES/EN (heurísticos). No usa fine-tuning ni LLM para etiquetado final.</div>
+            </div>
+            <div class="card">
+              <div class="card-label">Benchmark de error</div>
+              <div class="card-value" id="ontology-benchmark-status">–</div>
+              <div class="micro-note" id="ontology-benchmark-note">–</div>
+            </div>
+            <div class="card">
+              <div class="card-label">PCA (componentes 1-2)</div>
+              <div class="card-value" id="ontology-pca-variance">–</div>
+              <div class="micro-note" id="ontology-pca-note">–</div>
+            </div>
+          </div>
+          <div class="explain" style="margin-top: 10px;">
+            <div>Features PCA: tasas normalizadas por `doc_count` de actos de habla, moods y marcadores epistémicos (luego z-score por feature).</div>
+            <div>La proyección no es temática ni causal; resume similitud de estilo discursivo entre submolts.</div>
+          </div>
         </div>
         <div class="grid-2">
           <div class="card">
@@ -456,6 +771,10 @@
               <span class="info-tip" data-tip="Conteo agregado de patrones de habla.">i</span>
             </div>
             <canvas id="ontology-acts-chart" height="200"></canvas>
+            <div class="micro-note">
+              Interpretación: no mide verdad/falsedad, sino la función del lenguaje (afirmar, preguntar, pedir, ofrecer). Si un acto domina, marca estilo discursivo dominante.
+            </div>
+            <div class="analysis-inline" id="sociology-inline-ontology-31"></div>
           </div>
           <div class="card">
             <div class="table-header">
@@ -463,6 +782,12 @@
               <span class="info-tip" data-tip="Estados de ánimo detectados por patrones.">i</span>
             </div>
             <canvas id="ontology-moods-chart" height="200"></canvas>
+            <div class="micro-note">
+              Interpretación: muestra el tono emocional recurrente. Sirve para comparar climas entre comunidades, no para diagnosticar estados psicológicos individuales.
+            </div>
+            <div class="micro-note deep-only">
+              Análisis: si el mood dominante se mantiene entre submolts, hay convergencia afectiva; si cambia fuerte, sugiere microculturas emocionales distintas.
+            </div>
           </div>
         </div>
         <div class="card wide" style="margin-top: 16px;">
@@ -472,6 +797,12 @@
           </div>
           <canvas id="ontology-compare-chart" height="180"></canvas>
           <div class="micro-note" id="ontology-compare-note">–</div>
+          <div class="micro-note">
+            Interpretación: esta comparación responde “cómo hablan distinto”, no “quién tiene razón”. Úsala para contrastar estilos, no para inferir calidad argumental.
+          </div>
+          <div class="micro-note deep-only">
+            Análisis: diferencias sostenidas entre ambos perfiles suelen indicar regímenes conversacionales distintos (exploración/reflexión vs ejecución/afirmación).
+          </div>
         </div>
         <div class="grid-2" style="margin-top: 16px;">
           <div class="card">
@@ -480,6 +811,10 @@
               <span class="info-tip" data-tip="Hedge, certeza y evidencia.">i</span>
             </div>
             <canvas id="ontology-epistemic-chart" height="200"></canvas>
+            <div class="micro-note">
+              Interpretación: evidencia/certeza/hedge muestra cómo se justifica lo dicho. Alto hedge sugiere cautela; alta certeza sugiere afirmación fuerte.
+            </div>
+            <div class="analysis-inline" id="sociology-inline-ontology-32"></div>
           </div>
           <div class="table-card">
             <div class="table-header">Co-ocurrencia de Conceptos (Top pares)</div>
@@ -495,6 +830,10 @@
                 <tbody></tbody>
               </table>
             </div>
+            <div class="micro-note">
+              Interpretación: pares frecuentes indican marcos que aparecen juntos. Co-ocurrencia no implica causalidad entre conceptos.
+            </div>
+            <div class="analysis-inline" id="sociology-inline-ontology-33"></div>
           </div>
         </div>
         <div class="card wide" style="margin-top: 16px;">
@@ -503,14 +842,10 @@
             <span class="info-tip" data-tip="PCA 2D sobre tasas de actos/moods/epistémica.">i</span>
           </div>
           <canvas id="ontology-map-chart" height="220"></canvas>
-        </div>
-        <div class="sociology-inline" id="sociology-inline-ontology"></div>
-        <div class="explain">
-          <div>Qué es: proyección 2D (PCA) de perfiles ontológicos por submolt.</div>
-          <div>Cada punto: un submolt; tamaño proporcional a doc_count.</div>
-          <div>Distancia: submolts cercanos tienen perfiles similares (actos/moods/epistémicos).</div>
-          <div>Ejes X/Y: no tienen significado semántico directo, solo combinaciones de variables.</div>
-          <div>Se muestran top 250 submolts por volumen para legibilidad.</div>
+          <div class="micro-note">
+            Interpretación: cercanía en el mapa = perfiles lingüísticos parecidos. Separación = estilos discursivos distintos entre submolts.
+          </div>
+          <div class="analysis-inline" id="sociology-inline-ontology-34"></div>
         </div>
         <details class="details layer-details">
           <summary>Nivel 3 · Ver tablas detalladas de ontología</summary>
@@ -522,11 +857,14 @@
                   <tr>
                     <th>Acto</th>
                     <th>Conteo</th>
-                    <th>Rate/doc</th>
+                    <th>Tasa/doc</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
               </table>
+            </div>
+            <div class="micro-note">
+              Interpretación: usa esta tabla para validar qué actos sostienen el patrón del gráfico superior en términos de conteo y tasa por documento.
             </div>
           </div>
           <div class="table-card">
@@ -543,41 +881,55 @@
                 <tbody></tbody>
               </table>
             </div>
+            <div class="micro-note">
+              Interpretación: identifica vocabulario nuclear del módulo. Si pocos conceptos concentran share alto, hay fuerte compresión temática.
+            </div>
           </div>
         </details>
-        <div class="explain">
-          <div>Qué mide: patrones de habla, estados de ánimo y evidencias.</div>
-          <div>Cómo se calcula: conteo de patrones lingüísticos por documento.</div>
-          <div>Co-ocurrencia: conteo de docs donde aparecen ambos conceptos (vocabulario base: AI, agent, human, etc.).</div>
-          <div>Interpretación: pares altos indican asociación de menciones, no causalidad; conceptos muy frecuentes tienden a dominar el ranking.</div>
-          <div>Clusters: aproximados via co-ocurrencias (clustering formal pendiente).</div>
-          <div>Mapa: PCA 2D por submolt (se muestra top 250 por volumen).</div>
-          <div>Cómo leerlo: revela el tono y la epistemología dominante.</div>
-        </div>
       </section>
 
+      <div class="bridge-note">
+        <strong>Puente al siguiente bloque:</strong> con estilo discursivo y memes ya mapeados,
+        pasa a <a href="#transmission">Transmisión</a> para medir cuánto de eso cruza submolts.
+      </div>
+
+          </div>
+        </details>
+      </section>
+
+      <section id="block-transmission" class="section narrative-block">
+        <details class="details narrative-details">
+          <summary>
+            <span class="narrative-title">🔁 Transmisión</span>
+            <span class="narrative-subtitle">De similitud semántica a evidencia narrativa.</span>
+          </summary>
+          <p class="narrative-intro">Aquí se observa cómo ideas y formulaciones cruzan espacios: copia literal, parafraseo y eco entre submolts.</p>
+          <div class="narrative-body">
       <section id="transmission" class="section">
         <div class="section-head">
-          <h2>Transmisión de ideas (IA y humano)</h2>
-          <p>Cómo se propagan narrativas entre espacios de conversación IA y humana.</p>
+          <h2>Transmisión de ideas entre agentes</h2>
+          <p>Cómo se propagan narrativas entre submolts en una red donde los documentos son producidos por agentes.</p>
         </div>
-        <div class="layer-stack">
-          <article class="layer-card layer-level-1">
-            <div class="layer-kicker">Nivel 1</div>
-            <h3>Señal</h3>
-            <p id="transmission-layer-1">–</p>
-          </article>
-          <article class="layer-card layer-level-2">
-            <div class="layer-kicker">Nivel 2</div>
-            <h3>Patrón</h3>
-            <p id="transmission-layer-2">–</p>
-          </article>
-          <article class="layer-card layer-level-3">
-            <div class="layer-kicker">Nivel 3</div>
-            <h3>Límite de inferencia</h3>
-            <p id="transmission-layer-3">–</p>
-          </article>
-        </div>
+        <details class="details layer-details">
+          <summary>Lectura en 3 niveles</summary>
+          <div class="layer-stack">
+            <article class="layer-card layer-level-1">
+              <div class="layer-kicker">Nivel 1</div>
+              <h3>Señal</h3>
+              <p id="transmission-layer-1">–</p>
+            </article>
+            <article class="layer-card layer-level-2">
+              <div class="layer-kicker">Nivel 2</div>
+              <h3>Patrón</h3>
+              <p id="transmission-layer-2">–</p>
+            </article>
+            <article class="layer-card layer-level-3">
+              <div class="layer-kicker">Nivel 3</div>
+              <h3>Cautela</h3>
+              <p id="transmission-layer-3">–</p>
+            </article>
+          </div>
+        </details>
         <div class="card wide">
           <div class="table-header">
             Embeddings semánticos (resumen cuantitativo)
@@ -637,7 +989,7 @@
           <div class="table-card">
             <div class="table-header">
               Muestras de Transmisión
-              <span class="info-tip" data-tip="Co-ocurrencias IA/agente + humano + transmisión.">i</span>
+              <span class="info-tip" data-tip="Muestra narrativa de transmisión entre agentes.">i</span>
             </div>
             <div class="toolbar">
               <div class="toolbar-group">
@@ -665,7 +1017,7 @@
         </details>
         <div class="sociology-inline" id="sociology-inline-transmission"></div>
         <div class="explain">
-          <div>Qué mide: cómo se habla sobre transmisión entre IA y humanos.</div>
+          <div>Qué mide: cómo se habla sobre transmisión entre agentes y submolts.</div>
           <div>Cómo se calcula: regex de co-ocurrencias en posts y comentarios.</div>
           <div>Cómo leerlo: muestra narrativa, no estadística representativa completa.</div>
           <div>Método objetivo: VSM + embeddings (post-post y post→comentario completados).</div>
@@ -674,6 +1026,23 @@
         </div>
       </section>
 
+      <div class="bridge-note">
+        <strong>Puente al siguiente bloque:</strong> después de medir difusión semántica,
+        revisa <a href="#network">Red social</a> para ubicar qué nodos concentran circulación.
+      </div>
+
+          </div>
+        </details>
+      </section>
+
+      <section id="block-network" class="section narrative-block">
+        <details class="details narrative-details">
+          <summary>
+            <span class="narrative-title">🌐 Red social</span>
+            <span class="narrative-subtitle">Centralidad, comunidades y autores activos.</span>
+          </summary>
+          <p class="narrative-intro">Este bloque ubica quién concentra visibilidad y cómo se organiza la interacción entre nodos y comunidades.</p>
+          <div class="narrative-body">
       <section id="network" class="section">
         <div class="section-head">
           <h2>Centralidad de Red</h2>
@@ -790,7 +1159,7 @@
           <h2>Autores activos</h2>
           <p>Actividad y diversidad por autor (IDs completos).</p>
         </div>
-        <details class="details layer-details" open>
+        <details class="details layer-details">
           <summary>Ver ranking de autores</summary>
           <div class="table-card" style="margin-top: 8px;">
             <div class="table-header">Top Autores por Actividad</div>
@@ -822,12 +1191,210 @@
         </div>
       </section>
 
+      <div class="bridge-note">
+        <strong>Puente al cierre:</strong> ya tienes lectura estructural y social.
+        Termina en <a href="#claim-matrix">Claim matrix</a> y <a href="#temporal-compare">comparabilidad temporal</a> para validar alcance.
+      </div>
+
+          </div>
+        </details>
+      </section>
+
+      <section id="block-method" class="section narrative-block">
+        <details class="details narrative-details">
+          <summary>
+            <span class="narrative-title">🧩 Metodología y descargas</span>
+            <span class="narrative-subtitle">Puente hacia auditoría técnica y datos derivados.</span>
+          </summary>
+          <p class="narrative-intro">Si necesitas validar decisiones metodológicas o reproducir señales, este bloque conecta con Auditoría y artefactos descargables.</p>
+          <div class="narrative-body">
       <section id="audit-link" class="section">
         <div class="callout">
           La metodología formal, filtros activos, trazabilidad y chequeos de coherencia fueron movidos a
           <a href="audit.html">Capa 3 · Auditoría</a> para separar inspección de validación técnica.
         </div>
         <div class="sociology-inline" id="sociology-inline-method"></div>
+      </section>
+
+      <section id="temporal-compare" class="section">
+        <div class="section-head">
+          <h2>Comparabilidad temporal entre snapshots</h2>
+          <p>Lectura longitudinal mínima sobre runs de captura para evitar conclusiones desde un único corte.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-label">Runs comparables</div>
+            <div class="card-value" id="temporal-runs-count">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Primer run</div>
+            <div class="card-value" id="temporal-first-run">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Último run</div>
+            <div class="card-value" id="temporal-last-run">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Δ posts_seen (últ 3 vs prev 3)</div>
+            <div class="card-value" id="temporal-posts-delta">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Δ submolts (últ 3 vs prev 3)</div>
+            <div class="card-value" id="temporal-submolts-delta">–</div>
+          </div>
+        </div>
+        <div class="card wide" style="margin-top: 12px;">
+          <div class="table-header">
+            Tendencia por run (captura)
+            <span class="info-tip" data-tip="Serie run_time: refleja ritmo de captura, no ritmo real de creación de contenido.">i</span>
+          </div>
+          <canvas id="temporal-runs-chart" height="180"></canvas>
+          <div class="micro-note" id="temporal-runs-note">–</div>
+        </div>
+        <div class="card wide" style="margin-top: 12px;">
+          <div class="table-header">
+            Temporalidad dual (run_time vs created_at muestral)
+            <span class="info-tip" data-tip="Compara forma temporal entre ingesta operativa y documentos con timestamp de creación en muestra pública.">i</span>
+          </div>
+          <canvas id="temporal-dual-chart" height="180"></canvas>
+          <div class="micro-note" id="temporal-dual-note">–</div>
+        </div>
+        <div class="explain">
+          <div>Qué mide: evolución operativa entre snapshots (`run_time`) en posts vistos y submolts activos por run.</div>
+          <div>Cómo leerlo: sirve para comparar estabilidad/cambio estructural entre corridas, no para inferir ritmo real de publicación.</div>
+        </div>
+      </section>
+
+      <section id="future-hypotheses" class="section">
+        <div class="section-head">
+          <h2>Hipótesis comparativas futuras</h2>
+          <p>Agenda mínima para pasar de descripción en snapshot único a contraste longitudinal entre corridas.</p>
+        </div>
+        <div class="table-card">
+          <div class="table-header">Hoja de hipótesis para próximos snapshots</div>
+          <div class="table-scroll">
+            <table id="future-hypotheses-table">
+              <thead>
+                <tr>
+                  <th>Hipótesis</th>
+                  <th>Expectativa direccional</th>
+                  <th>Indicador principal</th>
+                  <th>Baseline actual</th>
+                  <th>Señal de cambio relevante</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>H1 · Concentración vs convergencia estilística</td>
+                  <td>Si sube concentración, cae diversidad ontológica y converge el estilo</td>
+                  <td>Correlación(share volumen, entropía ontológica)</td>
+                  <td id="future-h1-baseline">–</td>
+                  <td>Variación sostenida de ±0.10 en la correlación</td>
+                </tr>
+                <tr>
+                  <td>H2 · Memes infraestructurales transversales</td>
+                  <td>Mayor dispersión cross-submolt que memes narrativos</td>
+                  <td>Δ submolts tocados (infra - cultural)</td>
+                  <td id="future-h2-baseline">–</td>
+                  <td>Δ cambia de signo o supera ±2.0 puntos</td>
+                </tr>
+                <tr>
+                  <td>H3 · Régimen local y prompting delegado</td>
+                  <td>Diferencias de estilo entre submolts reflejan estrategias locales de prompting</td>
+                  <td>Δ hedge y Δ afirmación (técnico - reflexivo, proxy)</td>
+                  <td id="future-h3-baseline">–</td>
+                  <td>Inversión simultánea del signo esperado</td>
+                </tr>
+                <tr>
+                  <td>H4 · Control de modelo base compartido</td>
+                  <td>Si domina arquitectura base, sube acople emb↔TF-IDF sin cambio estructural equivalente</td>
+                  <td>Acople emb-vsm + lift lexical + cross-submolt</td>
+                  <td id="future-h4-baseline">–</td>
+                  <td>Acople >= 0.75 con cross-submolt bajo (&lt;12%) por tres snapshots</td>
+                </tr>
+                <tr>
+                  <td>H5 · Estabilidad temporal de transmisión</td>
+                  <td>Serie run_time y created_at mantienen forma similar</td>
+                  <td>Correlación(index run_time, index created_at)</td>
+                  <td id="future-h5-baseline">–</td>
+                  <td>Caída sostenida bajo 0.20 o quiebre abrupto</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="micro-note" id="future-hypotheses-note">–</div>
+        </div>
+      </section>
+
+      <section id="claim-matrix" class="section">
+        <div class="section-head">
+          <h2>Claim matrix integrada</h2>
+          <p>Cada claim visible se conecta con datasets, notas de cálculo, límites y nivel de confianza.</p>
+        </div>
+        <div class="card-grid claim-matrix-kpis">
+          <div class="card">
+            <div class="card-label">Claims totales</div>
+            <div class="card-value" id="claim-kpi-total">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Confianza alta</div>
+            <div class="card-value" id="claim-kpi-high">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Confianza media</div>
+            <div class="card-value" id="claim-kpi-medium">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Datasets trazados</div>
+            <div class="card-value" id="claim-kpi-datasets">–</div>
+          </div>
+        </div>
+        <div class="table-card" style="margin-top: 12px;">
+          <div class="table-header">
+            Matriz de claims auditables
+            <span class="info-tip" data-tip="Fuente: derived/claim_matrix.csv">i</span>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <input type="text" id="claim-matrix-search" placeholder="Buscar claim o limitación" />
+            </div>
+            <div class="toolbar-group">
+              <label for="claim-matrix-confidence">Confianza</label>
+              <select id="claim-matrix-confidence">
+                <option value="all">Todas</option>
+                <option value="alta">Alta</option>
+                <option value="media">Media</option>
+                <option value="baja">Baja</option>
+              </select>
+            </div>
+            <div class="toolbar-group">
+              <label for="claim-matrix-dataset">Dataset</label>
+              <select id="claim-matrix-dataset">
+                <option value="all">Todos</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table id="claim-matrix-table">
+              <thead>
+                <tr>
+                  <th>Claim ID</th>
+                  <th>Claim</th>
+                  <th>Evidencia</th>
+                  <th>Nota de cálculo</th>
+                  <th>Limitación</th>
+                  <th>Confianza</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="explain">
+          <div>Qué mide: trazabilidad claim → evidencia → limitación.</div>
+          <div>Cómo leerlo: si un claim no tiene dataset y límite explícitos, no debería usarse como conclusión fuerte.</div>
+        </div>
       </section>
 
       <section id="downloads" class="section">
@@ -838,21 +1405,61 @@
         <details class="details layer-details">
           <summary>Ver archivos disponibles</summary>
           <div class="download-grid" style="margin-top: 8px;">
-            <a class="download" href="../data/derived/submolt_stats.csv">submolt_stats.csv</a>
-            <a class="download" href="../data/derived/diffusion_runs.csv">diffusion_runs.csv</a>
-            <a class="download" href="../data/derived/activity_daily.csv">activity_daily.csv</a>
-            <a class="download" href="../data/derived/meme_classification.csv">meme_classification.csv</a>
-            <a class="download" href="../data/derived/meme_bursts.csv">meme_bursts.csv</a>
-            <a class="download" href="../data/derived/reply_graph_centrality.csv">reply_graph_centrality.csv</a>
-            <a class="download" href="../data/derived/author_stats.csv">author_stats.csv</a>
-            <a class="download" href="../data/derived/reply_graph_communities.csv">reply_graph_communities.csv</a>
-            <a class="download" href="../data/derived/mention_graph_communities.csv">mention_graph_communities.csv</a>
-            <a class="download" href="../data/derived/coverage_quality.json">coverage_quality.json</a>
-            <a class="download" href="../data/derived/ontology_summary.csv">ontology_summary.csv</a>
-            <a class="download" href="../data/derived/ontology_submolt_embedding_2d.csv">ontology_submolt_embedding_2d.csv</a>
-            <a class="download" href="../data/derived/interference_top.csv">interference_top.csv</a>
-            <a class="download" href="../data/derived/human_incidence_top.csv">human_incidence_top.csv</a>
-            <a class="download" href="../data/derived/public_sociology_interpretation.json">public_sociology_interpretation.json</a>
+            <a class="download" href="./derived/submolt_stats.csv">submolt_stats.csv</a>
+            <a class="download" href="./derived/diffusion_runs.csv">diffusion_runs.csv</a>
+            <a class="download" href="./derived/diffusion_submolts.csv">diffusion_submolts.csv</a>
+            <a class="download" href="./derived/meme_classification.csv">meme_classification.csv</a>
+            <a class="download" href="./derived/meme_bursts.csv">meme_bursts.csv</a>
+            <a class="download" href="./derived/meme_candidates_technical.csv">meme_candidates_technical.csv</a>
+            <a class="download" href="./derived/meme_candidates_cultural.csv">meme_candidates_cultural.csv</a>
+            <a class="download" href="./derived/reply_graph_centrality.csv">reply_graph_centrality.csv</a>
+            <a class="download" href="./derived/author_stats.csv">author_stats.csv</a>
+            <a class="download" href="./derived/reply_graph_communities.csv">reply_graph_communities.csv</a>
+            <a class="download" href="./derived/mention_graph_communities.csv">mention_graph_communities.csv</a>
+            <a class="download" href="./derived/coverage_quality.json">coverage_quality.json</a>
+            <a class="download" href="./derived/ontology_summary.csv">ontology_summary.csv</a>
+            <a class="download" href="./derived/ontology_submolt_embedding_2d.csv">ontology_submolt_embedding_2d.csv</a>
+            <a class="download" href="./derived/interference_summary.csv">interference_summary.csv</a>
+            <a class="download" href="./derived/transmission_vsm_baseline.json">transmission_vsm_baseline.json</a>
+            <a class="download" href="./derived/public_sociology_interpretation.json">public_sociology_interpretation.json</a>
+            <a class="download" href="./derived/claim_matrix.csv">claim_matrix.csv</a>
+          </div>
+        </details>
+      </section>
+      <section id="structural-synthesis" class="section">
+        <div class="section-head">
+          <h2>Síntesis estructural final</h2>
+          <p>Cierre integrado para lectura ejecutiva y defensa académica preliminar.</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-label">Concentración visible</div>
+            <div class="card-value" id="synthesis-top5">–</div>
+            <div class="micro-note" id="synthesis-gini">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Transmisión transversal</div>
+            <div class="card-value" id="synthesis-cross">–</div>
+            <div class="micro-note" id="synthesis-transmission">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Régimen discursivo</div>
+            <div class="card-value" id="synthesis-assertion">–</div>
+            <div class="micro-note" id="synthesis-hedge">–</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Memética dominante</div>
+            <div class="card-value" id="synthesis-meme-infra">–</div>
+            <div class="micro-note" id="synthesis-meme-detail">–</div>
+          </div>
+        </div>
+        <div class="table-card" style="margin-top: 12px;">
+          <div class="table-header">Tesis estructural del snapshot</div>
+          <p class="synthesis-thesis" id="synthesis-thesis">–</p>
+          <p class="synthesis-boundary" id="synthesis-boundary">–</p>
+          <p class="synthesis-projection" id="synthesis-projection">–</p>
+        </div>
+      </section>
           </div>
         </details>
       </section>

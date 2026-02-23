@@ -32,8 +32,6 @@ const REPORT_LIMITS = {
 };
 
 const CORE_CONCEPT_LEMMAS = Core.CORE_CONCEPT_LEMMAS;
-const TRANSMISSION_TEXT_MIN_CHARS = Core.TRANSMISSION_TEXT_MIN_CHARS;
-const METRIC_CONTRACT_ROWS = Core.METRIC_CONTRACT_ROWS;
 const loadCSV = Core.loadCSV;
 const loadJSON = Core.loadJSON;
 const parseDate = Core.parseDate;
@@ -132,21 +130,6 @@ function humanizeFeature(feature) {
   return String(feature || "")
     .replace(/^(act_|mood_|epistemic_)/, "")
     .replace(/_/g, " ");
-}
-
-function mountMetricContractTable() {
-  setTableRows(
-    "report-metric-contract-table",
-    METRIC_CONTRACT_ROWS.map(
-      ([module, metric, source, transform, axis]) => `<tr>
-        <td>${escapeHtml(module)}</td>
-        <td>${escapeHtml(metric)}</td>
-        <td>${escapeHtml(source)}</td>
-        <td>${escapeHtml(transform)}</td>
-        <td>${escapeHtml(axis)}</td>
-      </tr>`
-    ).join("")
-  );
 }
 
 function ensureTextModal() {
@@ -318,127 +301,6 @@ async function init() {
   const createdMin = createdMins.length ? new Date(Math.min(...createdMins)) : null;
   const createdMax = createdMaxs.length ? new Date(Math.max(...createdMaxs)) : null;
 
-  const sumLanguageShare = (scope) => Core.sumLanguageShare(language, scope);
-  const sumLanguageCount = (scope) => Core.sumLanguageCount(language, scope);
-
-  const renderActiveFiltersSection = () => {
-    const variantPairs = ontologyCooccurrence.filter((r) => isVariantPair(r.concept_a, r.concept_b)).length;
-    const rows = [
-      [
-        "Ontología",
-        "Excluir pares variantes (lemma equivalente)",
-        "activo",
-        `${fmtNumber(variantPairs)} pares variantes excluidos del ranking`,
-      ],
-      [
-        "Transmisión",
-        `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars + prioridad co-mención humano+IA`,
-        "activo",
-        `Pool=${fmtNumber(txPolicy.pool.length)} de ${fmtNumber(txPolicy.totals.raw)} (${txPolicy.policy}); vista=${fmtNumber(visibleTransmissionRows)}`,
-      ],
-      [
-        "Idiomas",
-        "Ocultar inglés (en)",
-        filters.hideEn ? "activo" : "inactivo",
-        filters.hideEn ? "La tabla excluye 'en'" : "Se muestran todos los idiomas",
-      ],
-      [
-        "Submolts",
-        "Ocultar general",
-        filters.hideGeneral ? "activo" : "inactivo",
-        filters.hideGeneral ? "La tabla de volumen excluye 'general'" : "Sin exclusiones de submolt",
-      ],
-    ];
-    setTableRows(
-      "report-active-filters-table",
-      rows
-        .map(
-          ([module, filter, status, impact]) => `<tr>
-            <td>${escapeHtml(module)}</td>
-            <td>${escapeHtml(filter)}</td>
-            <td>${escapeHtml(status)}</td>
-            <td>${escapeHtml(impact)}</td>
-          </tr>`
-        )
-        .join("")
-    );
-  };
-
-  const renderTraceabilitySection = () => {
-    const runMin = runDates.length ? new Date(Math.min(...runDates)) : null;
-    const runMax = runDates.length ? new Date(Math.max(...runDates)) : null;
-    const rows = [
-      ["Rango created_at", `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`],
-      ["Rango run_time", `${fmtDate(runMin)} — ${fmtDate(runMax)}`],
-      ["Runs únicos", fmtNumber(totalRuns)],
-      ["Volumen snapshot", `${fmtNumber(totalPosts)} posts / ${fmtNumber(totalComments)} comentarios`],
-      [
-        "Muestra idioma",
-        `${fmtNumber(sumLanguageCount("posts"))} posts + ${fmtNumber(sumLanguageCount("comments"))} comentarios`,
-      ],
-      ["Muestra transmisión", `${fmtNumber(txPolicy.pool.length)} docs (de ${fmtNumber(txPolicy.totals.raw)} raw)`],
-      ["Política transmisión activa", txPolicy.policy],
-      ["Versión criterios", "v1.1 (co-ocurrencia sin variantes + transmisión canónica)"],
-    ];
-    setTableRows(
-      "report-traceability-table",
-      rows
-        .map(
-          ([item, value]) => `<tr>
-            <td>${escapeHtml(item)}</td>
-            <td>${escapeHtml(value)}</td>
-          </tr>`
-        )
-        .join("")
-    );
-  };
-
-  const renderCoherenceSection = () => {
-    const filteredPairs = ontologyCooccurrence
-      .filter((r) => !isVariantPair(r.concept_a, r.concept_b))
-      .slice(0, REPORT_LIMITS.ontologyCooccurrence);
-    const hasVariantInTop = filteredPairs.some((r) => isVariantPair(r.concept_a, r.concept_b));
-
-    const rebuiltTx = buildTransmissionPool(transmission);
-    const txPolicyMatch = txPolicy.pool.length === rebuiltTx.pool.length && txPolicy.policy === rebuiltTx.policy;
-
-    const postShare = sumLanguageShare("posts");
-    const commentShare = sumLanguageShare("comments");
-    const languageShareOk = Math.abs(postShare - 1) <= 0.03 && Math.abs(commentShare - 1) <= 0.03;
-
-    const postsMin = parseDate(coverage.posts_created_min);
-    const postsMax = parseDate(coverage.posts_created_max);
-    const commentsMin = parseDate(coverage.comments_created_min);
-    const commentsMax = parseDate(coverage.comments_created_max);
-    const postsRangeOk = Boolean(postsMin && postsMax && postsMin <= postsMax);
-    const commentsRangeOk = Boolean(commentsMin && commentsMax && commentsMin <= commentsMax);
-    const rangesOk = postsRangeOk && commentsRangeOk;
-
-    const totalsOk = totalPosts > 0 && totalComments > 0;
-    const checks = [
-      [
-        "Co-ocurrencia top sin pares variantes",
-        !hasVariantInTop,
-        `${fmtNumber(filteredPairs.length)} filas; variantes en top=${hasVariantInTop ? "si" : "no"}`,
-      ],
-      ["Pool de transmisión canónico", txPolicyMatch, `${fmtNumber(txPolicy.pool.length)} filas; policy=${txPolicy.policy}`],
-      ["Shares de idioma normalizados", languageShareOk, `posts=${postShare.toFixed(3)} / comments=${commentShare.toFixed(3)}`],
-      ["Rangos temporales válidos", rangesOk, `posts=${postsRangeOk ? "ok" : "fail"}, comments=${commentsRangeOk ? "ok" : "fail"}`],
-      ["Volumen base no vacío", totalsOk, `${fmtNumber(totalSubmolts)} submolts activos`],
-    ];
-    setTableRows(
-      "report-coherence-table",
-      checks
-        .map(
-          ([name, ok, detail]) => `<tr>
-            <td>${escapeHtml(name)}</td>
-            <td>${ok ? "PASS" : "FAIL"}</td>
-            <td>${escapeHtml(detail)}</td>
-          </tr>`
-        )
-        .join("")
-    );
-  };
 
   document.getElementById("stat-posts").textContent = fmtNumber(totalPosts);
   document.getElementById("stat-comments").textContent = fmtNumber(totalComments);
@@ -462,11 +324,6 @@ async function init() {
   if (aboutComments) aboutComments.textContent = fmtNumber(totalComments);
   const aboutWindow = document.getElementById("about-window");
   if (aboutWindow) aboutWindow.textContent = `${fmtDate(createdMin)} — ${fmtDate(createdMax)}`;
-
-  mountMetricContractTable();
-  renderTraceabilitySection();
-  renderCoherenceSection();
-  renderActiveFiltersSection();
 
   const renderSubmoltVolumeTable = () => {
     const topSubmolts = [...submoltStats]
@@ -494,7 +351,6 @@ async function init() {
       filters.hideGeneral = !filters.hideGeneral;
       hideGeneralBtn.classList.toggle("active", filters.hideGeneral);
       renderSubmoltVolumeTable();
-      renderActiveFiltersSection();
     });
   }
 
@@ -545,7 +401,7 @@ async function init() {
       ? renderRankRows(
           rows,
           maxCount,
-          (x) => `${fmtNumber(x.raw.count)} · ${fmtFloat(x.raw.rate_per_doc, 3)} rate/doc`,
+          (x) => `${fmtNumber(x.raw.count)} · ${fmtFloat(x.raw.rate_per_doc, 3)} tasa por documento`,
           (x) => humanizeFeature(x.raw.feature)
         )
       : "–";
@@ -762,7 +618,6 @@ async function init() {
       filters.hideEn = !filters.hideEn;
       hideEnBtn.classList.toggle("active", filters.hideEn);
       renderLanguageTable();
-      renderActiveFiltersSection();
     });
   }
 
@@ -781,8 +636,6 @@ async function init() {
       )
       .join("")
   );
-  renderActiveFiltersSection();
-
   if (embeddingsSummary) {
     const embDocs = document.getElementById("emb-docs");
     if (embDocs) embDocs.textContent = fmtNumber(embeddingsSummary.total_docs);
@@ -893,6 +746,6 @@ init().catch((err) => {
   console.error(err);
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raíz del repo para que ../data/derived sea accesible.</div>`
+    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Verifica que la carpeta derived/ esté publicada.</div>`
   );
 });

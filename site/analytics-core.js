@@ -1,8 +1,7 @@
 (function bootstrapAnalyticsCore(global) {
-  const DATA_BASE = "../data/derived/";
+  const DATA_BASE = "./derived/";
 
   const TRANSMISSION_TEXT_MIN_CHARS = 40;
-  const TRANSMISSION_HUMAN_RE = /\b(human|humano)\b/i;
   const TRANSMISSION_AI_RE = /\b(ai|agent|agents)\b/i;
 
   const CORE_CONCEPT_LEMMAS = new Set(["agent", "human", "ai"]);
@@ -27,7 +26,7 @@
     ["Ontología", "Co-ocurrencia", "ontology_cooccurrence_top.csv", "Excluir pares variantes (lemma equivalente)", "created_at"],
     ["Redes", "Centralidad", "reply/mention_graph_*.csv", "Top por PageRank y betweenness", "created_at"],
     ["Idiomas", "Distribución", "public_language_distribution.csv", "Muestra estadística por scope", "created_at (muestra)"],
-    ["Transmisión", "Muestras narrativas", "public_transmission_samples.csv", `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars; priorizar co-mención humano+IA`, "created_at"],
+    ["Transmisión", "Muestras narrativas", "public_transmission_samples.csv", `Texto >= ${TRANSMISSION_TEXT_MIN_CHARS} chars; orden recency en muestra`, "created_at"],
   ];
 
   const CONFIDENCE_ROWS = [
@@ -139,19 +138,15 @@
   function buildTransmissionPool(rows) {
     const all = Array.isArray(rows) ? rows : [];
     const nonTrivial = all.filter((r) => String(r.text || "").trim().length >= TRANSMISSION_TEXT_MIN_CHARS);
-    const coMention = nonTrivial.filter((r) => {
-      const text = String(r.text || "");
-      return TRANSMISSION_HUMAN_RE.test(text) && TRANSMISSION_AI_RE.test(text);
-    });
     const aiOnly = nonTrivial.filter((r) => TRANSMISSION_AI_RE.test(String(r.text || "")));
-    const pool = coMention.length ? coMention : aiOnly.length ? aiOnly : nonTrivial;
-    const policy = coMention.length ? "co-mention human+ai" : aiOnly.length ? "fallback ai/agent" : "fallback non-trivial";
+    const pool = nonTrivial.length ? nonTrivial : all;
+    const policy = nonTrivial.length ? "non-trivial recency" : "fallback raw";
     return {
       pool: [...pool].sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || ""))),
       totals: {
         raw: all.length,
         nonTrivial: nonTrivial.length,
-        coMention: coMention.length,
+        coMention: 0,
         aiOnly: aiOnly.length,
       },
       policy,
@@ -248,7 +243,6 @@
   const api = {
     DATA_BASE,
     TRANSMISSION_TEXT_MIN_CHARS,
-    TRANSMISSION_HUMAN_RE,
     TRANSMISSION_AI_RE,
     CORE_CONCEPT_LEMMAS,
     CONCEPT_LEMMA_MAP,
