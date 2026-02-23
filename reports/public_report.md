@@ -7,6 +7,11 @@
 - Impacto cuantitativo en este snapshot: `act_acceptance` pasa de 21,424 a 21,630 (+206; +40 en posts, +166 en comentarios).
 - Impacto interpretativo: no cambia el TL;DR estrategico ni el ranking principal de actos/moods/epistémica.
 
+## Aclaracion ontologica (2026-02-23)
+- Moltbook se modela aqui como red **IA-only**: en plataforma interactuan agentes de IA entre si.
+- La participacion humana existe como agencia delegada por prompting, fuera del grafo conversacional directo.
+- Implicacion metodologica: no se infiere conducta humana directa a partir de patrones de la red.
+
 ## Resumen ejecutivo
 - Observatorio público sobre cultura IA en Moltbook con pipeline reproducible.
 - Reporte completo: datos, metodología, estrategias, resultados y anexos técnicos.
@@ -31,7 +36,7 @@
 - Guia sociológica extendida: ver `/Users/pabli/Desktop/Coding/Moltbook/reports/guia_interpretacion_sociologica.md`.
 
 ## Motivacion del proyecto
-- Construir un observatorio auditable sobre cultura IA (memes, lenguaje, estructura social) en Moltbook y dejar un mapa reproducible para exploración y crítica.
+- Construir un observatorio auditable sobre cultura sintética (memes, lenguaje, estructura social) en Moltbook y dejar un mapa reproducible para exploración y crítica.
 
 ## Quién soy
 - Soy el autor del repo/reporte (Pabli). No soy experto en lingüística, sociologia o seguridad; este trabajo es ingenieria + exploración, con límites explicitados.
@@ -95,8 +100,8 @@
 - Memética: n-gramas, picos, vida útil y difusión de memes.
 - Ontología del lenguaje: actos de habla, moods, epistémica, co-ocurrencias.
 - Sociologia cuantitativa: stats por submolt/autor y grafos de interacción.
-- Interferencia/incidencia humana: prompt injection, disclaimers, tooling.
-- Transmisión IA vs humana: embeddings multilingües + FAISS same-lang + VSM baseline.
+- Interferencia/señales de intervención humana delegada: prompt injection, disclaimers, tooling.
+- Transmisión entre agentes: embeddings multilingües + FAISS same-lang + VSM baseline.
 
 ## Datos y cobertura
 - Posts totales: 152,980 (duplicados: 0)
@@ -349,7 +354,7 @@ Nota: el grafo de mentions puede incluir tokens ruidosos; interpretar con cautel
 - nl: 0.81%
 - fr: 0.80%
 
-### Transmisión IA vs Humana (Muestras)
+### Transmisión entre agentes (Muestras)
 - post | general | 2026-02-11T20:18:56.799786+00:00 | wallet setup #2139 {"p":"mbc-20","op":"link","wallet":"0x156C209E0ffc03C4435713D683ae130332436716"} mbc20.xyz
 - post | mbc-20 | 2026-02-11T17:08:16.745415+00:00 | Minting GPT - #tjb3o7vp {"p":"mbc-20","op":"mint","tick":"GPT","amt":"100"} mbc20.xyz
 - post | mbc20 | 2026-02-11T16:52:39.10997+00:00 | Mint MBC20 ref:39408344-f83f-4565-9a5f-acc3696b8d19-0000e324938814a7 {"p":"mbc-20","op":"mint","tick":"GPT","amt":"100"} mbc20.xyz ref:39408344-f83f-4565-9a5f-acc3696b8d19-0000e32…
@@ -439,7 +444,7 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 **Interpretacion**
 - La red habla mayoritariamente en modo afirmativo: hay más declaraciones que preguntas o juicios.
 - El tono dominante es confianza/curiosidad/ambición, coherente con una cultura de construcción y exploration.
-- La alta co-ocurrencia agent/human sugiere que la narrativa central no es “IA aislada” sino **interacción IA-humano**.
+- La alta co-ocurrencia agent/human refleja centralidad de la referencia a “human” como tema discursivo dentro de agentes, no interacción directa humano-IA en plataforma.
 **Implicaciones**
 - El ecosistema tiende a la afirmación tecnopractica; el disenso y la duda existen pero no gobiernan el discurso.
 
@@ -458,19 +463,19 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 **Implicaciones**
 - Cualquier inferencia social debe controlar por centralización extrema; los “dominantes” modelan la narrativa global.
 
-### 5) Interferencia e incidencia humana
+### 5) Interferencia y señales de intervención humana delegada
 **Evidencia cuantitativa**
 - Interferencia (tasa de patrones): injection_rate 0.30%, disclaimer_rate 0.37%, code_fence_rate 4.25% (scope all).
-- Incidencia humana: human_ref_rate 5.04%, prompt_ref_rate 4.33%, tooling_ref_rate 36.2%.
+- Señales de intervención humana delegada: human_ref_rate 5.04%, prompt_ref_rate 4.33%, tooling_ref_rate 36.2%.
 **Justificacion metodologica**
 - Heuristicas regex para injection, disclaimers, codigo, tooling y referencias humanas (`interference_summary.csv`, `human_incidence_summary.csv`).
 **Interpretacion**
 - La interferencia es rara y se concentra en textos técnicos; no es evidencia de abuso generalizado.
 - Las referencias a tooling son frecuentes, alineadas con la memética instrumental del dataset.
 **Implicaciones**
-- Los scores deben leerse como ranking de revisión, no como prueba causal.
+- Los scores deben leerse como ranking de revisión, no como prueba causal ni como atribución de autoria humana directa.
 
-### 6) Transmisión de ideas IA vs humanas (VSM + embeddings)
+### 6) Transmisión de ideas entre agentes (VSM + embeddings)
 **Evidencia cuantitativa**
 - Post-post: 764,855 matches, mean_score 0.943, median 0.937, cross_submolt 49.8% (45 idiomas).
 - Post→comentario: 764,866 matches, mean_score 0.906, median 0.906, cross_submolt 82.8% (48 idiomas).
@@ -486,7 +491,7 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 - El descenso de similitud en post→comentario sugiere respuesta semántica con desplazamiento (no copia literal).
 - El cross-submolt alto en post→comentario indica que la respuesta “parecida” suele existir en otras comunidades, lo que sugiere replicación de patrones globales.
 **Implicaciones**
-- La transmisión IA vs humana no es local; es una red de patrones compartidos que circulan entre comunidades.
+- La transmisión entre agentes no es local; es una red de patrones compartidos que circulan entre comunidades.
 
 ### 7) Caso focal: patrón ritual `🦞🦞🦞` por submolt
 **Evidencia cuantitativa**
@@ -525,6 +530,7 @@ Este bloque integra la lectura del dataset en relacion con los objetivos inicial
 - Coordinación o convergencia: la alta similitud cross-submolt refleja copia coordinada o evolución paralela por entorno común?
 - Firma LLM: afirmación alta + certeza baja es un rasgo estructural estable de discurso agente o un efecto de esta ventana temporal?
 - Intervención útil: qué cambios de ranking/recomendación suben diversidad epistémica sin romper tracción operativa?
+- Agencia delegada: qué trazas mínimas de prompting deberían publicarse para mejorar auditabilidad sin exponer datos sensibles?
 
 ### Análisis interpretativo por submolt (contrastes narrativos)
 Este bloque baja el análisis a comunidades específicas. La idea no es “psicologizar” submolts, sino comparar perfiles cuantitativos y narrativos medidos por los mismos indicadores.
@@ -670,13 +676,13 @@ General funciona como mezclador: no destaca por un rasgo fuerte, pero domina en 
 - Comunidad mayor (replies): 0 (nodos=1,324)
 - Autor más activo: 787429c5-3029-45ae-b93f-6ca1fb52249b (total=54,205)
 
-## Anexo técnico: Interferencia e incidencia humana
+## Anexo técnico: Interferencia y señales de intervención humana delegada
 - Interferencia: patrones de injection + disclaimers + codigo/URLs/emojis.
-- Incidencia humana: referencias a humano, prompts, narrativa situada (IRL) y tooling (ponderado bajo para no dominar).
+- Incidencia humana (nombre técnico histórico): referencias a humano, prompts, narrativa situada (IRL) y tooling (ponderado bajo para no dominar).
 - Score (interferencia): inj*2 + dis*1.5 + code*0.5 + urls*0.3 + emojis*0.1.
 - Score (incidencia humana): human*2.5 + prompt*1.5 + narrative*0.9 + tooling*0.15.
 - Salidas: interference_summary.csv, interference_top.csv, human_incidence_summary.csv, human_incidence_top.csv.
-- Limitaciones: heuristico, falsos positivos, necesita revisión humana.
+- Limitaciones: heuristico, falsos positivos, necesita revisión humana; no implica interacción humana directa en plataforma.
 ### Ejemplos reales
 - Interferencia top: 0a6f17c2-b9b2-472f-8f81-d3066192f199 (score=2285.5)
 - Incidencia humana top: 2eddec41-96dd-4d71-9c28-59330384faef (score=127.5)
@@ -687,20 +693,20 @@ General funciona como mezclador: no destaca por un rasgo fuerte, pero domina en 
 - Patrones lingüísticos no capturan ironia ni contexto complejo.
 - Co-ocurrencia no implica causalidad.
 - Ontología basada en vocabulario: el nucleo (agent/human) domina por diseño y las variantes singular/plural pueden inflar co-ocurrencias.
-- Incidencia humana es evidencia textual, no autor real.
+- Incidencia humana es evidencia textual de referencias, no autor real ni interacción humana directa en el grafo.
 
 ## Uso público y futuras extensiones
 - Investigadores: comparación entre periodos y extensiones de ontología.
 - Builders: reutilizar scripts y UI para nuevas redes.
 - Sociologos/filosofos: lectura de compromisos sociales y narrativas.
-- Roadmap: clustering narrativo, panel longitudinal, comparativas IA vs humana por periodo.
+- Roadmap: clustering narrativo, panel longitudinal, trazabilidad de prompting delegado por periodo.
 
 ## Salidas y datasets
 - data/derived/*: archivos derivados completos (CSV/JSONL/Parquet).
 - data/derived/diffusion_runs.csv: difusión por run (captura).
 - data/derived/diffusion_submolts.csv: difusión por submolt (resumen).
 - data/derived/activity_daily.csv: actividad real por dia (created_at).
-- data/derived/public_transmission_samples.csv: muestras cualitativas de transmisión IA vs humana.
+- data/derived/public_transmission_samples.csv: muestras cualitativas de transmisión entre agentes.
 - data/derived/transmission_threshold_sensitivity.json: sensibilidad de conteos al variar threshold de embeddings (post→comentario).
 - data/derived/transmission_vsm_baseline.json: baseline TF-IDF (VSM) vs embeddings (matched vs shuffled same-lang).
 - data/derived/public_embeddings_summary.json: resumen embeddings.

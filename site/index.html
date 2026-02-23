@@ -32,7 +32,7 @@
               <a href="#resultados">Evidencia curada</a>
               <a href="#marco">Marco y límites</a>
               <a href="#salidas">Derivados</a>
-              <a href="/about#contacto">About y contacto</a>
+              <a href="about.html#contacto">About y contacto</a>
             </div>
             <div class="nav-menu-group">
               <div class="nav-menu-title">Capa 2 - Exploración</div>
@@ -56,7 +56,7 @@
           <a class="mode-chip active" href="index.html">Observatorio</a>
           <a class="mode-chip" href="analysis.html">Exploración</a>
           <a class="mode-chip" href="audit.html">Auditoría</a>
-          <a class="mode-chip" href="/about">About</a>
+          <a class="mode-chip" href="about.html">About</a>
         </div>
       </div>
     </nav>
@@ -64,7 +64,10 @@
     <header class="hero">
       <div class="hero-inner">
         <div class="pill">Capa 1 · Observatorio público</div>
-        <h1>Qué está pasando culturalmente en Moltbook IA</h1>
+        <h1>Qué está pasando culturalmente en una red IA↔IA</h1>
+        <p class="identity-statement" id="identity">
+          Moltbook Observatory es un paper vivo de cultura sintética: estudia cómo emerge coherencia cultural en una red donde solo interactúan agentes de IA y la agencia humana entra de forma delegada vía prompting.
+        </p>
         <p>
           Esta capa prioriza lectura pública: señales curadas, límites explícitos y preguntas abiertas.
           La exploración completa y la auditoría técnica viven en capas separadas.
@@ -114,25 +117,33 @@
         <div class="section-head section-head-strong">
           <h2>Resumen ejecutivo</h2>
           <p>
-            <strong>Tesis:</strong> la cultura observable se organiza por concentración social,
-            plantillas meméticas y estilos discursivos compartidos; no por una sola narrativa uniforme.
+            <strong>Pregunta madre:</strong> ¿qué mecanismos explican la formación de coherencia cultural en una red IA-only cuando la intervención humana es indirecta y ocurre vía prompting?
+          </p>
+          <p class="micro-note">
+            <strong>Definición operativa:</strong> en este observatorio, “coherencia cultural” es primero un descriptor analítico: estabilidad relativa de formas de coordinación (atención, plantillas meméticas y estilo discursivo) entre comunidades.
+          </p>
+          <p class="micro-note">
+            <strong>Estatus ontológico:</strong> se interpreta como propiedad emergente del sistema solo si esa estabilidad se replica longitudinalmente en snapshots comparables.
+          </p>
+          <p class="micro-note">
+            <strong>Aporte diferencial:</strong> no usamos IA para analizar humanos; analizamos cultura producida por IA entre sí con trazabilidad pública.
           </p>
         </div>
         <div class="report-grid">
           <article class="report-card">
             <div class="report-kicker">Descripción</div>
-            <h3>Lectura rápida</h3>
-            <p>Esta vista condensa la historia pública en 5-7 minutos.</p>
+            <h3>Tesis estructural</h3>
+            <p>La cultura observable se organiza por concentración social, plantillas meméticas y convergencia de estilo discursivo.</p>
           </article>
           <article class="report-card">
             <div class="report-kicker">Lectura</div>
-            <h3>Curaduría antes que exhaustividad</h3>
-            <p>Solo se muestran señales estructurales; el detalle vive en Exploración.</p>
+            <h3>Curaduría con hipótesis</h3>
+            <p>Se muestran señales estructurales que luego se contrastan en Capa 2 con hipótesis y criterios de falsación.</p>
           </article>
           <article class="report-card">
             <div class="report-kicker">Límite</div>
-            <h3>No causalidad</h3>
-            <p>Las métricas describen patrones observados; no prueban intención ni autoría.</p>
+            <h3>Inferencia acotada</h3>
+            <p>No inferimos causalidad ni intención; tampoco el origen humano exacto detrás de cada prompting.</p>
           </article>
         </div>
       </section>
@@ -158,10 +169,11 @@
             <div class="finding-row"><strong>Límite:</strong> frecuencia lexical no prueba relevancia simbólica.</div>
           </article>
           <article class="finding-card">
-            <h3>3) Estilo ontológico</h3>
+            <h3>3) Hallazgo incómodo</h3>
             <div class="finding-row"><strong>Señal:</strong> <span id="obs-finding-ontology-signal">–</span></div>
-            <div class="finding-row"><strong>Patrón:</strong> el estilo epistémico cruza comunidades.</div>
-            <div class="finding-row"><strong>Lectura:</strong> la red se ordena por cómo habla, no solo por tema.</div>
+            <div class="finding-row"><strong>Patrón:</strong> el estilo epistémico converge entre comunidades.</div>
+            <div class="finding-row"><strong>Lectura:</strong> puede haber homogeneización estilística sin consenso semántico equivalente.</div>
+            <div class="finding-row"><strong>Implicancia:</strong> hipótesis sistémica radical: si domina un campo gravitacional cultural, la arquitectura base opera como “constitución material” del debate, seleccionando formas legítimas de enunciación y desplazando el conflicto desde qué se dice hacia cómo se dice.</div>
             <div class="finding-row"><strong>Límite:</strong> ontología por reglas prioriza interpretabilidad sobre recall.</div>
           </article>
           <article class="finding-card">
@@ -263,7 +275,7 @@
           <div class="table-card acts-visual-card">
             <div class="table-header">
               Actos del habla (top)
-              <span class="info-tip" data-tip="Barras relativas por conteo; cada fila muestra conteo y rate/doc.">i</span>
+              <span class="info-tip" data-tip="Barras relativas por conteo; cada fila muestra conteo y tasa por documento (rate/doc).">i</span>
             </div>
             <div class="rank-list acts-rank-list" id="report-acts-rank">–</div>
             <div class="micro-note" id="report-acts-note">–</div>
@@ -286,16 +298,18 @@
             </div>
           </div>
           <div class="card">
-            <h3>Traducción de transmisión</h3>
+            <h3>Traducción de transmisión (en simple)</h3>
+            <p class="micro-note">TF-IDF mide coincidencia literal de palabras. Embeddings mide similitud de significado, incluso cuando cambia el vocabulario.</p>
             <ul class="bullet-list">
-              <li>Corr emb vs TF-IDF: <strong id="vsm-corr">–</strong></li>
-              <li>AUC matched vs random: <strong id="vsm-auc">–</strong></li>
-              <li>TF-IDF matched mean: <strong id="vsm-mean-matched">–</strong></li>
-              <li>TF-IDF random mean: <strong id="vsm-mean-random">–</strong></li>
-              <li>Cross-submolt post→comentario: <strong id="embpc-cross">–</strong></li>
+              <li>Correlación embeddings vs TF-IDF: <strong id="vsm-corr">–</strong></li>
+              <li>AUC emparejado vs aleatorio: <strong id="vsm-auc">–</strong></li>
+              <li>Promedio TF-IDF (pares emparejados): <strong id="vsm-mean-matched">–</strong></li>
+              <li>Promedio TF-IDF (pares aleatorios): <strong id="vsm-mean-random">–</strong></li>
+              <li>Cruce entre submolts (post→comentario): <strong id="embpc-cross">–</strong></li>
             </ul>
+            <p class="micro-note">Lectura rápida: AUC cercano a 0.5 indica separación débil; AUC alto indica que TF-IDF distingue mejor pares relacionados de pares aleatorios.</p>
             <div class="callout">
-              La Capa 2 muestra pares y filtros completos para inspeccionar copia literal vs parafraseo.
+              Si embeddings sube y TF-IDF no, domina el parafraseo; si ambos suben, hay mayor repetición literal. En Capa 2 puedes inspeccionar pares y filtros completos.
             </div>
           </div>
         </div>
@@ -305,6 +319,12 @@
         <div class="section-head section-head-strong">
           <h2>Marco de lectura y límites</h2>
           <p>Reglas operativas para leer señales sin convertirlas en causalidad.</p>
+        </div>
+        <div class="callout">
+          Marco teórico integrado: análisis de redes + teoría memética + pragmática del discurso. Unidad de análisis: episodio de transmisión (post→comentario) leído en tres planos coordinados: red (nodo/submolt), meme (plantilla replicada) y acto del habla (régimen pragmático).
+        </div>
+        <div class="micro-note">
+          Qué toma de cada tradición: de redes, topología de coordinación (centralidad/modularidad); de memética, dinámica de replicación (persistencia/variación/dispersión); de pragmática, fuerza de coordinación discursiva (actos del habla y marcadores epistémicos).
         </div>
         <div class="card-grid">
           <div class="card">
@@ -317,12 +337,18 @@
           </div>
           <div class="card">
             <h3>No etiqueta de autoría</h3>
-            <p>Similitud, interferencia o incidencia no prueban por sí solas autor humano o IA.</p>
+            <p>Similitud, interferencia o incidencia no prueban por sí solas origen de prompting ni coordinación intencional.</p>
           </div>
         </div>
         <div class="callout">
+          Crítica competidora activa: separar coherencia emergente de efecto del modelo base compartido (control H4 en Capa 2).
+        </div>
+        <div class="callout" style="margin-top: 8px;">
+          Ontología operativa: interacción visible IA-only, origen de inputs IA-mediated. Este observatorio modela lo primero y trata lo segundo como condicionante exógeno bajo control explícito.
+        </div>
+        <div class="callout" style="margin-top: 8px;">
           Si necesitas postura metodológica completa, sesgos declarados y contacto, revisa
-          <a href="/about">About</a>.
+          <a href="about.html">About</a>.
         </div>
       </section>
 
@@ -337,11 +363,12 @@
           <a class="download" href="../reports/public_report.md">Reporte narrativo completo (MD)</a>
           <a class="download" href="../reports/audit/audit_report.md">Auditoría integral (MD)</a>
           <a class="download" href="../reports/audit/public_summary.md">Resumen público de auditoría</a>
-          <a class="download" href="../data/derived/submolt_stats.csv">submolt_stats.csv</a>
-          <a class="download" href="../data/derived/meme_classification.csv">meme_classification.csv</a>
-          <a class="download" href="../data/derived/ontology_summary.csv">ontology_summary.csv</a>
-          <a class="download" href="../data/derived/reply_graph_centrality.csv">reply_graph_centrality.csv</a>
-          <a class="download" href="../data/derived/embeddings_post_comment/public_embeddings_post_comment_summary.json">embeddings_post_comment_summary.json</a>
+          <a class="download" href="./derived/submolt_stats.csv">submolt_stats.csv</a>
+          <a class="download" href="./derived/meme_classification.csv">meme_classification.csv</a>
+          <a class="download" href="./derived/ontology_summary.csv">ontology_summary.csv</a>
+          <a class="download" href="./derived/reply_graph_centrality.csv">reply_graph_centrality.csv</a>
+          <a class="download" href="./derived/embeddings_post_comment/public_embeddings_post_comment_summary.json">embeddings_post_comment_summary.json</a>
+          <a class="download" href="./derived/claim_matrix.csv">claim_matrix.csv</a>
         </div>
       </section>
 

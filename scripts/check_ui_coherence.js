@@ -6,6 +6,7 @@ const path = require("node:path");
 
 const repoRoot = path.resolve(__dirname, "..");
 const dataDir = path.join(repoRoot, "data", "derived");
+const siteDir = path.join(repoRoot, "site");
 const Core = require(path.join(repoRoot, "site", "analytics-core.js"));
 
 async function readCSV(relPath) {
@@ -18,6 +19,11 @@ async function readJSON(relPath) {
   const abs = path.join(dataDir, relPath);
   const text = await fs.readFile(abs, "utf8");
   return JSON.parse(text);
+}
+
+async function readSite(relPath) {
+  const abs = path.join(siteDir, relPath);
+  return fs.readFile(abs, "utf8");
 }
 
 function keyPair(row) {
@@ -41,6 +47,9 @@ async function main() {
     readJSON("coverage_quality.json"),
     readCSV("submolt_stats.csv"),
   ]);
+  const pages = ["index.html", "analysis.html", "audit.html", "about.html"];
+  const pageContents = await Promise.all(pages.map((name) => readSite(name)));
+  const extensionlessRoutePattern = /href\s*=\s*"\/(about|analysis|audit)(?:[\/"#?]|")/;
 
   const totalPosts = submoltStats.reduce((acc, r) => acc + (Number(r.posts) || 0), 0);
   const totalComments = submoltStats.reduce((acc, r) => acc + (Number(r.comments) || 0), 0);
@@ -92,6 +101,14 @@ async function main() {
       label: "cross:transmission_prefix_equal",
       ok: sameTransmissionPrefix,
       detail: `reportPoolTop20 vs analysisPoolTop20`,
+    },
+    {
+      label: "site:portable_internal_routes",
+      ok: pageContents.every((text) => !extensionlessRoutePattern.test(text)),
+      detail: (() => {
+        const offenders = pages.filter((_, idx) => extensionlessRoutePattern.test(pageContents[idx]));
+        return offenders.length ? `links extensionless en ${offenders.join(", ")}` : "sin rutas internas dependientes de redirects";
+      })(),
     },
   ];
 

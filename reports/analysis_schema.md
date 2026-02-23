@@ -25,6 +25,14 @@ This schema defines the interpretables and derived signals used for memetic, ont
 - thread_path
 - depth
 
+**Temporal Contract**
+- `created_at`: real publication timestamp in Moltbook (event time).
+- `run_time`: scraper capture timestamp derived from `run_id`/`scrape_ts` (observation time).
+- `created_at` answers "when content was published".
+- `run_time` answers "when snapshot was captured".
+- Do not infer publication rhythm from `run_time` series.
+- Run `scripts/temporal_contract_audit.py` before interpretation to validate consistency between both axes.
+
 **Text Geometry**
 - char_count
 - token_count

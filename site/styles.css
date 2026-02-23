@@ -199,6 +199,32 @@ h1, h2, h3, h4 {
   background: rgba(31, 138, 112, 0.08);
 }
 
+.layer-switch-hint {
+  position: sticky;
+  top: 72px;
+  z-index: 9;
+  margin: 0;
+  padding: 9px 8vw;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(8px);
+  display: grid;
+  gap: 6px;
+}
+
+.layer-switch-line {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.layer-switch-line strong {
+  color: var(--ink);
+}
+
 .hero {
   padding: 70px 8vw 52px;
   position: relative;
@@ -243,6 +269,17 @@ h1, h2, h3, h4 {
   color: var(--muted);
   max-width: 68ch;
   line-height: 1.72;
+}
+
+.identity-statement {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(53, 107, 139, 0.3);
+  background: linear-gradient(160deg, rgba(53, 107, 139, 0.12), rgba(31, 138, 112, 0.12));
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 .hero-meta {
@@ -335,6 +372,10 @@ main {
   scroll-margin-top: 112px;
 }
 
+.analysis .section {
+  scroll-margin-top: 168px;
+}
+
 .section-head {
   display: grid;
   gap: 12px;
@@ -357,8 +398,178 @@ main {
   box-shadow: var(--shadow);
 }
 
+.read-mode-toolbar {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.mode-state-banner {
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.mode-state-banner[data-mode="compact"] {
+  background: rgba(242, 95, 44, 0.1);
+  border-color: rgba(242, 95, 44, 0.32);
+  color: #7a371a;
+}
+
+.mode-state-banner[data-mode="deep"] {
+  background: rgba(31, 138, 112, 0.1);
+  border-color: rgba(31, 138, 112, 0.34);
+  color: #0f5b49;
+}
+
+.compact-note {
+  margin: 0;
+}
+
+.inference-convention {
+  margin-top: 10px;
+  background: rgba(53, 107, 139, 0.09);
+  border-color: rgba(53, 107, 139, 0.28);
+}
+
+.route-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.route-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(53, 107, 139, 0.18);
+  background: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.route-card strong {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.route-card span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.route-card:hover {
+  border-color: rgba(31, 138, 112, 0.34);
+  transform: translateY(-1px);
+}
+
+body.analysis.density-compact #lab-note {
+  border-color: rgba(242, 95, 44, 0.24);
+  box-shadow: 0 16px 34px rgba(242, 95, 44, 0.09);
+}
+
+body.analysis.density-deep #lab-note {
+  border-color: rgba(31, 138, 112, 0.28);
+  box-shadow: 0 16px 34px rgba(31, 138, 112, 0.1);
+}
+
+body.analysis.density-deep #lab-note .route-card {
+  border-color: rgba(31, 138, 112, 0.28);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+body.analysis.density-compact #lab-note .route-card {
+  border-color: rgba(53, 107, 139, 0.16);
+}
+
+.bridge-note {
+  margin: 8px 0 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(31, 138, 112, 0.22);
+  background: rgba(31, 138, 112, 0.08);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.bridge-note strong {
+  color: var(--ink);
+}
+
+.bridge-note a {
+  color: var(--accent-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.bridge-note a:hover {
+  text-decoration: underline;
+}
+
 .section-head-strong h2 {
   font-size: clamp(28px, 3vw, 38px);
+}
+
+.narrative-block {
+  margin: 44px 0;
+}
+
+.narrative-details {
+  padding: 10px 16px 12px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.95), rgba(226, 239, 232, 0.44));
+  border: 1px solid rgba(31, 138, 112, 0.22);
+}
+
+.narrative-details summary {
+  display: grid;
+  gap: 2px;
+  padding: 8px 4px;
+}
+
+.narrative-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.narrative-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.narrative-intro {
+  margin: 6px 4px 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.narrative-body {
+  margin-top: 10px;
+}
+
+.narrative-body > .section {
+  margin: 34px 0;
+}
+
+.narrative-body > .section:first-of-type {
+  margin-top: 20px;
+}
+
+.narrative-body > .section:last-of-type {
+  margin-bottom: 16px;
 }
 
 .executive-grid {
@@ -929,6 +1140,62 @@ main {
   box-shadow: none;
 }
 
+.concentration-interpretation {
+  margin-top: 12px;
+}
+
+.method-note-card .card-grid {
+  margin-top: 12px;
+}
+
+#snapshot-biases .bullet-list {
+  margin-top: 10px;
+}
+
+.claim-matrix-kpis {
+  margin-top: 12px;
+}
+
+.claim-dataset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dataset-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--accent-2);
+  background: rgba(31, 138, 112, 0.12);
+  border: 1px solid rgba(31, 138, 112, 0.22);
+  line-height: 1.2;
+}
+
+.claim-cell {
+  min-width: 180px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.claim-main {
+  min-width: 240px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.claim-note,
+.claim-limit {
+  min-width: 220px;
+}
+
+.claim-action {
+  min-width: 86px;
+  white-space: nowrap;
+}
+
 .micro-list {
   list-style: none;
   margin: 0;
@@ -1174,6 +1441,30 @@ select:focus-visible {
   line-height: 1.6;
 }
 
+body.analysis.density-compact .explain {
+  display: none;
+}
+
+body.analysis.density-compact .sociology-inline {
+  gap: 10px;
+}
+
+body.analysis.density-compact .layer-level-3 {
+  display: none;
+}
+
+body.analysis.density-compact .analysis-inline {
+  display: none;
+}
+
+body.analysis.density-compact .deep-only {
+  display: none;
+}
+
+body.analysis.density-compact .bridge-note {
+  margin-top: 2px;
+}
+
 .transmission-translation {
   margin-top: 14px;
   background: linear-gradient(140deg, rgba(31, 138, 112, 0.12), rgba(15, 106, 180, 0.08));
@@ -1380,6 +1671,59 @@ select:focus-visible {
   font-size: 13px;
   line-height: 1.45;
   color: var(--muted);
+}
+
+#hypotheses .card h3 {
+  margin: 8px 0 0;
+  font-size: 20px;
+}
+
+#hypotheses .card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.framework-list {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.framework-list li {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.framework-list strong {
+  color: var(--ink);
+}
+
+#future-hypotheses-table td {
+  vertical-align: top;
+}
+
+#future-hypotheses-table td:first-child {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.synthesis-thesis {
+  margin: 0;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.synthesis-boundary,
+.synthesis-projection {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .rank-grid {
@@ -1721,8 +2065,21 @@ select:focus-visible {
     z-index: 30;
   }
 
+  .layer-switch-hint {
+    top: 126px;
+    padding: 8px 5vw;
+  }
+
+  .layer-switch-line {
+    font-size: 12px;
+  }
+
   .hero {
     padding: 52px 5vw 38px;
+  }
+
+  .identity-statement {
+    font-size: 15px;
   }
 
   main {

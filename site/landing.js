@@ -401,7 +401,7 @@ async function init() {
       ? renderRankRows(
           rows,
           maxCount,
-          (x) => `${fmtNumber(x.raw.count)} · ${fmtFloat(x.raw.rate_per_doc, 3)} rate/doc`,
+          (x) => `${fmtNumber(x.raw.count)} · ${fmtFloat(x.raw.rate_per_doc, 3)} tasa por documento`,
           (x) => humanizeFeature(x.raw.feature)
         )
       : "–";
@@ -746,6 +746,6 @@ init().catch((err) => {
   console.error(err);
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Sirve el sitio desde la raíz del repo para que ../data/derived sea accesible.</div>`
+    `<div style=\"padding:24px;color:#b00020\">No se pudieron cargar los datos. Verifica que la carpeta derived/ esté publicada.</div>`
   );
 });
