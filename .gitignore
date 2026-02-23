@@ -11,6 +11,8 @@ src/*.egg-info/
 data/
 output/
 tmp/
+site/derived/
+test-results/
 
 # Local Netlify folder
 .netlify
