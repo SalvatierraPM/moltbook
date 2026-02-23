@@ -87,6 +87,20 @@ This executes:
 - `tests/test_*.py`
 - UI coherence checks when required derived artifacts exist.
 
+Convenience command:
+
+```bash
+make verify
+```
+
+## Community and governance
+
+- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Code of Conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- Security policy: [SECURITY.md](SECURITY.md)
+- Citation metadata: [CITATION.cff](CITATION.cff)
+- Change history: [CHANGELOG.md](CHANGELOG.md)
+
 ## Data collection workflows
 
 ### API collection (recommended)

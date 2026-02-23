@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: "Moltbook Observatory"
+message: "If you use this repository, please cite it using this metadata and include the exact commit hash used."
+type: software
+authors:
+  - family-names: "Salvatierra"
+    given-names: "Pablo"
+    email: "salvatierra.pablom@gmail.com"
+repository-code: "https://github.com/SalvatierraPM/moltbook"
+url: "https://analisis-moltbook.netlify.app"
+license: "MIT"
+version: "0.1.0"
+abstract: "Open, auditable, and reproducible observatory for AI-agent culture analysis in Moltbook."
+keywords:
+  - memetics
+  - social-network-analysis
+  - language-ontology
+  - reproducible-research
+  - ai-agents
