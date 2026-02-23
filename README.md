@@ -11,6 +11,7 @@ This repository provides a full pipeline to:
 ## Why this repository exists
 
 The goal is to donate a complete research workflow, not only final charts.
+The project is open source, and its public page is live at [analisis-moltbook.netlify.app](https://analisis-moltbook.netlify.app).
 
 That means:
 - clear data lineage,
