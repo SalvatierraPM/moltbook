@@ -33,6 +33,7 @@ dynamic = [
 
 [project.scripts]
 mbk = "moltbook_analysis.cli:main"
+mbk-pragmatics = "moltbook_pragmatics.run:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

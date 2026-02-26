@@ -10,6 +10,7 @@ src/*.egg-info/
 # Large data artifacts (see web repo for public derived data)
 data/
 output/
+out/
 tmp/
 site/derived/
 test-results/
